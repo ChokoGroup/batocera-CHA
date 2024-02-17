@@ -1,0 +1,36 @@
+{
+  "version": "1.5",
+  "default_core_path": "",
+  "default_core_name": "",
+  "base_content_directory": "/userdata/roms",
+  "label_display_mode": 0,
+  "right_thumbnail_mode": 0,
+  "left_thumbnail_mode": 0,
+  "sort_mode": 0,
+  "items": [
+    {
+      "path": "/userdata/roms/choko/Reboot into Choko Menu.sh",
+      "label": "Reboot into Choko Menu",
+      "core_path": "/usr/lib/libretro/bash_launcher_libretro.so",
+      "core_name": "Linux (Bash Launcher)",
+      "crc32": "DETECT",
+      "db_name": "_Reboot the CHA_.lpl"
+    },
+    {
+      "path": "/userdata/roms/choko/Reboot into EmulationStation.sh",
+      "label": "Reboot into EmulationStation",
+      "core_path": "/usr/lib/libretro/bash_launcher_libretro.so",
+      "core_name": "Linux (Bash Launcher)",
+      "crc32": "DETECT",
+      "db_name": "_Reboot the CHA_.lpl"
+    },
+    {
+      "path": "/userdata/roms/choko/Reboot into RetroArch.sh",
+      "label": "Reboot into RetroArch",
+      "core_path": "/usr/lib/libretro/bash_launcher_libretro.so",
+      "core_name": "Linux (Bash Launcher)",
+      "crc32": "DETECT",
+      "db_name": "_Reboot the CHA_.lpl"
+    }
+  ]
+}

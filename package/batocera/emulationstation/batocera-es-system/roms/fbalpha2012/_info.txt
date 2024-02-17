@@ -1,0 +1,5 @@
+## SYSTEM MAME ##
+-------------------------------------------------------------------------------
+ROM files extensions accepted: ".zip .7z"
+
+The system uses libretro fbalpha2012 (romset v0.2.97.30)

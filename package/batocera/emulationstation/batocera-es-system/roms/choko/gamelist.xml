@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<gameList>
+	<game>
+		<name>Reboot into Choko Menu</name>
+		<desc>Reboots the CHA into official SO with Choko Menu.</desc>
+		<image>./images/cha-choko.png</image>
+		<rating>1.0</rating>
+		<releasedate>20210701T000000</releasedate>
+		<developer>Choko Group</developer>
+		<publisher>Choko Group</publisher>
+		<genre>App</genre>
+		<players>1-2</players>
+		<path>./Reboot into Choko Menu.sh</path>
+		<arcadesystemname>Capcom Home Arcade</arcadesystemname>
+		<lang>en</lang>
+		<region>eu</region>
+	</game>
+	<game>
+		<name>Reboot into EmulationStation</name>
+		<desc>Reboots the CHA into EmulationStation (Batocera).</desc>
+		<image>./images/emulationstation.png</image>
+		<rating>1.0</rating>
+		<releasedate>20210701T000000</releasedate>
+		<developer>Choko Group</developer>
+		<publisher>Choko Group</publisher>
+		<genre>App</genre>
+		<players>1-4</players>
+		<path>./Reboot into EmulationStation.sh</path>
+		<arcadesystemname>Capcom Home Arcade</arcadesystemname>
+		<lang>en</lang>
+		<region>eu</region>
+	</game>
+	<game>
+		<name>Reboot into RetroArch</name>
+		<desc>Reboots the CHA into RetroArch (Batocera).</desc>
+		<image>./images/retroarch.png</image>
+		<rating>1.0</rating>
+		<releasedate>20210701T000000</releasedate>
+		<developer>Choko Group</developer>
+		<publisher>Choko Group</publisher>
+		<genre>App</genre>
+		<players>1-4</players>
+		<path>./Reboot into RetroArch.sh</path>
+		<arcadesystemname>Capcom Home Arcade</arcadesystemname>
+		<lang>en</lang>
+		<region>eu</region>
+	</game>
+</gameList>

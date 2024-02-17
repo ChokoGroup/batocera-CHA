@@ -1,0 +1,7 @@
+## SYSTEM MAME ##
+-------------------------------------------------------------------------------
+ROM files extensions accepted: ".zip .7z"
+
+The system uses libretro mame2010 based on 0.139 romset
+
+For more info: https://wiki.batocera.org/arcade

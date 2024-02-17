@@ -852,8 +852,8 @@ fbneo:
   platform:   arcade
   emulators:
     libretro:
-      fbalpha:  { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBALPHA]  }
       fbneo:    { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBNEO]    }
+      fbalpha:  { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBALPHA]  }
     fba2x:
       fba2x:    { requireAnyOf: [BR2_PACKAGE_PIFBA] }
   comment_en: |
@@ -934,8 +934,8 @@ neogeo:
   platform:   neogeo, arcade
   emulators:
     libretro:
-      fbalpha:      { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBALPHA]        }
       fbneo:        { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBNEO]          }
+      fbalpha:      { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBALPHA]        }
       imame4all:    { requireAnyOf: [BR2_PACKAGE_LIBRETRO_IMAME]          }
       mame078plus:  { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME2003_PLUS]  }
       mame0139:     { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME2010]       }
