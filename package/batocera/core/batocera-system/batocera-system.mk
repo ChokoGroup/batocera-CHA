@@ -6,7 +6,7 @@
 
 BATOCERA_SYSTEM_SOURCE=
 
-BATOCERA_SYSTEM_VERSION = 39-CHA
+BATOCERA_SYSTEM_VERSION = 39-Choko
 BATOCERA_SYSTEM_DATE_TIME = $(shell date "+%Y/%m/%d %H:%M")
 BATOCERA_SYSTEM_DATE = $(shell date "+%Y/%m/%d")
 BATOCERA_SYSTEM_DEPENDENCIES = tzdata
@@ -73,11 +73,11 @@ else
 	BATOCERA_SYSTEM_ARCH=unknown
 endif
 
-ifneq (,$(findstring dev,$(BATOCERA_SYSTEM_VERSION)))
-    BATOCERA_SYSTEM_COMMIT = "-$(shell cd $(BR2_EXTERNAL_BATOCERA_PATH) && git rev-parse --short HEAD)"
-else
-    BATOCERA_SYSTEM_COMMIT =
-endif
+#ifneq (,$(findstring dev,$(BATOCERA_SYSTEM_VERSION)))
+#    BATOCERA_SYSTEM_COMMIT = "-$(shell cd $(BR2_EXTERNAL_BATOCERA_PATH) && git rev-parse --short HEAD)"
+#else
+#    BATOCERA_SYSTEM_COMMIT =
+#endif
 
 define BATOCERA_SYSTEM_INSTALL_TARGET_CMDS
 

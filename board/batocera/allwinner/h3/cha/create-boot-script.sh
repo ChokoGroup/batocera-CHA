@@ -22,7 +22,14 @@ cp "${BINARIES_DIR}/initrd.lz4"       "${BATOCERA_BINARIES_DIR}/boot/boot/initrd
 cp "${BINARIES_DIR}/rootfs.squashfs" "${BATOCERA_BINARIES_DIR}/boot/boot/batocera.update" || exit 1
 
 cp "${BINARIES_DIR}/sun8i-h3-libretech-all-h3-cc.dtb" "${BATOCERA_BINARIES_DIR}/boot/boot/capcom-home-arcade.dtb"     || exit 1
-cp "${BOARD_DIR}/boot/extlinux*"          "${BATOCERA_BINARIES_DIR}/boot/extlinux/" || exit 1
-cp "${BOARD_DIR}/boot/boot-custom.sh"          "${BATOCERA_BINARIES_DIR}/boot/" || exit 1
+cp -r "${BOARD_DIR}/boot" "${BATOCERA_BINARIES_DIR}"/ || exit 1
+
+if ! test -e "${BUILD_DIR}/cha_disk_partition/cha_disk.ext4"
+then
+	mkdir -p "${BUILD_DIR}/cha_disk_partition" || exit 1
+	curl -L https://github.com/ChokoGroup/batocera.linux/releases/download/cha_disk/cha_disk.zip -o "${BUILD_DIR}/cha_disk_partition/cha_disk.zip" || exit 1
+	unzip "${BUILD_DIR}/cha_disk_partition/cha_disk.zip" -d "${BUILD_DIR}/cha_disk_partition" || exit 1
+	rm -f "${BUILD_DIR}/cha_disk_partition/cha_disk.zip"
+fi
 
 exit 0

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+  <formatVersion>7</formatVersion>
+  <customView name="choko" inherits="detailed" displayName="Choko">
+    <image name="background">
+      <path>./../art/bgchoko.jpg</path>
+      <zIndex>10</zIndex>
+    </image>
+    <image name="ControllerOverlay" extra="true" ifSubset="systembackground:mini-consoles">
+      <path>./none</path>
+      <maxSize>0 0</maxSize>
+      <zIndex>9</zIndex>
+    </image>
+    <image name="detailsBk" extra="true">
+      <pos>0.493 0.16</pos>
+    </image>
+    <image name="detailsBkR" extra="true">
+      <pos>0.492 0.16</pos>
+    </image>
+    <image name="detailsBkLine" extra="true">
+      <pos>0.492 0.16</pos>
+    </image>
+    <textlist name="gamelist">
+      <size>0.40 0.73</size>
+    </textlist>
+  </customView>  
+</theme>

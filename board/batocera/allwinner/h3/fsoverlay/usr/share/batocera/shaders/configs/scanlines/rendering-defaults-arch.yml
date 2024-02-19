@@ -1,0 +1,6 @@
+## SCANLINES
+default:
+  # shader affects retroarch shaders
+  shader: crt/GritsScanlines
+  # scanline affect fba2x
+  scanline: true

@@ -1,0 +1,133 @@
+#!/bin/sh
+
+if test "$1" = "start"
+then
+  value=$(batocera-settings-get -f /boot/batocera-boot.conf sharedevice)
+  ret=$?
+  if [ $ret -eq 0 ] && [ "$value" = "INTERNAL" ]
+  then
+    if [ -z "$(batocera-part share_internal)" ]
+    then
+      clear > /dev/tty0
+      echo "SOMETHING IS WRONG!!!" > /dev/tty0
+      echo "BATOCERA_DISK partition NOT FOUND!" > /dev/tty0
+      echo "# ls -la /dev/mmcblk*" > /dev/tty0
+      ls -la /dev/mmcblk* > /dev/tty0
+      echo "# blkid -c /dev/null /dev/mmcblk*" > /dev/tty0
+      blkid -c /dev/null /dev/mmcblk* > /dev/tty0
+      echo "Shutting down..." > /dev/tty0
+      echo "Remove the power cable and try again after a couple of minutes." > /dev/tty0
+      poweroff -f
+      # Stop the booting sequence
+      sleep 30
+    fi
+
+    CHOKOPART=$(blkid -c /dev/null -l -o device -t LABEL=CHOKO_DISK)
+    if [ -n "$CHOKOPART" ]
+    then
+      mkdir -p /media/CHOKO_DISK
+      if mount "$CHOKOPART" /media/CHOKO_DISK
+      then
+        mkdir -p /media/CHOKO_DISK/bios /media/CHOKO_DISK/cheats /media/CHOKO_DISK/decorations /media/CHOKO_DISK/extractions /media/CHOKO_DISK/music /media/CHOKO_DISK/roms /media/CHOKO_DISK/saves /media/CHOKO_DISK/screenshots /media/CHOKO_DISK/splash /media/CHOKO_DISK/upgrade
+        mkdir -p /userdata/bios /userdata/cheats /userdata/decorations /userdata/extractions /userdata/music /userdata/roms /userdata/saves /userdata/screenshots /userdata/splash /userdata/system/upgrade
+        mount --bind /media/CHOKO_DISK/bios /userdata/bios
+        mount --bind /media/CHOKO_DISK/cheats /userdata/cheats
+        mount --bind /media/CHOKO_DISK/decorations /userdata/decorations
+        mount --bind /media/CHOKO_DISK/extractions /userdata/extractions
+        mount --bind /media/CHOKO_DISK/music /userdata/music
+        mount --bind /media/CHOKO_DISK/roms /userdata/roms
+        mount --bind /media/CHOKO_DISK/saves /userdata/saves
+        mount --bind /media/CHOKO_DISK/screenshots /userdata/screenshots
+        mount --bind /media/CHOKO_DISK/splash /userdata/splash
+        mount --bind /media/CHOKO_DISK/upgrade /userdata/system/upgrade
+        mkdir -p /media/CHOKO_DISK/retroarch/config/remaps /userdata/system/configs/retroarch/config
+        mount --bind /media/CHOKO_DISK/retroarch/config /userdata/system/configs/retroarch/config
+        mkdir -p /media/CHOKO_DISK/assets /media/CHOKO_DISK/cores/info /media/CHOKO_DISK/playlists /media/CHOKO_DISK/thumbnails
+        mkdir -p /userdata/system/configs/retroarch/assets /userdata/system/configs/retroarch/cores /userdata/system/configs/retroarch/playlists /userdata/system/configs/retroarch/thumbnails
+        mount --bind /media/CHOKO_DISK/assets /userdata/system/configs/retroarch/assets
+        mount --bind /media/CHOKO_DISK/cores /userdata/system/configs/retroarch/cores
+        mount --bind /media/CHOKO_DISK/playlists /userdata/system/configs/retroarch/playlists
+        mount --bind /media/CHOKO_DISK/thumbnails /userdata/system/configs/retroarch/thumbnails
+      fi
+    fi
+  fi
+
+  IN="/usr/share/batocera/datainit/system"
+  OUT="/userdata/system"
+
+  for FILE in "batocera.conf" ".profile" "services/chokocustomization" "upgrade/_put_file_named_boot.tar.xz_here_"
+  do
+    test ! -e "${OUT}/${FILE}" && mkdir -p "$(dirname "${OUT}/${FILE}")" && cp "${IN}/${FILE}" "${OUT}/${FILE}"
+  done
+
+  HERE="$PWD"
+  if cd "${IN}/configs"
+  then
+    find -- * -type f | while read -r FILETOCOPY
+    do
+      if [ ! -e "${OUT}/configs/$FILETOCOPY" ]
+      then
+        mkdir -p "$(dirname "${OUT}/configs/$FILETOCOPY")"
+        cp "$FILETOCOPY" "${OUT}/configs/$FILETOCOPY"
+      fi
+    done
+  fi
+  if cd /usr/share/batocera/datainit/roms/choko
+  then
+    find -- * -type f | while read -r FILETOCOPY
+    do
+      if [ ! -e "/userdata/roms/choko/$FILETOCOPY" ]
+      then
+        mkdir -p "$(dirname "/userdata/roms/choko/$FILETOCOPY")"
+        cp "$FILETOCOPY" "/userdata/roms/choko/$FILETOCOPY"
+      fi
+    done
+  fi
+  cd "$HERE"
+
+  rm -rf /userdata/system/configs/retroarch/assets.workdir
+  mkdir -p /userdata/system/configs/retroarch/assets.workdir
+  if ! mount -t overlay -o lowerdir=/usr/share/libretro/assets,upperdir=/userdata/system/configs/retroarch/assets,workdir=/userdata/system/configs/retroarch/assets.workdir none /usr/share/libretro/assets
+  then
+    rm -rf /userdata/system/configs/retroarch/assets.workdir
+    cp -rs /userdata/system/configs/retroarch/assets /usr/share/libretro/assets
+  fi
+  rm -rf /userdata/system/configs/retroarch/cores.workdir
+  mkdir -p /userdata/system/configs/retroarch/cores.workdir
+  if ! mount -t overlay -o lowerdir=/usr/lib/libretro,upperdir=/userdata/system/configs/retroarch/cores,workdir=/userdata/system/configs/retroarch/cores.workdir none /usr/lib/libretro
+  then
+    rm -rf /userdata/system/configs/retroarch/cores.workdir
+    cp -rs /userdata/system/configs/retroarch/cores/*.so /usr/lib/libretro/
+  fi
+  rm -rf /userdata/system/configs/retroarch/cores-info.workdir
+  mkdir -p /userdata/system/configs/retroarch/cores-info.workdir /userdata/system/configs/retroarch/cores-info
+  if ! mount -t overlay -o lowerdir=/usr/share/libretro/info,upperdir=/userdata/system/configs/retroarch/cores-info,workdir=/userdata/system/configs/retroarch/cores-info.workdir none /usr/share/libretro/info
+  then
+    rm -rf /userdata/system/configs/retroarch/cores-info.workdir
+    cp -rs /userdata/system/configs/retroarch/cores-info/*.info /usr/share/libretro/info/
+  fi
+elif [ "$1" = "stop" ]
+then
+  umount /usr/share/libretro/assets /usr/lib/libretro /usr/share/libretro/info
+  CHOKOPART=$(blkid -c /dev/null -l -o device -t LABEL=CHOKO_DISK)
+  if [ -n "$CHOKOPART" ]
+  then
+    sync
+    while [ -n "$(pidof sync)" ]
+    do
+      sleep 1
+    done
+    COUNTDOWNVAR=5
+    while [ $(grep -c "$CHOKOPART" /proc/mounts) -gt 0 ] && [ $COUNTDOWNVAR -gt 0 ]
+    do
+      grep "$CHOKOPART" /proc/mounts | cut -f2 -d" " | sort -r | xargs umount
+      COUNTDOWNVAR=$((COUNTDOWNVAR - 1))
+      sleep 1
+    done
+  fi
+  if [ ! -e /tmp/chaisrebooting ]
+  then
+    clear > /dev/tty0
+    echo "Shutting down... You can poweroff the CHA now." > /dev/tty0
+  fi
+fi

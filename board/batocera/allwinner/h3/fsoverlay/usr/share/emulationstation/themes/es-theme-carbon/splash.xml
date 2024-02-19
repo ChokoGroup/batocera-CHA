@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+  <formatVersion>7</formatVersion>
+  <variables>
+    <baseColor>8b0000</baseColor>
+    <gradientEndColor>6b2020</gradientEndColor>
+    <backgroundColor>252525</backgroundColor>
+    <centerFadeColor>8b000050</centerFadeColor>
+  </variables>
+  <subset name="colorset" displayName="${subset.colorset}">
+    <include name="blue" displayName="${blue}">./art/colors/blue.xml</include>
+    <include name="red" displayName="${red}"/>
+    <include name="green" displayName="${green}">./art/colors/green.xml</include>
+    <include name="yellow" displayName="${yellow}">./art/colors/yellow.xml</include>
+    <include name="violet" displayName="${violet}">./art/colors/violet.xml</include>
+    <include name="cyan" displayName="${cyan}>">./art/colors/cyan.xml</include>
+    <include name="orange" displayName="${orange}>">./art/colors/orange.xml</include>
+  </subset>
+  <view name="splash">
+    <splash name="splash">
+      <backgroundColor>000000</backgroundColor>
+    </splash>
+    <image name="progressbar">
+      <origin>0 0</origin>
+      <pos>0.25 0.87</pos>
+      <size>0.5 0.036</size>
+      <color>FEC907</color>
+      <colorEnd>FEC907</colorEnd>
+      <roundCorners>0.01</roundCorners>
+    </image>
+    <image name="progressbar:active">
+      <tile>true</tile>
+      <path>./art/progress.png</path>
+      <color>0D4DA4</color>
+      <colorEnd>0D4DA4</colorEnd>
+    </image>
+    <image name="background">
+      <pos>0.5 0.5</pos>
+      <origin>0.5 0.5</origin>
+      <minSize>1 1</minSize>
+      <path>./art/chokohomearcade.png</path>
+    </image>
+    <text name="label">
+      <color>FEC907</color>
+      <glowColor>0D4DA4</glowColor>
+      <glowSize>2</glowSize>
+      <glowOffset>0</glowOffset>
+      <fontPath>/usr/share/fonts/truetype/itc-korinna-extra-bold.ttf</fontPath>
+    </text>
+  </view>
+</theme>

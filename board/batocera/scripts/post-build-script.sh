@@ -124,3 +124,6 @@ if ! [[ -z "${SYSTEM_GETTY_PORT}" ]]; then
     sed -i -e '/# GENERIC_SERIAL$/s~^.*#~S0::respawn:/sbin/getty -n -L -l /usr/bin/batocera-autologin '${SYSTEM_GETTY_PORT}' '${SYSTEM_GETTY_BAUDRATE}' vt100 #~' \
         ${TARGET_DIR}/etc/inittab
 fi
+
+# Choko Group customization
+rm -f "${TARGET_DIR}/usr/share/emulationstation/themes/es-theme-carbon/art/logos/mame-w.svg"
