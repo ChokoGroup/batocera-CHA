@@ -1,0 +1,11 @@
+--- a/svn-current/trunk/src/burner/libretro/libretro.cpp
++++ b/svn-current/trunk/src/burner/libretro/libretro.cpp
+@@ -9,7 +9,7 @@
+ 
+ #include "cd/cd_interface.h"
+ 
+-#define FBA_VERSION "v0.2.97.29" // Sept 16, 2013 (SVN)
++#define FBA_VERSION "v0.2.97.30" // Nov 1, 2013 (SVN)
+ 
+ #if defined(CPS1_ONLY)
+ #define CORE_OPTION_NAME "fbalpha2012_cps1"

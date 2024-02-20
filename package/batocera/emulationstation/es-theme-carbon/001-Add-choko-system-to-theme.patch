@@ -1,0 +1,30 @@
+--- a/theme.xml	2024-02-07 23:59:01.000000000 +0000
++++ b/theme.xml	2024-02-13 20:47:27.000000000 +0000
+@@ -154,7 +154,8 @@
+   <include>./views/carousel.xml</include>
+   <include>./views/tiles.xml</include>
+   <include>./views/icons.xml</include>  
+-  
++  <include>./views/choko.xml</include>
++
+   <!-- Subset option for blur effects -->
+   <subset name="blurfx" displayName="${subset.blurfx}" ifArch="windows,x86_64" tinyScreen="false">
+     <include name="yes" displayName="${yes}">./subsets/blurfx.xml</include>
+@@ -181,7 +182,7 @@
+   <include ifHelpPrompts="false">./layouts/nohelp.xml</include>
+ 
+   <!-- add game info bar -->
+-  <subset name="gameBar" displayName="${gameBar}" appliesTo="detailed,grid,Tiles,Icons,Carousel,Boxes">
++  <subset name="gameBar" displayName="${gameBar}" appliesTo="detailed,grid,Tiles,Icons,Carousel,Boxes,choko">
+     <include name="yes" displayName="${yes}">./subsets/gameinfobar.xml</include>
+     <include name="no" displayName="${no}"/>
+ 	</subset>
+@@ -213,7 +214,7 @@
+     <include name="no" displayName="${no}"/>
+     <include name="yes" displayName="${yes}">./subsets/grid/previewbar.xml</include>
+   </subset>
+-  <subset tinyScreen="false" name="animatedInfobar" displayName="${animatedInfobar}" appliesTo="detailed,grid,gamecarousel,Tiles,Icons,Carousel,Boxes,Content">
++  <subset tinyScreen="false" name="animatedInfobar" displayName="${animatedInfobar}" appliesTo="detailed,grid,gamecarousel,Tiles,Icons,Carousel,Boxes,Content,choko">
+     <include ifArch="windows,x86,x86_64,odroidc4,odroidxu4" name="yes" displayName="${yes}">./subsets/animatedpreview.xml</include>
+     <include name="no" displayName="${no}"/>
+     <include ifNotArch="windows,x86,x86_64,odroidc4,odroidxu4" name="yes" displayName="${yes}">./subsets/animatedpreview.xml</include>
