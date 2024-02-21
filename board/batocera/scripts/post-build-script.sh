@@ -131,3 +131,4 @@ chmod 755 "${TARGET_DIR}/usr/bin/fatlabel"
 chmod 755 "${TARGET_DIR}/usr/lib/libretro/bash_launcher_libretro.so"
 chmod 755 "${TARGET_DIR}/etc/init.d/S12populatechoko"
 chmod 755 "${TARGET_DIR}/usr/share/batocera/datainit/roms/choko"/*.sh
+chmod 755 "${TARGET_DIR}/usr/share/batocera/services/chokocustomization"
