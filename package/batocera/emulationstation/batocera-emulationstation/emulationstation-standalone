@@ -162,7 +162,20 @@ do
     eval "$(dbus-launch --sh-syntax --exit-with-session)"
 
     cd /userdata # es need a PWD
-    %BATOCERA_EMULATIONSTATION_PREFIX% emulationstation ${GAMELAUNCHOPT} --exit-on-reboot-required %BATOCERA_EMULATIONSTATION_ARGS% ${CUSTOMESOPTIONS}
+    if [ "$(/usr/bin/batocera-settings-get -f /boot/batocera-boot.conf system.es.atstartup)" = "0" ] || [ "$(/usr/bin/batocera-settings-get system.es.atstartup)" = "0" ]
+    then
+      {
+        if [ "$(/usr/bin/batocera-settings-get global.shaderset)" = "scanlines" ]
+        then
+          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp
+        else
+          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg
+        fi
+        [ -e "/tmp/restart.please" ] || poweroff
+      } &
+    else
+      %BATOCERA_EMULATIONSTATION_PREFIX% emulationstation ${GAMELAUNCHOPT} --exit-on-reboot-required %BATOCERA_EMULATIONSTATION_ARGS% ${CUSTOMESOPTIONS}
+    fi
 
     # es flag when rebooting (https://github.com/batocera-linux/batocera-emulationstation/blob/master/es-core/src/platform.cpp#L194)
     if test -e "/tmp/restart.please" -o -e "/tmp/shutdown.please"

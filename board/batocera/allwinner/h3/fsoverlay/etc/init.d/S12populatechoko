@@ -125,7 +125,7 @@ then
       sleep 1
     done
   fi
-  if [ ! -e /tmp/chaisrebooting ]
+  if [ ! -e "/tmp/restart.please" ]
   then
     clear > /dev/tty0
     echo "Shutting down... You can poweroff the CHA now." > /dev/tty0

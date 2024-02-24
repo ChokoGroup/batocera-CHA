@@ -3,5 +3,5 @@ mount -o remount,rw /boot
 cp /boot/extlinux/extlinux.batocera.720p.conf /boot/extlinux/extlinux.conf
 sed -i '/system.es.atstartup/d' /boot/batocera-boot.conf
 mount -o remount,ro /boot
-touch /tmp/chaisrebooting
+touch /tmp/restart.please
 reboot
