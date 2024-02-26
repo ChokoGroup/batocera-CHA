@@ -78,8 +78,8 @@ f_minTomaxResolution() {
 		MAXWIDTH="$MWIDTH"
 		MAXHEIGHT="$MHEIGHT"
 	else
-		MAXWIDTH=1920
-		MAXHEIGHT=1080
+		MAXWIDTH=1280
+		MAXHEIGHT=720
 	fi
 	# if current resolution is ok, keep it
 	read CURRENTWIDTH CURRENTHEIGHT <<< $(f_currentResolution | sed -e s+"^\([0-9]*\)x\([0-9]*\)$"+"\1 \2"+)
