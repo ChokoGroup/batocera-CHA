@@ -123,7 +123,7 @@ config BR2_PACKAGE_BATOCERA_VULKAN
     select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL       if BR2_PACKAGE_BATOCERA_TARGET_X86_ANY
     select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_HASWELL     if BR2_PACKAGE_BATOCERA_TARGET_X86_ANY
     select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_AMD         if BR2_PACKAGE_BATOCERA_TARGET_X86_ANY
-    select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_BROADCOM    if BR2_PACKAGE_BATOCERA_TARGET_BCM2711 || BR2_PACKAGE_BATOCERA_TARGET_BCM2712
+    select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_BROADCOM    if BR2_PACKAGE_BATOCERA_RPI_MESA3D
     select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST    if BR2_PACKAGE_BATOCERA_PANFROST_MESA3D
     select BR2_PACKAGE_MESA3D_VULKAN_DRIVER_FREEDRENO   if BR2_PACKAGE_BATOCERA_FREEDRENO_MESA3D
 
@@ -281,6 +281,7 @@ config BR2_PACKAGE_BATOCERA_SYSTEM
                                                   BR2_PACKAGE_BATOCERA_TARGET_BCM2837  || \
                                                   BR2_PACKAGE_BATOCERA_TARGET_BCM2711 # piboy rpi3/rpi4
     select BR2_PACKAGE_PICADE                  if BR2_PACKAGE_BATOCERA_RPI_ANY # picade arcade case
+    select BR2_PACKAGE_PIRONMAN                if BR2_PACKAGE_BATOCERA_TARGET_BCM2711 # pironman case is rpi4 only
 
     # screens
     select BR2_PACKAGE_PIXELCADE		if !BR2_riscv
@@ -335,8 +336,6 @@ config BR2_PACKAGE_BATOCERA_SYSTEM
     select BR2_PACKAGE_RTW89_TEMP       if  BR2_PACKAGE_BATOCERA_TARGET_RK3588
 
     select BR2_PACKAGE_RTL8822CS        if BR2_PACKAGE_BATOCERA_TARGET_S905GEN3
-
-    select BR2_PACKAGE_ESP8089          if BR2_PACKAGE_BATOCERA_TARGET_RK3326
 
     # ethernet
     select BR2_PACKAGE_R8125                if BR2_PACKAGE_BATOCERA_TARGET_X86_ANY
@@ -448,7 +447,7 @@ config BR2_TARGET_BATOCERA_IMAGES_DEFINITIONS
     default "broadcom/bcm2837"                                                              if BR2_PACKAGE_BATOCERA_TARGET_BCM2837
     default "broadcom/bcm2711"                                                              if BR2_PACKAGE_BATOCERA_TARGET_BCM2711
     default "broadcom/bcm2712"                                                              if BR2_PACKAGE_BATOCERA_TARGET_BCM2712
-    default "rockchip/rk3326/gameforce rockchip/rk3326/rk3326"                              if BR2_PACKAGE_BATOCERA_TARGET_RK3326
+    default "rockchip/rk3326/gameforce rockchip/rk3326/odroidgo rockchip/rk3326/anbernic"   if BR2_PACKAGE_BATOCERA_TARGET_RK3326
     default "rockchip/rk3328/rock64 rockchip/rk3328/roc-cc"                                 if BR2_PACKAGE_BATOCERA_TARGET_RK3328
     default "rockchip/rk3288/tinkerboard rockchip/rk3288/miqi"                              if BR2_PACKAGE_BATOCERA_TARGET_RK3288
     default "rockchip/rk3568/odroid-m1 rockchip/rk3568/rock-3a rockchip/rk3568/anbernic-rgxx3 rockchip/rk3568/firefly-station-m2 rockchip/rk3568/firefly-station-p2"	if BR2_PACKAGE_BATOCERA_TARGET_RK3568
@@ -469,7 +468,7 @@ config BR2_TARGET_BATOCERA_IMAGES_DEFINITIONS
                                                                                             if BR2_PACKAGE_BATOCERA_TARGET_S922X
     default "amlogic/s905/odroidc2 amlogic/s905/tvbox amlogic/s905/lepotato amlogic/s905/vim amlogic/s905/p201 amlogic/s905/lepotatov2 amlogic/s905/minix-neo-u1" \
                                                                                             if BR2_PACKAGE_BATOCERA_TARGET_S905
-    default "rockchip/rk3399/rock960 rockchip/rk3399/rockpro64 rockchip/rk3399/rg552 rockchip/rk3399/orangepi4-lts rockchip/rk3399/rock-pi-4" \
+    default "rockchip/rk3399/rg552 rockchip/rk3399/rockpro64 rockchip/rk3399/rock960 rockchip/rk3399/orangepi4-lts rockchip/rk3399/rock-pi-4" \
                                                                                             if BR2_PACKAGE_BATOCERA_TARGET_RK3399
     default "rockchip/rk3588/rock-5b rockchip/rk3588/rock-5a rockchip/rk3588/quartzpro64 rockchip/rk3588/orangepi-5 rockchip/rk3588/orangepi-5b rockchip/rk3588/orangepi-5-plus rockchip/rk3588/indiedroid-nova rockchip/rk3588/mekotronics-r58 rockchip/rk3588/khadas-edge-2 rockchip/rk3588/firefly-station-m3" \
                                                                                             if BR2_PACKAGE_BATOCERA_TARGET_RK3588
