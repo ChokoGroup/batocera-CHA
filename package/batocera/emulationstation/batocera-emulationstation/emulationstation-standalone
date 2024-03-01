@@ -164,15 +164,12 @@ do
     cd /userdata # es need a PWD
     if [ "$(/usr/bin/batocera-settings-get -f /boot/batocera-boot.conf system.es.atstartup)" = "0" ] || [ "$(/usr/bin/batocera-settings-get system.es.atstartup)" = "0" ]
     then
-      {
         if [ "$(/usr/bin/batocera-settings-get global.shaderset)" = "scanlines" ]
         then
-          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp
+          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp && [ ! -e "/tmp/restart.please" ] && poweroff
         else
-          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg
+          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg && [ ! -e "/tmp/restart.please" ] && poweroff
         fi
-        [ -e "/tmp/restart.please" ] || poweroff
-      } &
     else
       %BATOCERA_EMULATIONSTATION_PREFIX% emulationstation ${GAMELAUNCHOPT} --exit-on-reboot-required %BATOCERA_EMULATIONSTATION_ARGS% ${CUSTOMESOPTIONS}
     fi

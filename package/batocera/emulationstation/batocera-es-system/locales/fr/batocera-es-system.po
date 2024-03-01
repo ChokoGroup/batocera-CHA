@@ -14972,7 +14972,7 @@ msgstr "Apparence des paramètres"
 #. TRANSLATION: psp.ppsspp.keys
 msgctxt "keys_files"
 msgid "Pause / Menu"
-msgstr ""
+msgstr "Pause / Menu"
 
 #. TRANSLATION: vpinball.keys
 msgctxt "keys_files"
@@ -15091,8 +15091,8 @@ msgstr "Sauvegarde rapide"
 
 #. TRANSLATION: corsixth.keys, fallout1-ce.keys, fallout2-ce.keys, iortcw.keys
 msgctxt "keys_files"
-msgid "Pause / Menu"
-msgstr "Pause / Menu"
+msgid "Quick load"
+msgstr ""
 
 #. TRANSLATION: corsixth.keys
 msgctxt "keys_files"

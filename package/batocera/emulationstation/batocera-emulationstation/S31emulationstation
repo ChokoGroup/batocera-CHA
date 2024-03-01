@@ -8,6 +8,7 @@ case "$1" in
   start)
     emulationstation-standalone &
   ;;
+
   stop)
     emulationstation-standalone --stop-rebooting
     killall retroarch openbox sway touchegg 2>/dev/null

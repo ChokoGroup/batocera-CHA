@@ -14911,7 +14911,7 @@ msgstr "Grafikus felület beállítása"
 #. TRANSLATION: psp.ppsspp.keys
 msgctxt "keys_files"
 msgid "Pause / Menu"
-msgstr ""
+msgstr "Szünet / Menü"
 
 #. TRANSLATION: vpinball.keys
 msgctxt "keys_files"
@@ -15030,8 +15030,8 @@ msgstr "Gyors mentés"
 
 #. TRANSLATION: corsixth.keys, fallout1-ce.keys, fallout2-ce.keys, iortcw.keys
 msgctxt "keys_files"
-msgid "Pause / Menu"
-msgstr "Szünet / Menü"
+msgid "Quick load"
+msgstr ""
 
 #. TRANSLATION: corsixth.keys
 msgctxt "keys_files"
