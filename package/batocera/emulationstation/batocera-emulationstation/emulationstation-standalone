@@ -44,7 +44,7 @@ do
 
     ### rotation ###
     display_rotate=
-    # try to find a rotation for the custom output
+    #try to find a rotation for the custom output
     effective_output=$(batocera-resolution currentOutput)
     if test -n "${effective_output}"
     then
@@ -87,7 +87,7 @@ do
     then
         ### dpi override for nvidia gpus ###
         settings_output="$(batocera-settings-get global.dpi)"
-        [ ! -z "${settings_output}" ] && batocera-resolution setDPI "${settings_output}"
+        [ -n "${settings_output}" ] && batocera-resolution setDPI "${settings_output}"
         ###################
 
         ### keyboard (specific to xorg) ###
@@ -164,12 +164,26 @@ do
     cd /userdata # es need a PWD
     if [ "$(/usr/bin/batocera-settings-get -f /boot/batocera-boot.conf system.es.atstartup)" = "0" ] || [ "$(/usr/bin/batocera-settings-get system.es.atstartup)" = "0" ]
     then
-        if [ "$(/usr/bin/batocera-settings-get global.shaderset)" = "scanlines" ]
-        then
-          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp && [ ! -e "/tmp/restart.please" ] && poweroff
-        else
-          retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg && [ ! -e "/tmp/restart.please" ] && poweroff
-        fi
+      sed -i '/_joypad_index/d' /userdata/system/configs/retroarch/retroarch_choko.cfg
+      for JOYINDEX in /dev/input/js[0-9]
+      do
+        IDMODEL=$(udevadm info -q property "$JOYINDEX" | grep 'ID_MODEL=')
+        case ${IDMODEL#*=} in
+          CHA1)
+            echo -en "\ninput_player1_joypad_index = ${JOYINDEX: -1}" >> /userdata/system/configs/retroarch/retroarch_choko.cfg
+          ;;
+          CHA2) 
+            echo -en "\ninput_player2_joypad_index = ${JOYINDEX: -1}" >> /userdata/system/configs/retroarch/retroarch_choko.cfg
+          ;;
+        esac
+      done
+      sed -i '/^[[:space:]]*$/d' /userdata/system/configs/retroarch/retroarch_choko.cfg
+      if [ "$(/usr/bin/batocera-settings-get global.shaderset)" = "scanlines" ]
+      then
+        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp && [ ! -e "/tmp/restart.please" ] && poweroff
+      else
+        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg && [ ! -e "/tmp/restart.please" ] && poweroff
+      fi
     else
       %BATOCERA_EMULATIONSTATION_PREFIX% emulationstation ${GAMELAUNCHOPT} --exit-on-reboot-required %BATOCERA_EMULATIONSTATION_ARGS% ${CUSTOMESOPTIONS}
     fi

@@ -192,10 +192,14 @@ def createLibretroConfig(generator, system, controllers, metadata, guns, wheels,
 
     retroarchConfig['video_fullscreen'] = 'true'                # Fullscreen is required at least for x86* and odroidn2
 
-    retroarchConfig['sort_savefiles_enable'] = 'false'     # ensure we don't save system.name + core
-    retroarchConfig['sort_savestates_enable'] = 'false'    # ensure we don't save system.name + core
-    retroarchConfig['savestate_directory'] = batoceraFiles.savesDir + system.name
-    retroarchConfig['savefile_directory'] = batoceraFiles.savesDir + system.name
+#    retroarchConfig['sort_savefiles_enable'] = 'false'     # ensure we don't save system.name + core
+#    retroarchConfig['sort_savestates_enable'] = 'false'    # ensure we don't save system.name + core
+#    retroarchConfig['savestate_directory'] = batoceraFiles.savesDir + system.name
+#    retroarchConfig['savefile_directory'] = batoceraFiles.savesDir + system.name
+    retroarchConfig['sort_savefiles_enable'] = 'true'
+    retroarchConfig['sort_savestates_enable'] = 'true'
+    retroarchConfig['savestate_directory'] = batoceraFiles.savesDir
+    retroarchConfig['savefile_directory'] = batoceraFiles.savesDir
 
     # Forced values (so that if the config is not correct, fix it)
     if system.config['core'] == 'tgbdual':
@@ -207,7 +211,7 @@ def createLibretroConfig(generator, system, controllers, metadata, guns, wheels,
     # Input configuration
     retroarchConfig['input_joypad_driver'] = 'udev'
     retroarchConfig['input_driver'] = 'udev'                    # driver for mouse/keyboard. udev required for guns.
-    retroarchConfig['input_max_users'] = "16"                   # Allow up to 16 players
+    retroarchConfig['input_max_users'] = "4"                   # Allow up to 16 players
 
     retroarchConfig['input_libretro_device_p1'] = '1'           # Default devices choices
     retroarchConfig['input_libretro_device_p2'] = '1'

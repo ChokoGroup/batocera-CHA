@@ -207,9 +207,11 @@ def start_rom(args, maxnbplayers, rom, romConfiguration):
         eslog.debug("resolution: {}x{}".format(str(gameResolution["width"]), str(gameResolution["height"])))
 
         # savedir: create the save directory if not already done
-        dirname = os.path.join(batoceraFiles.savesDir, system.name)
-        if not os.path.exists(dirname):
-            os.makedirs(dirname)
+#        dirname = os.path.join(batoceraFiles.savesDir, system.name)
+#        if not os.path.exists(dirname):
+#            os.makedirs(dirname)
+        if not os.path.exists(batoceraFiles.savesDir):
+            os.makedirs(batoceraFiles.savesDir)
 
         # core
         effectiveCore = ""
@@ -572,7 +574,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     parser = argparse.ArgumentParser(description='emulator-launcher script')
 
-    maxnbplayers = 8
+    maxnbplayers = 4
     for p in range(1, maxnbplayers+1):
         parser.add_argument("-p{}index"     .format(p), help="player{} controller index"            .format(p), type=int, required=False)
         parser.add_argument("-p{}guid"      .format(p), help="player{} controller SDL2 guid"        .format(p), type=str, required=False)

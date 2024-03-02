@@ -55,7 +55,7 @@ then
   IN="/usr/share/batocera/datainit/system"
   OUT="/userdata/system"
 
-  for FILE in "batocera.conf" ".profile" "services/chokocustomization" "upgrade/_put_file_named_boot.tar.xz_here_"
+  for FILE in ".profile" "upgrade/_put_file_named_boot.tar.xz_here_"
   do
     test ! -e "${OUT}/${FILE}" && mkdir -p "$(dirname "${OUT}/${FILE}")" && cp "${IN}/${FILE}" "${OUT}/${FILE}"
   done
