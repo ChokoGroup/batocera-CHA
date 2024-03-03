@@ -48,7 +48,7 @@ echo "Starting the upgrade..."
 
 # --- Prepare update URLs ---
 
-updateurl="https://updates.batocera.org"
+updateurl="https://github.com/ChokoGroup/batocera-CHA/releases/download"
 
 board=$(cat /boot/boot/batocera.board)
 oldboard="$board"
@@ -64,7 +64,7 @@ test -n "${settingsupdateurl}" && updateurl="${settingsupdateurl}"
 test "${updatetype}" != "stable" -a "${updatetype}" != "unstable" -a "${updatetype}" != "butterfly" && updatetype="stable"
 
 # custom the url directory
-DWD_HTTP_DIR="${updateurl}/${board}/${updatetype}/last"
+DWD_HTTP_DIR="${updateurl}/latest"
 
 # custom CLI url
 test $# -eq 1 && DWD_HTTP_DIR="$1"
@@ -107,16 +107,16 @@ else
 fi
 
 # Check free space on filesystems
-for fs in $filesystems
-do
-    freespace=$(df -m "${fs}" | tail -1 | awk '{print $4}')
-    test $? -eq 0 || exit 1
-    if test "${size}" -gt "${freespace}"
-    then
-        echo "Not enough space on ${fs} to perform the update"
-        exit 1
-    fi
-done
+#for fs in $filesystems
+#do
+#    freespace=$(df -m "${fs}" | tail -1 | awk '{print $4}')
+#    test $? -eq 0 || exit 1
+#    if test "${size}" -gt "${freespace}"
+#    then
+#        echo "Not enough space on ${fs} to perform the update"
+#        exit 1
+#    fi
+#done
 
 ##### Up to this the GUI was not used, now do_upgmsg will automatically decide which output to use
 # download
@@ -197,6 +197,12 @@ do
     fi
 done
 
+# backup overlay if exists
+if test -e /boot/boot/overlay
+then
+  mv /boot/boot/overlay /boot/boot/overlay.old || exit 1
+fi
+
 # remount /boot in ro
 do_upgmsg "Doing final cleanups ..." 0.5
 if ! mount -o remount,ro /boot
@@ -218,5 +224,6 @@ then
     echo; echo "WARNING: Current board is ${oldboard}, applied update is for ${newboard}"
 fi
 
-echo; echo "Done. Please reboot the system so that the changes take effect!"
+echo; echo "Done. Rebooting the system so that the changes take effect!"
+reboot
 exit 0

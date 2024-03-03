@@ -27,7 +27,7 @@ cp -r "${BOARD_DIR}/boot" "${BATOCERA_BINARIES_DIR}"/ || exit 1
 if ! test -e "${BUILD_DIR}/cha_disk_partition/cha_disk.ext4"
 then
 	mkdir -p "${BUILD_DIR}/cha_disk_partition" || exit 1
-	curl -L https://github.com/ChokoGroup/batocera.linux/releases/download/cha_disk/cha_disk.zip -o "${BUILD_DIR}/cha_disk_partition/cha_disk.zip" || exit 1
+	curl -L https://github.com/ChokoGroup/batocera-CHA/releases/download/cha_disk/cha_disk.zip -o "${BUILD_DIR}/cha_disk_partition/cha_disk.zip" || exit 1
 	unzip "${BUILD_DIR}/cha_disk_partition/cha_disk.zip" -d "${BUILD_DIR}/cha_disk_partition" || exit 1
 	rm -f "${BUILD_DIR}/cha_disk_partition/cha_disk.zip"
 fi
