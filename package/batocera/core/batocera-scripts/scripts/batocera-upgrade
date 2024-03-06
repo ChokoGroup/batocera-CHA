@@ -52,7 +52,7 @@ updateurl="https://github.com/ChokoGroup/batocera-CHA/releases/download"
 
 board=$(cat /boot/boot/batocera.board)
 oldboard="$board"
-test "${board}" = "rpi4" && board=rpi464 # "temporarly" download on rpi464 for rpi4
+#test "${board}" = "rpi4" && board=rpi464 # "temporarly" download on rpi464 for rpi4
 
 updatetype="$(/usr/bin/batocera-settings-get updates.type)"
 settingsupdateurl="$(/usr/bin/batocera-settings-get updates.url)"

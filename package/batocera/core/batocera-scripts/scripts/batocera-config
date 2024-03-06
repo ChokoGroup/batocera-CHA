@@ -14,7 +14,7 @@ extra3="$5"
 extra4="$6"
 board=`cat /boot/boot/batocera.board`
 
-updateurl="https://updates.batocera.org"
+updateurl="https://github.com/ChokoGroup/batocera-CHA/releases/download"
 
 preBootConfig() {
     mount -o remount,rw /boot
@@ -204,8 +204,8 @@ if [ "$command" = "canupdate" ];then
 	fi
 
 	#echo "Update url: ${updateurl}/${board}/${updatetype}/last"
-	test "${board}" = "rpi4" && board=rpi464 # "temporarly" download on rpi464 for rpi4
-	available=`wget -qO- ${updateurl}/${board}/${updatetype}/last/batocera.version`
+#	test "${board}" = "rpi4" && board=rpi464 # "temporarly" download on rpi464 for rpi4
+	available=`wget -qO- ${updateurl}/latest/batocera.version`
 	if [ "$?" != "0" ];then
 	        echo "Unable to access the url" >&2
 		exit 2
