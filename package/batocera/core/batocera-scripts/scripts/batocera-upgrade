@@ -61,10 +61,16 @@ settingsupdateurl="$(/usr/bin/batocera-settings-get updates.url)"
 test -n "${settingsupdateurl}" && updateurl="${settingsupdateurl}"
 
 # force a default value in case the value is removed or miswritten
-test "${updatetype}" != "stable" -a "${updatetype}" != "unstable" -a "${updatetype}" != "butterfly" && updatetype="stable"
+if test "${updatetype}" != "beta" -a "${updatetype}" != "unstable" -a "${updatetype}" != "butterfly"
+then
+  # force a default value in case the value is removed or miswritten
+  updatetype="latest"
+else
+  updatetype="prerelease"
+fi
 
 # custom the url directory
-DWD_HTTP_DIR="${updateurl}/latest"
+DWD_HTTP_DIR="${updateurl}/${updatetype}"
 
 # custom CLI url
 test $# -eq 1 && DWD_HTTP_DIR="$1"
@@ -107,16 +113,16 @@ else
 fi
 
 # Check free space on filesystems
-#for fs in $filesystems
-#do
-#    freespace=$(df -m "${fs}" | tail -1 | awk '{print $4}')
-#    test $? -eq 0 || exit 1
-#    if test "${size}" -gt "${freespace}"
-#    then
-#        echo "Not enough space on ${fs} to perform the update"
-#        exit 1
-#    fi
-#done
+for fs in $filesystems
+do
+    freespace=$(df -m "${fs}" | tail -1 | awk '{print $4}')
+    test $? -eq 0 || exit 1
+    if test "${size}" -gt "${freespace}"
+    then
+        echo "Not enough space on ${fs} to perform the update"
+        exit 1
+    fi
+done
 
 ##### Up to this the GUI was not used, now do_upgmsg will automatically decide which output to use
 # download
