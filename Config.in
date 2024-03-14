@@ -49,6 +49,7 @@ menu "System"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/boot/rockpro64-blobs/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/boot/rk3128-blobs/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/boot/uboot-multiboard/Config.in"
+    source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/boot/uboot-multi-h616/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/boot/uboot-anbernic-rg351/Config.in"
   endmenu
 
@@ -324,6 +325,7 @@ menu "Emulators"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/ruffle/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/drastic/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/lexaloffle-pico8/Config.in"
+    source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/lexaloffle-voxatron/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/simcoupe/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/openmsx/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/demul/Config.in"
@@ -516,7 +518,7 @@ menu "Cases"
 endmenu
 
 menu "Screens"
-  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/screens/pixelcade/Config.in"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/screens/dmd-simulator/Config.in"
 endmenu
 
 menu "Libraries"
@@ -553,6 +555,8 @@ menu "Libraries"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libjpeg-bato/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/faudio/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/sdl12-compat/Config.in"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/sockpp/Config.in"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/cargs/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libzedmd/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libserum/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libdmdutil/Config.in"
@@ -561,6 +565,7 @@ menu "Libraries"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/batocera-luajit/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/python3-gpiod/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libgraphene/Config.in"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libportmidi/Config.in"
 endmenu
 
 menu "Audio"

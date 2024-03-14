@@ -285,7 +285,8 @@ config BR2_PACKAGE_BATOCERA_SYSTEM
     select BR2_PACKAGE_PIRONMAN                if BR2_PACKAGE_BATOCERA_TARGET_BCM2711 # pironman case is rpi4 only
 
     # screens
-#    select BR2_PACKAGE_PIXELCADE		if !BR2_riscv
+#    select BR2_PACKAGE_DMD_SIMULATOR
+#    select BR2_PACKAGE_DMD_SIMULATOR_PLAYER
 
     # swap
     select BR2_PACKAGE_SWAPIT                  if BR2_PACKAGE_BATOCERA_TARGET_RK3128  || \
@@ -457,7 +458,7 @@ config BR2_TARGET_BATOCERA_IMAGES_DEFINITIONS
     default "allwinner/h3/cha" if BR2_PACKAGE_BATOCERA_TARGET_H3
     default "allwinner/h5/tritium-h5 allwinner/h5/orangepi-pc2"                             if BR2_PACKAGE_BATOCERA_TARGET_H5
     default "allwinner/h6/orangepi-3-lts allwinner/h6/orangepi-3 allwinner/h6/orangepi-one-plus"       if BR2_PACKAGE_BATOCERA_TARGET_H6
-    default "allwinner/h616/orangepi-zero2 allwinner/h616/x96-mate"                                    if BR2_PACKAGE_BATOCERA_TARGET_H616
+    default "allwinner/h616/orangepi-zero2 allwinner/h616/orangepi-zero3 allwinner/h616/x96-mate"                                    if BR2_PACKAGE_BATOCERA_TARGET_H616
     default "amlogic/s812"																	if BR2_PACKAGE_BATOCERA_TARGET_S812
     default "samsung/exynos5422/odroidxu4"													if BR2_PACKAGE_BATOCERA_TARGET_XU4
     default "x86"																			if BR2_PACKAGE_BATOCERA_TARGET_X86
@@ -695,6 +696,7 @@ config BR2_PACKAGE_BATOCERA_HOMEBREW_SYSTEMS
     select BR2_PACKAGE_LIBRETRO_TIC80       # ALL
     select BR2_PACKAGE_LIBRETRO_FAKE08      # ALL
 #    select BR2_PACKAGE_LEXALOFFLE_PICO8     # ALL
+    select BR2_PACKAGE_LEXALOFFLE_VOXATRON  if BR2_PACKAGE_BATOCERA_TARGET_X86_64_ANY # No engine for ARM yet
     select BR2_PACKAGE_PYTHON_PYXEL         if BR2_PACKAGE_BATOCERA_TARGET_X86_64_ANY
     select BR2_PACKAGE_LIBRETRO_WASM4       if BR2_PACKAGE_BATOCERA_TARGET_X86_64_ANY #  Requires X11
 
@@ -1665,7 +1667,6 @@ config BR2_PACKAGE_BATOCERA_LINUX_FIRMWARES
                                                    BR2_PACKAGE_BATOCERA_TARGET_H6   || \
                                                    BR2_PACKAGE_BATOCERA_TARGET_H616
 
-
 config BR2_PACKAGE_BATOCERA_SDL2
     bool "BATOCERA SDL2"
 
@@ -1685,21 +1686,27 @@ config BR2_PACKAGE_BATOCERA_SDL2
     select BR2_PACKAGE_LIBVORBIS        # ogg
 
 config BR2_PACKAGE_BATOCERA_WAYLAND
-    bool "batocera.linux wayland packages selection"
+    	bool "batocera.linux wayland packages selection"
 
-     # Wayland Protocol
-    select BR2_PACKAGE_WAYLAND
-    select BR2_PACKAGE_WAYLANDPP
-    select BR2_PACKAGE_WAYLAND_UTILS
-    select BR2_PACKAGE_WAYLAND_PROTOCOLS
+	# Wayland Protocol
+	select BR2_PACKAGE_WAYLAND
+	select BR2_PACKAGE_WAYLANDPP
+	select BR2_PACKAGE_WAYLAND_UTILS
+	select BR2_PACKAGE_WAYLAND_PROTOCOLS
 
-    # Seat management daemon
-    select BR2_PACKAGE_SEATD
-    select BR2_PACKAGE_SEATD_DAEMON
+config BR2_PACKAGE_BATOCERA_WAYLAND_SWAY
+    	bool "batocera.linux wayland sway packages selection"
 
-    # Compositor for wayland
-    select BR2_PACKAGE_SWAY
-    select BR2_PACKAGE_SWAYBG
+	# Wayland Protocol
+	select BR2_PACKAGE_BATOCERA_WAYLAND
+
+	# Seat management daemon
+	select BR2_PACKAGE_SEATD
+	select BR2_PACKAGE_SEATD_DAEMON
+
+	# Compositor for wayland
+	select BR2_PACKAGE_SWAY
+	select BR2_PACKAGE_SWAYBG
 
 config BR2_PACKAGE_BATOCERA_XWAYLAND
     bool "batocera.linux xwayland packages selection"

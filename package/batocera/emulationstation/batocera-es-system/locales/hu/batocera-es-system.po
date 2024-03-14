@@ -15031,7 +15031,7 @@ msgstr "Gyors mentés"
 #. TRANSLATION: corsixth.keys, fallout1-ce.keys, fallout2-ce.keys, iortcw.keys
 msgctxt "keys_files"
 msgid "Quick load"
-msgstr ""
+msgstr "Gyors betöltés"
 
 #. TRANSLATION: corsixth.keys
 msgctxt "keys_files"
