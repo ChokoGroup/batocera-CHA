@@ -5,7 +5,7 @@
 ################################################################################
 # Version: Commits on Jun 3, 2023
 # Need to use this branch : https://github.com/libretro/yabause/tree/yabasanshiro
-LIBRETRO_YABASANSHIRO_VERSION = 7513c8459034a0fe415d3cae4d692a54d0f90296
+LIBRETRO_YABASANSHIRO_VERSION = 4e65871ec0a2582fa2dbe055fccb6573dbd68d4f
 LIBRETRO_YABASANSHIRO_SITE = $(call github,libretro,yabause,$(LIBRETRO_YABASANSHIRO_VERSION))
 LIBRETRO_YABASANSHIRO_LICENSE = GPLv2
 

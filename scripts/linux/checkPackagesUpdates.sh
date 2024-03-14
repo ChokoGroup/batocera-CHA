@@ -7,6 +7,7 @@ KODI_LANGUAGES="de_de el_gr es_es eu_es fr_fr it_it pt_br sv_se tr_tr zh_cn"
 ### GROUPS ###
 PACKAGES_RETROARCH="retroarch
 					retroarch-assets
+					libretro-core-info
 					common-shaders
 					glsl-shaders
 					slang-shaders"
@@ -135,7 +136,8 @@ PACKAGES_OPENBOR="openbor4432
                   openbor6330
                   openbor6412
                   openbor6510
-                  openbor7142"
+                  openbor7142
+                  openbor7530"
 
 PACKAGES_EMULATORS="amiberry
                     bigpemu
@@ -288,15 +290,13 @@ base_GETCUR() {
 }
 
 githublasttag_GETNET() {
-    wget -qO - "https://github.com/${1}/releases" |
+    wget -qO - "https://github.com/${1}/tags" |
 	grep '/releases/tag/' | head -1 |
 	sed -e s+'.*/releases/tag/\([^"]*\)".*'+'\1'+
 }
 
 githublastcommit_GETNET() {
-    wget -qO - "https://github.com/${1}/commits" |
-	grep "/commit/" | head -1 |
-	sed -e s+'.*/commit/\([^"]*\)".*'+'\1'+
+    wget -qO - "https://github.com/${1}/commits" | grep -m1 -Eio '/commit/[0-9a-f]{40}' | head -1 | sed -e 's+/commit/++'
 }
 
 githubcommitdate_GETNET() {
@@ -338,10 +338,49 @@ github_base() {
     GH_SIZE=$(echo "${GH_VERS}" | wc -c)
     if test "${GH_SIZE}" = 41 # git full checksum
     then
-	grep '_SITE = \$(call github,' $(find package/batocera -name "${1}.mk") 2>/dev/null | grep -vE '^#' | head -1 | sed -e s+'^.*call github,\([^,]*\),\([^,]*\),.*$'+'\1/\2:lastcommit'+
-    else
-	grep '_SITE = \$(call github,' $(find package/batocera -name "${1}.mk") 2>/dev/null | grep -vE '^#' | head -1 | sed -e s+'^.*call github,\([^,]*\),\([^,]*\),.*$'+'\1/\2:'"${GH_VERS}"+
+		GH_VERS="lastcommit"
     fi
+	TESTSTRING=$(grep -m1 '_SITE[ ]*=' $(find package/batocera -name "${1}.mk") 2>/dev/null | grep -vE '^#')
+	case $TESTSTRING in
+		*"call github"* )
+			echo "$TESTSTRING" | sed -e s#'^.*call github,\([^,]*\),\([^,]*\),.*$'#'\1/\2:'"${GH_VERS}"#
+		;;
+		*"call gitlab"* )
+			echo "$TESTSTRING" | sed -e s#'^.*call gitlab,\([^,]*\),\([^,]*\),.*$'#'\1/\2:'"${GH_VERS}"#
+		;;
+		*"call gitlab"* )
+			echo "$TESTSTRING" | sed -e s#'^.*call gitlab,\([^,]*\),\([^,]*\),.*$'#'\1/\2:'"${GH_VERS}"#
+		;;
+	esac 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if [ -n "$TESTSTRING" ]
+	then
+	
+	else
+		TESTSTRING=$(grep -m1 '_SITE[ ]*=[ ]*https' $(find package/batocera -name "${1}.mk") 2>/dev/null | grep -vE '^#')
+		if [ -n "$TESTSTRING" ]
+		then
+			echo "$TESTSTRING" | sed -e s#'^.*\.com/\(.*\).*$'#'\1:'"${GH_VERS}"# -e 's#\.git##'
+		else
+			grep -m1 '_SITE[ ]*=[ ]*\$(call gitlab,' $(find package/batocera -name "${1}.mk") 2>/dev/null | grep -vE '^#' | sed -e s#'^.*call gitlab,\([^,]*\),\([^,]*\),.*$'#'\1/\2:'"${GH_VERS}"#
+		fi
+	fi
 }
 
 github_eval() {
@@ -472,7 +511,7 @@ run() {
 }
 
 base_UPDATE() {
-    sed -i -e s+"^\([ ]*[a-zA-Z0-9_]*_VERSION[ ]*=[ ]*\).*$"+"\1${2}"+ $(find package/batocera -name "${1}.mk")
+    sed -i -e "/^\([ ]*[a-zA-Z0-9_]*_VERSION[ ]*=[ ]*\).*$/{s//\1${2}/;:a" -e '$!N;$!ba' -e '}' $(find package/batocera -name "${1}.mk")
 }
 
 run_update() {
@@ -524,7 +563,7 @@ then
     exit $?
 else
     PARAM_GRP=$(echo "$1" | tr '[:lower:]' '[:upper:]')
-    run "${PARAM_GRP}"
+    run "${PARAM_GRP}" "$2"
     exit $?
 fi
 ###
