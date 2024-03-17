@@ -46,7 +46,7 @@ define LIBRETRO_MAME2010_BUILD_CMDS
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) CXX="$(TARGET_CXX)" CC="$(TARGET_CC)" LD="$(TARGET_CC)" -C $(@D)/ -f Makefile platform="$(LIBRETRO_MAME2010_PLATFORM)" $(LIBRETRO_MAME2010_EXTRA_ARGS) \
         GIT_VERSION="-$(shell echo $(LIBRETRO_MAME2010_VERSION) | cut -c 1-7)"
         rsync -a --exclude mame2010.xml $(@D)/metadata/ $(@D)/metadata-install/
-        gzip -9c $(@D)/metadata/mame2010.xml > $(@D)/metadata-install/mame2010.xml.gz
+        cp $(@D)/metadata/mame2010.xml $(@D)/metadata-install/mame2010.dat
 endef
 
 # Bios
