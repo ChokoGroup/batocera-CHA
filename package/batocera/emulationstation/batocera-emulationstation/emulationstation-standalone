@@ -180,9 +180,9 @@ do
       sed -i '/^[[:space:]]*$/d' /userdata/system/configs/retroarch/retroarch_choko.cfg
       if [ "$(/usr/bin/batocera-settings-get global.shaderset)" = "scanlines" ]
       then
-        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp && [ ! -e "/tmp/restart.please" ] && poweroff
+        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp
       else
-        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg && [ ! -e "/tmp/restart.please" ] && poweroff
+        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg
       fi
     else
       %BATOCERA_EMULATIONSTATION_PREFIX% emulationstation ${GAMELAUNCHOPT} --exit-on-reboot-required %BATOCERA_EMULATIONSTATION_ARGS% ${CUSTOMESOPTIONS}

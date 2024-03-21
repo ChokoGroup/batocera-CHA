@@ -87,21 +87,21 @@ then
 
   rm -rf /userdata/system/configs/retroarch/assets.workdir
   mkdir -p /userdata/system/configs/retroarch/assets.workdir
-  if ! mount -t overlay -o lowerdir=/usr/share/libretro/assets,upperdir=/userdata/system/configs/retroarch/assets,workdir=/userdata/system/configs/retroarch/assets.workdir none /usr/share/libretro/assets
+  if ! mount -t overlay -o lowerdir=/overlay/base/usr/share/libretro/assets,upperdir=/userdata/system/configs/retroarch/assets,workdir=/userdata/system/configs/retroarch/assets.workdir none /usr/share/libretro/assets
   then
     rm -rf /userdata/system/configs/retroarch/assets.workdir
     cp -rs /userdata/system/configs/retroarch/assets /usr/share/libretro/assets
   fi
   rm -rf /userdata/system/configs/retroarch/cores.workdir
   mkdir -p /userdata/system/configs/retroarch/cores.workdir
-  if ! mount -t overlay -o lowerdir=/usr/lib/libretro,upperdir=/userdata/system/configs/retroarch/cores,workdir=/userdata/system/configs/retroarch/cores.workdir none /usr/lib/libretro
+  if ! mount -t overlay -o lowerdir=/overlay/base/usr/lib/libretro,upperdir=/userdata/system/configs/retroarch/cores,workdir=/userdata/system/configs/retroarch/cores.workdir none /usr/lib/libretro
   then
     rm -rf /userdata/system/configs/retroarch/cores.workdir
     cp -rs /userdata/system/configs/retroarch/cores/*.so /usr/lib/libretro/
   fi
   rm -rf /userdata/system/configs/retroarch/cores-info.workdir
   mkdir -p /userdata/system/configs/retroarch/cores-info.workdir /userdata/system/configs/retroarch/cores-info
-  if ! mount -t overlay -o lowerdir=/usr/share/libretro/info,upperdir=/userdata/system/configs/retroarch/cores-info,workdir=/userdata/system/configs/retroarch/cores-info.workdir none /usr/share/libretro/info
+  if ! mount -t overlay -o lowerdir=/overlay/base/usr/share/libretro/info,upperdir=/userdata/system/configs/retroarch/cores-info,workdir=/userdata/system/configs/retroarch/cores-info.workdir none /usr/share/libretro/info
   then
     rm -rf /userdata/system/configs/retroarch/cores-info.workdir
     cp -rs /userdata/system/configs/retroarch/cores-info/*.info /usr/share/libretro/info/

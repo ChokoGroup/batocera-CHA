@@ -1,0 +1,147 @@
+--- a/griffin/griffin.c	2024-03-18 11:26:17.112197200 +0000
++++ b/griffin/griffin.c	2024-03-20 00:22:23.207537600 +0000
+@@ -1196,7 +1196,7 @@
+ #ifdef HAVE_WIFI
+ #include "../network/wifi_driver.c"
+ 
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+ #include "../network/drivers_wifi/connmanctl.c"
+ #endif
+ 
+--- a/menu/cbs/menu_cbs_sublabel.c	2024-03-18 11:26:18.007867700 +0000
++++ b/menu/cbs/menu_cbs_sublabel.c	2024-03-20 00:47:48.503942600 +0000
+@@ -409,7 +409,7 @@
+ 
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_enable_hotkey,         MENU_ENUM_SUBLABEL_INPUT_META_ENABLE_HOTKEY)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_menu_toggle,           MENU_ENUM_SUBLABEL_INPUT_META_MENU_TOGGLE)
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_restart_key,           MENU_ENUM_SUBLABEL_INPUT_META_RESTART_KEY)
+ #else
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_quit_key,              MENU_ENUM_SUBLABEL_INPUT_META_QUIT_KEY)
+@@ -631,7 +631,7 @@
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_load_content_history,          MENU_ENUM_SUBLABEL_LOAD_CONTENT_HISTORY)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_network_information,           MENU_ENUM_SUBLABEL_NETWORK_INFORMATION)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_system_information,            MENU_ENUM_SUBLABEL_SYSTEM_INFORMATION)
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_quit_retroarch,                MENU_ENUM_SUBLABEL_RESTART_RETROARCH)
+ #else
+ 
+@@ -2258,7 +2258,7 @@
+                BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_menu_toggle);
+                return 0;
+             case RARCH_QUIT_KEY:
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+                BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_restart_key);
+ #else
+                BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_quit_key);
+--- a/menu/drivers/materialui.c	2024-03-18 11:26:18.012868400 +0000
++++ b/menu/drivers/materialui.c	2024-03-20 00:49:31.391331400 +0000
+@@ -9705,7 +9705,7 @@
+                   PARSE_ACTION,
+                   false);
+ #endif
+-#if defined(HAVE_LAKKA)
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+             if (settings->bools.menu_show_reboot)
+             {
+                MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(
+--- a/menu/menu_setting.c	2024-03-18 11:26:18.043277200 +0000
++++ b/menu/menu_setting.c	2024-03-20 00:59:02.880742600 +0000
+@@ -10190,7 +10190,7 @@
+ #endif
+ #if !defined(IOS)
+          /* Apple rejects iOS apps that let you forcibly quit them. */
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+          CONFIG_ACTION(
+                list, list_info,
+                MENU_ENUM_LABEL_QUIT_RETROARCH,
+@@ -10220,7 +10220,7 @@
+               parent_group);
+ #endif
+ 
+-#if defined(HAVE_LAKKA)
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+          CONFIG_ACTION(
+                list, list_info,
+                MENU_ENUM_LABEL_REBOOT,
+@@ -18832,7 +18832,7 @@
+                   general_read_handler,
+                   SD_FLAG_LAKKA_ADVANCED);
+ 
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+             CONFIG_BOOL(
+                   list, list_info,
+                   &settings->bools.menu_show_quit_retroarch,
+--- a/network/wifi_driver.c	2024-03-18 11:26:18.081687400 +0000
++++ b/network/wifi_driver.c	2024-03-20 01:03:01.092757200 +0000
+@@ -45,7 +45,7 @@
+ };
+ 
+  const wifi_driver_t *wifi_drivers[] = {
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+    &wifi_connmanctl,
+ #endif
+ #ifdef HAVE_WIFI
+--- a/config.def.keybinds.h	2024-03-18 11:26:07.107117300 +0000
++++ b/config.def.keybinds.h	2024-03-20 00:15:53.978644100 +0000
+@@ -1560,7 +1560,7 @@
+       RARCH_MENU_TOGGLE, NO_BTN, NO_BTN, 0,
+       true
+    },
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+    {
+       NULL, NULL,
+       AXIS_NONE, AXIS_NONE, AXIS_NONE,
+--- a/configuration.c	2024-03-18 11:26:07.107117300 +0000
++++ b/configuration.c	2024-03-20 00:19:08.359737100 +0000
+@@ -327,7 +327,7 @@
+ #ifdef HAVE_MENU
+    DECLARE_META_BIND(1, menu_toggle,           RARCH_MENU_TOGGLE,            MENU_ENUM_LABEL_VALUE_INPUT_META_MENU_TOGGLE),
+ #endif
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+    DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_RESTART_KEY),
+ #else
+    DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_QUIT_KEY),
+@@ -716,7 +716,7 @@
+ static const enum bluetooth_driver_enum BLUETOOTH_DEFAULT_DRIVER = BLUETOOTH_NULL;
+ #endif
+ 
+-#if defined(HAVE_LAKKA)
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+ static const enum wifi_driver_enum WIFI_DEFAULT_DRIVER = WIFI_CONNMANCTL;
+ #else
+ static const enum wifi_driver_enum WIFI_DEFAULT_DRIVER = WIFI_NULL;
+--- a/Makefile.common	2024-03-18 11:26:06.975575900 +0000
++++ b/Makefile.common	2024-03-20 00:39:49.995177500 +0000
+@@ -790,6 +790,11 @@
+    OBJ += misc/cpufreq/cpufreq.o
+ endif
+
++ifeq ($(H3_CHA), 1)
++   OBJ += network/drivers_wifi/connmanctl.o
++   DEFINES += -DH3_CHA
++endif
++
+ ifeq ($(HAVE_WIFI), 1)
+    OBJ += network/wifi_driver.o
+    OBJ += tasks/task_wifi.o
+--- a/msg_hash.h	2024-03-18 11:26:18.051354100 +0000
++++ b/msg_hash.h	2024-03-20 01:01:10.344210600 +0000
+@@ -555,7 +555,7 @@
+    MSG_MISSING_ASSETS,
+    MSG_RGUI_MISSING_FONTS,
+    MSG_RGUI_INVALID_LANGUAGE,
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+    MSG_LOCALAP_SWITCHING_OFF,
+    MSG_WIFI_DISCONNECT_FROM,
+    MSG_LOCALAP_ALREADY_RUNNING,
