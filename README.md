@@ -17,7 +17,7 @@ This is the fork of [Batocera Linux](https://batocera.org) with a customized ver
 
 - Possibility to download and install future updates from our repository without the need of a computer.
 
-- Similar to what is done in Lakka, whe can add/update cores copying them to `/userdata/system/configs/retroarch/assets` (network address should be `\\\\BATOCERA\\share\\system\\configs\\retroarch\\assets`). Keep reading for a list of important folders.
+- Similar to what is done in Lakka, whe can add/update cores copying them to `/userdata/system/configs/retroarch/assets` (network address should be `\\BATOCERA\share\system\configs\retroarch\assets`). Keep reading for a list of important folders.
 
 
 #
@@ -58,12 +58,14 @@ To save some space (needed to support future online updates), some packages were
 
 - After booting once into Batocera, and if you are not using SD card, you should select an USB disk to be used following [this instructions](https://wiki.batocera.org/store_games_on_a_second_usb_sata_drive).
 
+- Currently, it is not possible to configure WiFi or disable/enable shaders from RetroArch. You must boot into EmulationStation to set WiFi or to disable/enable shaders.
+
 - To create playlists in RetroArch, follow the steps in this video:
 ##
-![Manual Scan](./ChokoGroup/RetroArch\ -\ Manual\ Folder\ Scan.mp4)
+![Manual Scan](./ChokoGroup/RetroArch - Manual Folder Scan.mp4)
 #
 
-- Take in consideration that RetroArch's thumbnails downloader is very basic and limited to the systems in [their servers](https://thumbnails.libretro.com/).
+- Take in consideration that RetroArch's thumbnails downloader is very basic.
 In "Manual Scan" -> "System Name" select "Custom" and then in "Custom System Name" write exactly the name of the closest folder in [their servers](https://thumbnails.libretro.com/).
-Notice, for example, that is `MAME` folder and NOT `mame`. For fbneo games, "Custom System Name" must be exactly `FBNeo - Arcade Games`.
+Notice, for example, that is `MAME` folder and NOT "mame". For fbneo games, "Custom System Name" must be exactly `FBNeo - Arcade Games`.
 
