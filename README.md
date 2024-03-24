@@ -62,7 +62,7 @@ To save some space (needed to support future online updates), some packages were
 
 - To create playlists in RetroArch, follow the steps in this video:
 ##
-![Manual Scan](https://github.com/ChokoGroup/batocera-CHA/raw/master/ChokoGroup/RetroArch%20-%20Manual%20Folder%20Scan.mp4)
+<video src="https://github.com/ChokoGroup/batocera-CHA/raw/master/ChokoGroup/RetroArch%20-%20Manual%20Folder%20Scan.mp4" controls="controls"></video>
 #
 
 - Take in consideration that RetroArch's thumbnails downloader is very basic.
