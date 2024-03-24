@@ -61,9 +61,9 @@ To save some space (needed to support future online updates), some packages were
 - Currently, it is not possible to configure WiFi or disable/enable shaders from RetroArch. You must boot into EmulationStation to set WiFi or to disable/enable shaders.
 
 - To create playlists in RetroArch, follow the steps in this video:
-##
-<video src="https://github.com/ChokoGroup/batocera-CHA/raw/master/ChokoGroup/RetroArch%20-%20Manual%20Folder%20Scan.mp4" controls="controls"></video>
-#
+
+https://github.com/ChokoGroup/batocera-CHA/assets/55603581/e46320d1-dee6-44fe-b4d5-1528cb3a65e4
+
 
 - Take in consideration that RetroArch's thumbnails downloader is very basic.
 In "Manual Scan" -> "System Name" select "Custom" and then in "Custom System Name" write exactly the name of the closest folder in [their servers](https://thumbnails.libretro.com/).
