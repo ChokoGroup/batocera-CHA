@@ -12,7 +12,7 @@ This is the fork of [Batocera Linux](https://batocera.org) with a customized ver
 
 - We can use Emulation Station (Batocera style UI) or RetroArch (Lakka style UI).
 
-- Similar to what is done in Lakka, whe can add/update cores copying them to /userdata/system/configs/retroarch/assets (network address should be \\\\BATOCERA\\share\\system\\configs\\retroarch\\assets).
+- Similar to what is done in Lakka, whe can add/update cores copying them to /userdata/system/configs/retroarch/assets (network address should be \\\\BATOCERA\\share\\system\\configs\\retroarch\\assets). Keep reading for a list of important folders.
 
 - Scanlines shader crt/GritsScanlines enabled by default for both Emulation Station and RetroArch.
 
@@ -23,11 +23,11 @@ This is the fork of [Batocera Linux](https://batocera.org) with a customized ver
 
 Compared to official Official Batocera 39, this version has some new or updated packages / emulators:
 
-- RetroArch and libretro-core-info v1.17.0 (instead of v1.16.0)
+- RetroArch and libretro-core-info v1.18.0 (instead of v1.16.0)
 
 - FBalpha2012 libretro core added
 
-- FB Neo libretro core updated to Mar 10, 2024 version
+- FB Neo libretro core updated to 2024-03-22 version
 
 
 ###
@@ -49,5 +49,5 @@ To save some space (needed to support future online updates), some packages were
 
 ## Several notes
 
-- Batocera is demanding and we strongly advise to install a fan over the heatsink. When the CHA overheats it becames slower and crash.
+- Batocera is demanding and we strongly advise to install a fan over the heatsink. When the CHA overheats it becomes slower and crashes.
 

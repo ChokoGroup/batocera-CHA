@@ -161,28 +161,29 @@ do
     # dbus launch is required for the gio/gvfs/trash:///...
     eval "$(dbus-launch --sh-syntax --exit-with-session)"
 
+    for JOYINDEX in /dev/input/js[0-9]
+    do
+      IDMODEL=$(udevadm info -q property "$JOYINDEX" | grep 'ID_MODEL=')
+      DEVPATH=$(udevadm info -q property $JOYINDEX | grep 'DEVPATH=' | sed -e s#'^DEVPATH=\(.*\)/0003:.*$'#'/sys\1'#)
+      case ${IDMODEL#*=} in
+        CHA1)
+          sed -i -e "s#input_player1_joypad_index.*#input_player1_joypad_index = ${JOYINDEX: -1}#" /userdata/system/configs/retroarch/retroarch_choko.cfg
+          sed -i -e "s#\"INPUT P1PATH\".*#\"INPUT P1PATH\" value\=\"$DEVPATH\" /\>#" /userdata/system/configs/emulationstation/es_settings.cfg
+        ;;
+        CHA2) 
+          sed -i -e "s#input_player2_joypad_index.*#input_player2_joypad_index = ${JOYINDEX: -1}#" /userdata/system/configs/retroarch/retroarch_choko.cfg
+          sed -i -e "s#\"INPUT P2PATH\".*#\"INPUT P2PATH\" value\=\"$DEVPATH\" /\>#" /userdata/system/configs/emulationstation/es_settings.cfg
+        ;;
+      esac
+    done
     cd /userdata # es need a PWD
     if [ "$(/usr/bin/batocera-settings-get -f /boot/batocera-boot.conf system.es.atstartup)" = "0" ] || [ "$(/usr/bin/batocera-settings-get system.es.atstartup)" = "0" ]
     then
-      sed -i '/_joypad_index/d' /userdata/system/configs/retroarch/retroarch_choko.cfg
-      for JOYINDEX in /dev/input/js[0-9]
-      do
-        IDMODEL=$(udevadm info -q property "$JOYINDEX" | grep 'ID_MODEL=')
-        case ${IDMODEL#*=} in
-          CHA1)
-            echo -en "\ninput_player1_joypad_index = ${JOYINDEX: -1}" >> /userdata/system/configs/retroarch/retroarch_choko.cfg
-          ;;
-          CHA2) 
-            echo -en "\ninput_player2_joypad_index = ${JOYINDEX: -1}" >> /userdata/system/configs/retroarch/retroarch_choko.cfg
-          ;;
-        esac
-      done
-      sed -i '/^[[:space:]]*$/d' /userdata/system/configs/retroarch/retroarch_choko.cfg
       if [ "$(/usr/bin/batocera-settings-get global.shaderset)" = "scanlines" ]
       then
-        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp
+        retroarch --set-shader /usr/share/batocera/shaders/crt/GritsScanlines.glslp
       else
-        retroarch --config=/userdata/system/configs/retroarch/retroarch_choko.cfg
+        retroarch
       fi
     else
       %BATOCERA_EMULATIONSTATION_PREFIX% emulationstation ${GAMELAUNCHOPT} --exit-on-reboot-required %BATOCERA_EMULATIONSTATION_ARGS% ${CUSTOMESOPTIONS}

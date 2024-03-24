@@ -1,14 +1,3 @@
---- a/griffin/griffin.c	2024-03-18 11:26:17.112197200 +0000
-+++ b/griffin/griffin.c	2024-03-20 00:22:23.207537600 +0000
-@@ -1196,7 +1196,7 @@
- #ifdef HAVE_WIFI
- #include "../network/wifi_driver.c"
- 
--#ifdef HAVE_LAKKA
-+#if defined(HAVE_LAKKA) || defined(H3_CHA)
- #include "../network/drivers_wifi/connmanctl.c"
- #endif
- 
 --- a/menu/cbs/menu_cbs_sublabel.c	2024-03-18 11:26:18.007867700 +0000
 +++ b/menu/cbs/menu_cbs_sublabel.c	2024-03-20 00:47:48.503942600 +0000
 @@ -409,7 +409,7 @@
@@ -78,28 +67,6 @@
              CONFIG_BOOL(
                    list, list_info,
                    &settings->bools.menu_show_quit_retroarch,
---- a/network/wifi_driver.c	2024-03-18 11:26:18.081687400 +0000
-+++ b/network/wifi_driver.c	2024-03-20 01:03:01.092757200 +0000
-@@ -45,7 +45,7 @@
- };
- 
-  const wifi_driver_t *wifi_drivers[] = {
--#ifdef HAVE_LAKKA
-+#if defined(HAVE_LAKKA) || defined(H3_CHA)
-    &wifi_connmanctl,
- #endif
- #ifdef HAVE_WIFI
---- a/config.def.keybinds.h	2024-03-18 11:26:07.107117300 +0000
-+++ b/config.def.keybinds.h	2024-03-20 00:15:53.978644100 +0000
-@@ -1560,7 +1560,7 @@
-       RARCH_MENU_TOGGLE, NO_BTN, NO_BTN, 0,
-       true
-    },
--#ifdef HAVE_LAKKA
-+#if defined(HAVE_LAKKA) || defined(H3_CHA)
-    {
-       NULL, NULL,
-       AXIS_NONE, AXIS_NONE, AXIS_NONE,
 --- a/configuration.c	2024-03-18 11:26:07.107117300 +0000
 +++ b/configuration.c	2024-03-20 00:19:08.359737100 +0000
 @@ -327,7 +327,7 @@
@@ -111,37 +78,31 @@
     DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_RESTART_KEY),
  #else
     DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_QUIT_KEY),
-@@ -716,7 +716,7 @@
- static const enum bluetooth_driver_enum BLUETOOTH_DEFAULT_DRIVER = BLUETOOTH_NULL;
- #endif
- 
--#if defined(HAVE_LAKKA)
-+#if defined(HAVE_LAKKA) || defined(H3_CHA)
- static const enum wifi_driver_enum WIFI_DEFAULT_DRIVER = WIFI_CONNMANCTL;
+--- a/retroarch.c 2024-03-18 11:26:19.653893100 +0000
++++ b/retroarch.c 2024-03-23 17:31:01.089300000 +0000
+@@ -4354,10 +4354,10 @@
+             command_event(CMD_EVENT_MENU_SAVE_CURRENT_CONFIG, NULL);
+          }
+ #ifdef HAVE_LAKKA
+-         system("(sleep 1 && shutdown -P now) & disown");
++         system("(sleep 1 && shutdown -hP now) & disown");
  #else
- static const enum wifi_driver_enum WIFI_DEFAULT_DRIVER = WIFI_NULL;
---- a/Makefile.common	2024-03-18 11:26:06.975575900 +0000
-+++ b/Makefile.common	2024-03-20 00:39:49.995177500 +0000
-@@ -790,6 +790,11 @@
+          command_event(CMD_EVENT_QUIT, NULL);
+-         system("shutdown -P now");
++         system("shutdown -hP now");
+ #endif /* HAVE_LAKKA */
+ #endif
+          break;
+--- a/Makefile.common	2024-03-22 16:06:39.530415900 +0000
++++ b/Makefile.common	2024-03-23 21:24:39.853810000 +0000
+@@ -790,6 +790,10 @@
     OBJ += misc/cpufreq/cpufreq.o
  endif
-
+ 
 +ifeq ($(H3_CHA), 1)
-+   OBJ += network/drivers_wifi/connmanctl.o
 +   DEFINES += -DH3_CHA
 +endif
 +
  ifeq ($(HAVE_WIFI), 1)
     OBJ += network/wifi_driver.o
     OBJ += tasks/task_wifi.o
---- a/msg_hash.h	2024-03-18 11:26:18.051354100 +0000
-+++ b/msg_hash.h	2024-03-20 01:01:10.344210600 +0000
-@@ -555,7 +555,7 @@
-    MSG_MISSING_ASSETS,
-    MSG_RGUI_MISSING_FONTS,
-    MSG_RGUI_INVALID_LANGUAGE,
--#ifdef HAVE_LAKKA
-+#if defined(HAVE_LAKKA) || defined(H3_CHA)
-    MSG_LOCALAP_SWITCHING_OFF,
-    MSG_WIFI_DISCONNECT_FROM,
-    MSG_LOCALAP_ALREADY_RUNNING,
