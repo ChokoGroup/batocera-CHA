@@ -30,11 +30,11 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 
 Compared to official Official Batocera 39, this version has some new or updated packages:
 
-- RetroArch and libretro-core-info v1.18.0 (instead of v1.16.0)
+- RetroArch and libretro-core-info v1.18.0 (instead of v1.16.0).
 
-- FBalpha2012 libretro core added
+- FBalpha2012 libretro core added.
 
-- FB Neo libretro core updated to 2024-03-22 version
+- FB Neo libretro core updated to 2024-03-22 version.
 
 
 #
