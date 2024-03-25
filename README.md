@@ -19,9 +19,9 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 
 - Possibility to download and install future updates from our repository without the need of a computer.
 
-- Use swap partition, if found, or create a swap file to expand available memory, if CHOKO_DISK partition exists or running from SD card.
+- Use swap partition, if found, or create a swap file to expand available memory, if CHOKO_DISK partition exists or if running from SD card.
 
-- Similar to what is done in Lakka, whe can add/update cores copying them to `/userdata/system/configs/retroarch/assets` (network address should be `\\BATOCERA\share\system\configs\retroarch\assets`). Keep reading for a list of important folders.
+- Similar to what is done in Lakka, whe can add/update cores copying them to `/userdata/system/configs/retroarch/cores` (browsing in is `\\BATOCERA\share\system\configs\retroarch\cores`). Keep reading for a list of important folders.
 
 
 #
@@ -62,7 +62,7 @@ To save some space (needed to support future online updates), some packages were
 
 - After booting once into Batocera, and if you are not using SD card, you should select an USB disk to be used following [this instructions](https://wiki.batocera.org/store_games_on_a_second_usb_sata_drive).
 
-- Currently, it is not possible to configure Wi-Fi or disable/enable shaders from RetroArch. You must boot into EmulationStation to set Wi-Fi or to disable/enable shaders.
+- Currently, it is not possible to configure Wi-Fi or disable/enable shaders globally from RetroArch. You must boot into EmulationStation to set Wi-Fi or to disable/enable shaders. RetroArch can set shaders for each core, if they are disabled globally.
 
 - To create playlists in RetroArch, follow the steps in this video:
 
@@ -73,7 +73,7 @@ https://github.com/ChokoGroup/batocera-CHA/assets/55603581/e46320d1-dee6-44fe-b4
 In "Manual Scan" -> "System Name" select "Custom" and then in "Custom System Name" write exactly the name of the closest folder in [their servers](https://thumbnails.libretro.com/).
 Notice, for example, that is `MAME` folder and NOT "mame". For fbneo games, "Custom System Name" must be exactly `FBNeo - Arcade Games`.
 
-- The use of a partition named `CHOKO_DISK` is still supported, but not really important now that we don't have to share roms and assets between Batorcera and Lakka, and Batocera can use USB disks formatted in FAT32 natively.
+- The use of a partition named `CHOKO_DISK` is still supported, but not really important now that we don't have to share roms and assets between Batorcera and Lakka. Also, Batocera can use USB disks formatted in FAT32 natively.
 
 #
 
