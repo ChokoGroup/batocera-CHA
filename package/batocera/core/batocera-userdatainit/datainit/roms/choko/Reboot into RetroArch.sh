@@ -5,5 +5,5 @@ cp /boot/extlinux/extlinux.batocera.720p.conf /boot/extlinux/extlinux.conf
 mount -o remount,ro /boot
 touch /tmp/restart.please
 emulationstation-standalone --stop-rebooting
-killall emulationstation 2>/dev/null
+killall emulationstation retroarch 2>/dev/null
 reboot
