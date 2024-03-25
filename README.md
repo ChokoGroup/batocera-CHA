@@ -77,22 +77,22 @@ Notice, for example, that is `MAME` folder and NOT "mame". For fbneo games, "Cus
 
 #
 
-## Important folders (mainly for RetroArch customization)
+## Important folders
 
-| Path on partition (mounted under /userdata ) | Path on network (for Windows) | Function | wiki |
+| Path on partition (mounted under /userdata ) | Path on network (for Windows) | Use and Notes |
 | --- | --- | --- | --- |
-| /bios | \\\\BATOCERA\\share\\bios | BIOS files required for some emulators | https://wiki.batocera.org/add_games_bios#adding_bios_files |
-| /cheats | \\\\BATOCERA\\share\\cheats | "cht" and "saves" folders for using cheats in RetroArch | https://docs.libretro.com/guides/cheat-codes/ |
-| /decorations | \\\\BATOCERA\\share\\decorations | Bezels and overlays | https://wiki.batocera.org/decoration |
-| /music | \\\\BATOCERA\\share\\music | Emulation Station music | https://wiki.batocera.org/emulationstation:music |
-| /roms | \\\\BATOCERA\\share\\roms | Folders with games for each supported emulator/system | https://wiki.batocera.org/add_games_bios#adding_roms |
-| /saves | \\\\BATOCERA\\share\\saves | Folders with savegames and savestates | |
-| /screenshots | \\\\BATOCERA\\share\\screenshots | Folders with screenshots taken from games | |
-| /splash | \\\\BATOCERA\\share\\splash | Custom images/videos to show while booting | https://wiki.batocera.org/splash_boot |
-| /system/upgrade | \\\\BATOCERA\\share\\system\\upgrade | Used to download "boot.tar.xz" for upgradeing Batocera | https://wiki.batocera.org/upgrade_manually |
-| /system/configs/retroarch/config | \\\\BATOCERA\\share\\system\\configs\\retroarch\\config | Is where RetroArch saves remmapping files and overlays \*.cfg | |
-| /system/configs/retroarch/playlists | \\\\BATOCERA\\share\\system\\configs\\retroarch\\playlists | Playlists for RetroArch | https://docs.libretro.com/guides/roms-playlists-thumbnails/ |
-| /system/configs/retroarch/thumbnails | \\\\BATOCERA\\share\\system\\configs\\retroarch\\thumbnails | Thumbnails for RetroArch' playlists | https://docs.libretro.com/guides/roms-playlists-thumbnails/ |
-| /system/configs/retroarch/assets | \\\\BATOCERA\\share\\system\\configs\\retroarch\\assets | Assets for RetroArch' menus (icons) | |
-| /system/configs/retroarch/cores | \\\\BATOCERA\\share\\system\\configs\\retroarch\\cores | Libretro cores for RetroArch' menus (\*.so files) | Files here will add or replace existing cores |
-| /system/configs/retroarch/cores-info | \\\\BATOCERA\\share\\system\\configs\\retroarch\\cores-info | \*.info file for cores | Files here will add or replace existing info files |
+| /bios | \\\\BATOCERA\\share\\bios | BIOS files required for some emulators; https://wiki.batocera.org/add_games_bios#adding_bios_files |
+| /cheats | \\\\BATOCERA\\share\\cheats | "cht" and "saves" folders for using cheats in RetroArch; https://docs.libretro.com/guides/cheat-codes/ |
+| /decorations | \\\\BATOCERA\\share\\decorations | Bezels and overlays; https://wiki.batocera.org/decoration |
+| /music | \\\\BATOCERA\\share\\music | Emulation Station music; https://wiki.batocera.org/emulationstation:music |
+| /roms | \\\\BATOCERA\\share\\roms | Folders with games for each supported emulator/system; https://wiki.batocera.org/add_games_bios#adding_roms |
+| /saves | \\\\BATOCERA\\share\\saves | Folders with savegames and savestates. |
+| /screenshots | \\\\BATOCERA\\share\\screenshots | Folders with screenshots taken from games. |
+| /splash | \\\\BATOCERA\\share\\splash | Custom images/videos to show while booting; https://wiki.batocera.org/splash_boot |
+| /system/upgrade | \\\\BATOCERA\\share\\system\\upgrade | Used to download "boot.tar.xz" for upgrading Batocera; https://wiki.batocera.org/upgrade_manually |
+| /system/configs/retroarch/config | \\\\BATOCERA\\share\\system\\configs\\retroarch\\config | Is where RetroArch saves remmapping files and overlays \*.cfg |
+| /system/configs/retroarch/playlists | \\\\BATOCERA\\share\\system\\configs\\retroarch\\playlists | Playlists for RetroArch; https://docs.libretro.com/guides/roms-playlists-thumbnails/ |
+| /system/configs/retroarch/thumbnails | \\\\BATOCERA\\share\\system\\configs\\retroarch\\thumbnails; Thumbnails for RetroArch' playlists | https://docs.libretro.com/guides/roms-playlists-thumbnails/ |
+| /system/configs/retroarch/assets | \\\\BATOCERA\\share\\system\\configs\\retroarch\\assets | Assets for RetroArch' menus (icons) |
+| /system/configs/retroarch/cores | \\\\BATOCERA\\share\\system\\configs\\retroarch\\cores | Libretro cores (\*.so files); Files here will add or replace existing cores. |
+| /system/configs/retroarch/cores-info | \\\\BATOCERA\\share\\system\\configs\\retroarch\\cores-info | \*.info file for cores; Files here will add or replace existing info files |
