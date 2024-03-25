@@ -58,11 +58,15 @@ To save some space (needed to support future online updates), some packages were
 
 - Batocera is demanding, and we strongly advise to install a fan over the heatsink. When the CHA overheats it becomes slower and crashes.
 
+- The first time the system boots, it will check if it is running from SD card. If it is running from SD card, it will change the partition labels to CHA_BOOT_SD, CHA_DISK_SD and BATOCERA_DISK_SD to avoid conflicts with systems installed in eMMC.
+
 - Booting into Batocera takes some time, especially if loading from USB. The first boot can take a minute or more.
 
 - After booting once into Batocera, and if you are not using SD card, you should select an USB disk to be used following [this instructions](https://wiki.batocera.org/store_games_on_a_second_usb_sata_drive).
 
 - Currently, it is not possible to configure Wi-Fi or disable/enable shaders globally from RetroArch. You must boot into EmulationStation to set Wi-Fi or to disable/enable shaders. RetroArch can set shaders for each core, if they are disabled globally.
+
+- Future system updates, when available, can be done with Emulation Station (not in RetroArch).
 
 - To create playlists in RetroArch, follow the steps in this video:
 
@@ -96,3 +100,11 @@ Notice, for example, that is `MAME` folder and NOT "mame". For fbneo games, "Cus
 | /system/configs/retroarch/assets | \\\\BATOCERA\\share\\system\\configs\\retroarch\\assets | Assets for RetroArch' menus (icons). |
 | /system/configs/retroarch/cores | \\\\BATOCERA\\share\\system\\configs\\retroarch\\cores | Libretro cores (\*.so files); Files here will add or replace existing cores. |
 | /system/configs/retroarch/cores-info | \\\\BATOCERA\\share\\system\\configs\\retroarch\\cores-info | \*.info file for cores; Files here will add or replace existing info files. |
+
+#
+
+## Known issues
+
+- On rare ocasions, SD card and eMMC change order at boot (no idea why). When that happens, an error message is displayed asking to unplug the power cable and try again a couple of minutes later.
+
+- Sometimes a game crashes when starting, going back to UI (Emulation Station or RetroArch). Trying again usually runs the game without issues. This usually happens when changing games frequently.
