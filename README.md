@@ -21,7 +21,7 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 
 - Use swap partition, if found, or create a swap file to expand available memory, if CHOKO_DISK partition exists or if running from SD card.
 
-- Similar to what is done in Lakka, whe can add/update cores copying them to `/userdata/system/configs/retroarch/cores` (browsing in your network is `\\BATOCERA\share\system\configs\retroarch\cores`). Check the bottom of this page for a list of important folders.
+- Similar to what is done in Lakka, we can add/update cores copying them to `/userdata/system/configs/retroarch/cores` (browsing in your network is `\\BATOCERA\share\system\configs\retroarch\cores`). Check the bottom of this page for a list of important folders.
 
 
 #
