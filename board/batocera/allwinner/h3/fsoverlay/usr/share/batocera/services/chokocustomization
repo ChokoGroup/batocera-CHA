@@ -27,7 +27,7 @@ case "$1" in
       fi
     fi
     [ -n "$SWAPFILE" ] && swapon -f "$SWAPFILE"
-    # Avoid user browsing other partitions on CHA
+    # Avoid user browsing other partitions on CHA with RetroArch
     [ -e /media/CHA_BOOT ] && umount /media/CHA_BOOT && rmdir /media/CHA_BOOT
     [ -e /media/CHA_BOOT_SD ] && umount /media/CHA_BOOT_SD && rmdir /media/CHA_BOOT_SD
     [ -e /media/CHA_DISK ] && umount /media/CHA_DISK && rmdir /media/CHA_DISK
