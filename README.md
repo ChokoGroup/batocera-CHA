@@ -70,14 +70,17 @@ To save some space (needed to support future online updates), some packages were
 
 - To create playlists in RetroArch, follow the steps in this video:
 
-https://github.com/ChokoGroup/batocera-CHA/assets/55603581/e46320d1-dee6-44fe-b4d5-1528cb3a65e4
+https://github.com/ChokoGroup/batocera-CHA/assets/55603581/d186a511-9a27-4adc-8918-d04606aecae1
 
 
 - Take in consideration that RetroArch's thumbnails downloader is very basic.
 In "Manual Scan" -> "System Name" select "Custom" and then in "Custom System Name" write exactly the name of the closest folder in [their servers](https://thumbnails.libretro.com/).
 Notice, for example, that is `MAME` folder and NOT "mame". For fbneo games, "Custom System Name" must be exactly `FBNeo - Arcade Games`.
 
-- The use of a partition named `CHOKO_DISK` is still supported, but not really important now that we don't have to share roms and assets between Batorcera and Lakka. Also, Batocera can use USB disks formatted in FAT32 natively.
+https://github.com/ChokoGroup/batocera-CHA/assets/55603581/3e674fc9-564e-42d9-a5a1-efd9136e0469
+
+
+- One last note. about the use of a partition named `CHOKO_DISK`: it is still supported, but not really important now that we don't have to share roms and assets between Batorcera and Lakka. Also, Batocera can use USB disks formatted in FAT32 natively.
 
 #
 
