@@ -220,16 +220,14 @@ fi
 do_clean $TERMINAL
 sync
 
-# exit from ES-badge without additional messages
-[ $TERMINAL -eq 0 ] && exit 0
-
 # verify update is for same board, provide a warning if not
 newboard=$(cat /boot/boot/batocera.board)
 if [ "$oldboard" != "$newboard" ]
 then
-    echo; echo "WARNING: Current board is ${oldboard}, applied update is for ${newboard}"
+    do_upgmsg "WARNING: Current board is ${oldboard}, applied update is for ${newboard}" 10
 fi
 
-echo; echo "Done. Rebooting the system so that the changes take effect!"
+fsck -aw $(batocera-part boot)
+do_upgmsg "Done. Rebooting the system so that the changes take effect!" 5
 reboot
 exit 0
