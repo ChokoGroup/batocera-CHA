@@ -11,7 +11,7 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 
 ## What is special about batocera 39-Choko?
 
-- It's a dual boot system image with both Official OS v1.71 and Batocera 39. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
+- It's a dual boot system image with both official OS v1.71 and Batocera 39. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
 
 - We can use Emulation Station (Batocera style UI) or RetroArch (Lakka style UI).
 
@@ -43,7 +43,7 @@ Compared to official Official Batocera 39, this version has some new or updated 
 
 To save some space (needed to support future online updates), some packages were removed:
 
-- Removed support for Wiimotes, joycons, wheels, pixelcade and led screens.
+- Removed support for Wiimotes, joycons, wheels, pixelcade and similar screens, switchres, probably other less usual stuff...
 
 - Removed many standalone emulators that also had libretro cores, like SCUMMVM and flash player.
 
@@ -57,6 +57,8 @@ To save some space (needed to support future online updates), some packages were
 ## Notes
 
 - Batocera is demanding, and we strongly advise to install a fan over the heatsink. When the CHA overheats it becomes slower and crashes.
+
+- root password changed to "Choko" (to match the password used in official OS and Choko Hack and because it might be a bit more secure to avoid the well known default password). Read https://wiki.batocera.org/security to know more and how to change the password.
 
 - The first time the system boots, it will check if it is running from SD card. If it is running from SD card, it will change the partition labels to CHA_BOOT_SD, CHA_DISK_SD and BATOCERA_DISK_SD to avoid conflicts with systems installed in eMMC.
 
