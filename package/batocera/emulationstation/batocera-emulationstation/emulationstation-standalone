@@ -167,11 +167,11 @@ do
       DEVPATH=$(udevadm info -q property $JOYINDEX | grep 'DEVPATH=' | sed -e s#'^DEVPATH=\(.*\)/0003:.*$'#'/sys\1'#)
       case ${IDMODEL#*=} in
         CHA1)
-          sed -i -e "s#input_player1_joypad_index.*#input_player1_joypad_index = ${JOYINDEX: -1}#" /userdata/system/configs/retroarch/retroarch_choko.cfg
+          sed -i -e "s#input_player1_joypad_index.*#input_player1_joypad_index = ${JOYINDEX: -1}#" /userdata/system/configs/retroarch/retroarch.cfg
           sed -i -e "s#\"INPUT P1PATH\".*#\"INPUT P1PATH\" value\=\"$DEVPATH\" /\>#" /userdata/system/configs/emulationstation/es_settings.cfg
         ;;
         CHA2) 
-          sed -i -e "s#input_player2_joypad_index.*#input_player2_joypad_index = ${JOYINDEX: -1}#" /userdata/system/configs/retroarch/retroarch_choko.cfg
+          sed -i -e "s#input_player2_joypad_index.*#input_player2_joypad_index = ${JOYINDEX: -1}#" /userdata/system/configs/retroarch/retroarch.cfg
           sed -i -e "s#\"INPUT P2PATH\".*#\"INPUT P2PATH\" value\=\"$DEVPATH\" /\>#" /userdata/system/configs/emulationstation/es_settings.cfg
         ;;
       esac

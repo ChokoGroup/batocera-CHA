@@ -1,6 +1,6 @@
 /output
 /dl
-configs/batocera-*_defconfig
+/configs/batocera-*_defconfig
 /.auto.deps
 /.config.cmd
 /.config.old
@@ -28,3 +28,4 @@ package/batocera/emulationstation/batocera-emulationstation/keys.txt
 .directory
 *.po~
 batocera-mok.key
+configs/batocera-h3_defconfig
