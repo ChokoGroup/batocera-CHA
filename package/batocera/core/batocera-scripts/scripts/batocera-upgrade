@@ -213,7 +213,7 @@ fi
 do_upgmsg "Doing final cleanups ..." 0.5
 if ! mount -o remount,ro /boot
 then
-    do_upgmsg "WARNING: Could not remount /boot in read-only mode" 5
+    do_upgmsg "Could not remount /boot in read-only mode" 1
 fi
 
 # a sync with some cleanups of downloaded and created files
@@ -227,8 +227,8 @@ then
     do_upgmsg "WARNING: Current board is ${oldboard}, applied update is for ${newboard}" 10
 fi
 
-fsck -aw $(batocera-part boot)
+fsck -aw $(batocera-part boot) > /dev/null
 rm -f /boot/FSCK*
-do_upgmsg "Done. Rebooting the system so that the changes take effect!" 5
+do_upgmsg "Reboot the system so that the changes take effect!" 5
 reboot
 exit 0

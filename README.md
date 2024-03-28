@@ -58,8 +58,6 @@ To save some space (needed to support future online updates), some packages were
 
 - Batocera is demanding, and we strongly advise to install a fan over the heatsink. When the CHA overheats it becomes slower and crashes.
 
-- root password changed to "Choko" (to match the password used in official OS and Choko Hack and because it might be a bit more secure to avoid the well known default password). Read https://wiki.batocera.org/security to know more and how to change the password.
-
 - The first time the system boots, it will check if it is running from SD card. If it is running from SD card, it will change the partition labels to CHA_BOOT_SD, CHA_DISK_SD and BATOCERA_DISK_SD to avoid conflicts with systems installed in eMMC.
 
 - Booting into Batocera takes some time, especially if loading from USB. The first boot can take a minute or more.
