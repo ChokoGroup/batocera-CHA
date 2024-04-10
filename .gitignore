@@ -29,3 +29,4 @@ package/batocera/emulationstation/batocera-emulationstation/keys.txt
 *.po~
 batocera-mok.key
 configs/batocera-h3_defconfig
+board/batocera/x86_64
