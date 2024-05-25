@@ -3,8 +3,8 @@
 # xpadneo
 #
 ################################################################################
-# Version: Commits on Jul 18, 2023
-XPADNEO_VERSION = 9b3b6968304d75faca00d1cead63f89e8895195f
+# Version: Commits on Apr 23, 2024
+XPADNEO_VERSION = 73be2eb22ee7b3b3f66b01ad8b9aaa4edc9b93b5
 XPADNEO_SITE = $(call github,atar-axis,xpadneo,$(XPADNEO_VERSION))
 XPADNEO_DEPENDENCIES = host-libcurl host-cabextract bluez5_utils
 XPADNEO_MODULE_SUBDIRS = hid-xpadneo/src
@@ -18,6 +18,7 @@ define XPADNEO_INSTALL_TARGET_CMDS
 	cp -v $(@D)/hid-xpadneo/etc-udev-rules.d/*.rules $(TARGET_DIR)/etc/udev/rules.d/
 	cp -v $(@D)/hid-xpadneo/etc-modprobe.d/*.conf $(TARGET_DIR)/etc/modprobe.d/
 	echo "options bluetooth disable_ertm=1" >> $(TARGET_DIR)/etc/modprobe.d/xpadneo.conf
+	echo "options hid_xpadneo disable_shift_mode=1" >> $(TARGET_DIR)/etc/modprobe.d/xpadneo.conf
 endef
 
 $(eval $(kernel-module))

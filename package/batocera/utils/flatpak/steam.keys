@@ -3,8 +3,8 @@
         {
             "trigger": ["hotkey", "start"],
             "type": "exec",
-            "target": "su - batocera -c 'DISPLAY=:0.0 flatpak run com.valvesoftware.Steam -shutdown'",
-            "description": "Exit emulator"
+            "target": "DISPLAY=:0.0 flatpak run com.valvesoftware.Steam -shutdown",
+            "description": "Exit Steam"
         }
     ]
 }

@@ -75,9 +75,9 @@ def getGenerator(emulator):
         from generators.citra.citraGenerator import CitraGenerator
         return CitraGenerator()
 
-    if emulator == 'daphne' :
-        from generators.daphne.daphneGenerator import DaphneGenerator
-        return DaphneGenerator()
+    if emulator == 'hypseus-singe' :
+        from generators.hypseus_singe.hypseusSingeGenerator import HypseusSingeGenerator
+        return HypseusSingeGenerator()
 
     if emulator == 'cannonball' :
         from generators.cannonball.cannonballGenerator import CannonballGenerator
@@ -219,9 +219,9 @@ def getGenerator(emulator):
         from generators.fba2x.fba2xGenerator import Fba2xGenerator
         return Fba2xGenerator()
 
-    if emulator == 'yuzu':
-        from generators.yuzu.yuzuGenerator import YuzuGenerator
-        return YuzuGenerator()
+    if emulator == 'suyu':
+        from generators.suyu.suyuGenerator import SuyuGenerator
+        return SuyuGenerator()
 
     if emulator == 'ryujinx':
         from generators.ryujinx.ryujinxGenerator import RyujinxGenerator
@@ -358,6 +358,10 @@ def getGenerator(emulator):
     if emulator == "sonic-mania":
         from generators.sonic_mania.sonic_maniaGenerator import SonicManiaGenerator
         return SonicManiaGenerator()
+
+    if emulator == "uqm":
+        from generators.uqm.uqmGenerator import UqmGenerator
+        return UqmGenerator()
 
     if emulator == 'sh':
         from generators.sh.shGenerator import ShGenerator

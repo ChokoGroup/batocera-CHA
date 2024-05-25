@@ -3,15 +3,15 @@
 # sonic-mania
 #
 ################################################################################
-# Version: Commits on Nov 21, 2023
-SONIC_MANIA_VERSION = c417ccad32945075a283f74429a3a09cd501734d
+# Version: Commits on May 10, 2024
+SONIC_MANIA_VERSION = 7b6681f5617b0cf7d5149c173b2f5fc35c2a9077
 SONIC_MANIA_SITE = https://github.com/Rubberduckycooly/Sonic-Mania-Decompilation.git
 SONIC_MANIA_SITE_METHOD = git
 SONIC_MANIA_GIT_SUBMODULES = YES
 SONIC_MANIA_LICENSE = Proprietary
 SONIC_MANIA_LICENSE_FILE = LICENSE.md
 
-SONIC_MANIA_DEPENDENCIES += libglew libglfw libogg libtheora portaudio
+SONIC_MANIA_DEPENDENCIES += libglu libglew libglfw libogg libtheora portaudio
 
 SONIC_MANIA_SUPPORTS_IN_SOURCE_BUILD = NO
 

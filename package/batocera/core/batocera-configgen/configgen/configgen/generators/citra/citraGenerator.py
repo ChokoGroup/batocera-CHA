@@ -216,13 +216,18 @@ class CitraGenerator(Generator):
             tab = system.config["citra_custom_textures"].split('-')
             citraConfig.set("Utility", "custom_textures",  "true")
             if tab[1] == 'normal':
+                citraConfig.set("Utility", "async_custom_loading", "true")
                 citraConfig.set("Utility", "preload_textures", "false")
             else:
-                citraConfig.set("Utility", "preload_textures", "true") # It's not working from ES for now, only from the emulator menu
+                citraConfig.set("Utility", "async_custom_loading", "false")
+                citraConfig.set("Utility", "preload_textures", "true")
         else:
             citraConfig.set("Utility", "custom_textures",  "false")
             citraConfig.set("Utility", "preload_textures", "false")
-
+        citraConfig.set("Utility", "async_custom_loading\\default", "true")
+        citraConfig.set("Utility", "custom_textures\\default", "false")
+        citraConfig.set("Utility", "preload_textures\\default", "false")
+        
         ## [CONTROLS]
         if not citraConfig.has_section("Controls"):
             citraConfig.add_section("Controls")
