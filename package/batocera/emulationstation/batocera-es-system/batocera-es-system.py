@@ -295,10 +295,15 @@ class EsSystemConf:
     # generate the fake translations from external options
     @staticmethod
     def createEsTranslations(esTranslationFile, toTranslate):
+        if toTranslate is None or not toTranslate:
+            return
         fd = open(esTranslationFile, 'w')
         n = 1
         fd.write("// file generated automatically by batocera-es-system.py, don't modify it\n\n")
         for tr in toTranslate:
+              # skip if tr is None
+            if tr is None:
+                continue
             # skip empty string
             if tr == "":
                 continue
@@ -385,6 +390,8 @@ class EsSystemConf:
         presetstr = ""
         if "preset" in infos:
             presetstr = " preset=\"{}\"".format(EsSystemConf.protectXml(infos["preset"]))
+        if "preset_parameters" in infos:
+            presetstr +=  " preset-parameters=\"{}\"".format(EsSystemConf.protectXml(infos["preset_parameters"]))
         featuresTxt += fspaces + "<feature name=\"{}\"{}{}{} value=\"{}\" description=\"{}\"{}>\n".format(EsSystemConf.protectXml(infos["prompt"]), submenustr, groupstr, orderstr, EsSystemConf.protectXml(key), EsSystemConf.protectXml(description), presetstr)
         EsSystemConf.addCommentToDictKey(toTranslate, infos["prompt"], { "emulator": emulator, "core": core })
         EsSystemConf.addCommentToDictKey(toTranslate, description, { "emulator": emulator, "core": core })

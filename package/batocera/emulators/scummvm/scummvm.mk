@@ -3,8 +3,8 @@
 # scummvm
 #
 ################################################################################
-# Version: 2.8 - "Mysteries, Mammoths, and Muppets"
-SCUMMVM_VERSION = fd75208f27df1dd72dfdba713c198bb9d5b710d4
+# Version: 2.8.1 - "Oh MMy!"
+SCUMMVM_VERSION = v2.8.1
 SCUMMVM_SITE = $(call github,scummvm,scummvm,$(SCUMMVM_VERSION))
 SCUMMVM_LICENSE = GPLv2
 SCUMMVM_DEPENDENCIES += sdl2 zlib libmpeg2 libogg libvorbis flac libmad
@@ -35,6 +35,10 @@ SCUMMVM_CONF_OPTS += --opengl-mode=auto --disable-debug --enable-optimizations \
     --enable-all-engines --enable-fluidsynth --disable-taskbar --disable-timidity \
     --disable-alsa --enable-vkeybd --enable-release --disable-eventrecorder \
     --prefix=/usr --with-sdl-prefix="$(STAGING_DIR)/usr/bin"
+
+ifeq ($(BR2_PACKAGE_LIBMPEG2),y)
+    SCUMMVM_CONF_OPTS += --enable-mpeg2 --with-mpeg2-prefix="$(STAGING_DIR)/usr/lib"
+endif
 
 SCUMMVM_MAKE_OPTS += RANLIB="$(TARGET_RANLIB)" STRIP="$(TARGET_STRIP)"
 SCUMMVM_MAKE_OPTS += AR="$(TARGET_AR) cru" AS="$(TARGET_AS)" LD="$(TARGET_CXX)"

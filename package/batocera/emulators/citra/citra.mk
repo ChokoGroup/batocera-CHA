@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-CITRA_VERSION = nightly-2054
-CITRA_SITE = https://github.com/citra-emu/citra-nightly.git
+CITRA_VERSION = r64e3e9f
+CITRA_SITE = https://github.com/PabloMK7/citra.git
 CITRA_SITE_METHOD=git
 CITRA_GIT_SUBMODULES=YES
 CITRA_LICENSE = GPLv2
@@ -27,7 +27,6 @@ CITRA_CONF_OPTS += -DCITRA_ENABLE_COMPATIBILITY_REPORTING=ON
 CITRA_CONF_OPTS += -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
 CITRA_CONF_OPTS += -DUSE_SYSTEM_BOOST=ON
 CITRA_CONF_OPTS += -DUSE_SYSTEM_SDL2=ON    # important to avoid HIDAPI
-CITRA_CONF_OPTS += -DCITRA_ENABLE_BUNDLE_TARGET=ON
 CITRA_CONF_OPTS += -DENABLE_LTO=OFF
 
 # future support for arm using SDL2 gui?

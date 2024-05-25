@@ -321,16 +321,13 @@ class LibretroGenerator(Generator):
                 commandArray.extend(["--connect", system.config['netplay.server.ip']])
             if 'netplay.server.port' in system.config:
                 commandArray.extend(["--port", system.config['netplay.server.port']])
+            if 'netplay.server.session' in system.config:
+                commandArray.extend(["--mitm-session", system.config['netplay.server.session']])
             if 'netplay.nickname' in system.config:
                 commandArray.extend(["--nick", system.config['netplay.nickname']])
 
         # Verbose logs
         commandArray.extend(['--verbose'])
-
-        # Extension used by hypseus .daphne but lr-daphne starts with .zip
-        if system.name == 'daphne':
-            romName = os.path.splitext(os.path.basename(rom))[0]
-            rom = batoceraFiles.daphneDatadir + '/roms/' + romName +'.zip'
 
         if system.name == 'scummvm':
             rom = os.path.dirname(rom) + '/' + romName[0:-8]

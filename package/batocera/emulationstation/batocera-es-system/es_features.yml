@@ -4,33 +4,28 @@
 shared:
   cfeatures:
     powermode:
+      group: POWER OPTIONS
       prompt: POWER MODE
-      description: Adjust the cpu power profile while in-game.
+      description: Adjust the cpu power frequency profile whilst in-game. Some systems will benefit from improved voltage handling.
       choices:
         "High Performance": highperformance
-        "Balanced": balanced
-        "Power Saver": powersaver
+        "Balanced":         balanced
+        "Power Saver":      powersaver
+    batterymode:
+      group: POWER OPTIONS
+      prompt: BATTERY MODE
+      description: Adjust the cpu power profile whist on battery. Overwrites previous Power Mode(s).
+      choices:
+        "High Performance": highperformance
+        "Balanced":         balanced
+        "Power Saver":      powersaver
     tdp:
       archs_include: [x86_64]
+      group: POWER OPTIONS
       prompt: RYZEN THERMAL DESIGN POWER
       description: Adjust the percentage of power (watts) provided to a Ryzen Mobile Series CPU based on it's default max value. Caution, setting wattage too high could damage your device.
-      choices:
-        "10%":                10
-        "20%":                20
-        "30%":                30
-        "40%":                40
-        "50%":                50
-        "60%":                60
-        "70%":                70
-        "80%":                80
-        "90%":                90
-        "100%":               100
-        "105% (Use caution":  105
-        "110% (Use caution)": 110
-        "115% (Use caution)": 115
-        "120% (Are you crazy?)": 120
-        "125% (Yes, you're crazy)": 125
-        "130% (Nope, you're just insane!)": 130
+      preset: slider
+      preset_parameters: 10 130 5 100 %
     videomode:
       prompt: VIDEO MODE
       description: Set the display's resolution. Does not affect the rendering resolution.
@@ -322,7 +317,7 @@ shared:
         "hidden": "hidden"
 
 global:
-  shared: [powermode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, rewind, runahead, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain]
+  shared: [powermode, batterymode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, rewind, runahead, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain]
 
 libretro:
   shared: [powermode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, runahead, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain, audio_volume, bordersmode]
@@ -720,8 +715,6 @@ libretro:
             "After NMI":  After NMI
     citra:
       shared: [rewind, autosave]
-    daphne:
-      features: [padtokeyboard]
     desmume:
       features: [netplay, cheevos]
       shared: [rewind, autosave]
@@ -1486,6 +1479,13 @@ libretro:
                     "NeGcon":                        773
                     "Namco GunCon":                  260
                     "PlayStation Mouse":             258
+            swanstation_Controller_ShowCrosshair:
+                group:       LIGHT GUN
+                prompt:      SHOW LIGHT GUN CROSSHAIRS
+                description:
+                choices:
+                    "Off":     "false"
+                    "On":      "true"
     duckstation:
       features: [cheevos]
       shared: [autosave, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
@@ -2966,6 +2966,7 @@ libretro:
                       description: Use MAME software lists to identify ROM
                       choices:
                           "Don't Use (Default)":                          none
+                          "Tandy Radio Shack Color Computer cassettes":   coco_cass
                           "Tandy Radio Shack Color Computer cartridges":  coco_cart
                           "Tandy Radio Shack Color Computer disk images": coco_flop
                   altmodel:
@@ -2982,8 +2983,9 @@ libretro:
                       prompt:      MEDIA TYPE
                       description: Type of ROM file to load.
                       choices:
-                          "Cassette":    cass
-                          "Cartridge":   cart
+                          "Cassette":       cass
+                          "Cartridge":      cart
+                          "Disk (Drive 1)": flop1
                   enableui:
                       group: ADVANCED OPTIONS
                       prompt:      UI KEYS
@@ -3836,7 +3838,7 @@ libretro:
                     "Analog Joystick (Flystick)":    773
                     "Namco GunCon":                  260
                     "NeGcon":                        1029
-                    #"Justifier":                     516
+                    "Justifier":                     516
                     "PlayStation Mouse":             258
             beetle_psx_hw_Controller2:
                 prompt:      CONTROLLER 2 TYPE
@@ -3849,7 +3851,7 @@ libretro:
                     "Analog Joystick (Flystick)":    773
                     "Namco GunCon":                  260
                     "NeGcon":                        1029
-                    #"Justifier":                     516
+                    "Justifier":                     516
                     "PlayStation Mouse":             258
     mednafen_supergrafx:
       features: [netplay, cheevos]
@@ -4815,6 +4817,7 @@ libretro:
                     "Analog Controller":             261
                     "DualShock Controller":          517
                     "Namco GunCon":                  260
+                    "Hyper Blaster/Justifier":       516
                     "NeGcon":                        773
                     "PlayStation Mouse":             258
             controller2_pcsx:
@@ -4826,8 +4829,27 @@ libretro:
                     "Analog Controller":             261
                     "DualShock Controller":          517
                     "Namco GunCon":                  260
+                    "Hyper Blaster/Justifier":       516
                     "NeGcon":                        773
                     "PlayStation Mouse":             258
+            pcsx_rearmed_crosshair1:
+                group:       LIGHT GUN
+                prompt:      PLAYER 1 CROSSHAIR COLOR
+                choices:
+                    Red:        red
+                    Blue:       blue
+                    Green:      green
+                    White:      white
+                    Disabled:   disabled
+            pcsx_rearmed_crosshair2:
+                group:       LIGHT GUN
+                prompt:      PLAYER 2 CROSSHAIR COLOR
+                choices:
+                    Red:        red
+                    Blue:       blue
+                    Green:      green
+                    White:      white
+                    Disabled:   disabled
     picodrive:
       features: [netplay, cheevos]
       shared: [autosave]
@@ -6098,6 +6120,20 @@ libretro:
                     #"Mouse (SmartMouse)":       8
                     #"Mouse (Micromys)":         9
                     "Koalapad":                 10
+            vice_ram_expansion_unit:
+                group: ADVANCED OPTIONS
+                prompt:      RAM EXPANSION UNIT
+                description: Some games and homebrews require more RAM
+                choices:
+                    "Disabled":                 none
+                    "128kB (1700)":             128kB
+                    "256kB (1764)":             256kB
+                    "512kB (1750)":             512kB
+                    "1024kB":                   1024kB
+                    "2048kB":                   2048kB
+                    "4096kB":                   4096kB
+                    "8192kB":                   8192kB
+                    "16384kB":                  16384kB
             vice_keyboard_pass_through:
                 group: ADVANCED OPTIONS
                 prompt:      KEYBOARD PASSTHROUGH
@@ -6191,6 +6227,20 @@ libretro:
                     #"Mouse (SmartMouse)":       8
                     #"Mouse (Micromys)":         9
                     "Koalapad":                 10
+            vice_ram_expansion_unit:
+                group: ADVANCED OPTIONS
+                prompt:      RAM EXPANSION UNIT
+                description: Some games and homebrews require more RAM
+                choices:
+                    "Disabled":                 none
+                    "128kB (1700)":             128kB
+                    "256kB (1764)":             256kB
+                    "512kB (1750)":             512kB
+                    "1024kB":                   1024kB
+                    "2048kB":                   2048kB
+                    "4096kB":                   4096kB
+                    "8192kB":                   8192kB
+                    "16384kB":                  16384kB
             vice_keyboard_pass_through:
                 group: ADVANCED OPTIONS
                 prompt:      KEYBOARD PASSTHROUGH
@@ -6367,6 +6417,20 @@ libretro:
                     #"Mouse (SmartMouse)":       8
                     #"Mouse (Micromys)":         9
                     "Koalapad":                 10
+            vice_ram_expansion_unit:
+                group: ADVANCED OPTIONS
+                prompt:      RAM EXPANSION UNIT
+                description: Some games and homebrews require more RAM
+                choices:
+                    "Disabled":                 none
+                    "128kB (1700)":             128kB
+                    "256kB (1764)":             256kB
+                    "512kB (1750)":             512kB
+                    "1024kB":                   1024kB
+                    "2048kB":                   2048kB
+                    "4096kB":                   4096kB
+                    "8192kB":                   8192kB
+                    "16384kB":                  16384kB
             vice_keyboard_pass_through:
                 group: ADVANCED OPTIONS
                 prompt:      KEYBOARD PASSTHROUGH
@@ -6970,9 +7034,9 @@ citra:
             prompt: LOAD CUSTOM TEXTURES
             description: Preloading is impossible from ES.
             choices:
-                "Off": 0
-                "On":  1-normal
-                #"Preload": 1-preload
+                "Off":     0
+                "On":      1-normal
+                "Preload": 1-preload
         citra_is_new_3ds:
             group: ADVANCED OPTIONS
             prompt: NEW 3DS MODE
@@ -6981,93 +7045,95 @@ citra:
                 "Off": 0
                 "On":  1
 
-daphne:
+hypseus-singe:
   features: [padtokeyboard]
-  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, use_guns]
+  shared: [powermode, tdp, videomode, use_guns]
   cfeatures:
-        gfxbackend:
+        hypseus_api:
             archs_include: [x86, x86_64, bcm2711, bcm2712]
-            prompt:      GRAPHICS API
+            prompt: GRAPHICS API
             description: Choose which graphics API library to use. Vulkan may not work on all hardware.
             choices:
                 "OpenGL": OpenGL
                 "Vulkan": Vulkan
-        daphne_ratio:
-            prompt:      ASPECT RATIO
+        hypseus_ratio:
+            prompt: ASPECT RATIO
             description: Not all games support stretching, depending on their video files.
             choices:
                 "Original":   original
                 "Stretch":    stretch
                 "Force 4:3":  force_ratio
-        daphne_rotate:
-            prompt:      SCREEN ROTATION
+        hypseus_rotate:
+            prompt: SCREEN ROTATION
             choices:
                 "0 degrees":   0
                 "90 degrees":  90
                 "270 degrees": 270
-        bilinear_filter:
-            prompt:      SMOOTH GAMES (BILINEAR FILTERING)
+        hypseus_filter:
+            prompt: SMOOTH GAMES (BILINEAR FILTERING)
             choices:
                 "On":  1
                 "Off": 0
-        daphne_scanlines:
+        hypseus_scanlines:
             archs_include: [x86, x86_64]
             group: ADVANCED OPTIONS
-            prompt:      SCANLINES
+            prompt: SCANLINES
             description: Use with the stretch aspect ratio and adjust joystick sensitivity as required.
             choices:
                 "Off":                          0
                 "On":                           1
-        blend_sprites:
-            group: ADVANCED OPTIONS
-            prompt:      BLEND SPRITES (SINGE)
-            description: Restore BLENDMODE outline on Singe sprites.
-            choices:
-                "Off": 0
-                "On":  1
-        abs_mouse_input:
-            group: ADVANCED OPTIONS
-            prompt:      ABSOLUTE MOUSE INPUT
-            description: This option is required for some gun games when playing with a mouse.
-            choices:
-                "Off": 0
-                "On":  1
-        invert_axis:
-            group: ADVANCED OPTIONS
-            prompt:      INVERT AXIS
+        hypseus_axis:
+            prompt: INVERT AXIS
             description: Invert the vertical joystick axis on flight games.
             choices:
                 "Off": 0
                 "On":  1
-        singe_joystick_range:
+        hypseus_texturestream:
             group: ADVANCED OPTIONS
-            prompt:      JOYSTICK TO CURSOR SENSITIVITY
-            choices:
-                "5":  5
-                "10": 10
-                "15": 15
-                "20": 20
-        singe_crosshair:
-            group: ADVANCED OPTIONS
-            prompt:      HIDE LIGHT GUN CROSSHAIRS
-            description: Hide crosshairs in supported games e.g. ActionMax.
-            choices:
-                "Off":                          0
-                "On":                           1
-        daphne_texturestream:
-            group: ADVANCED OPTIONS
-            prompt:      SDL TEXTURE ACCESS STREAMING
+            prompt: SDL TEXTURE ACCESS STREAMING
             description: Can improve video performance. Do not use with ActionMax games or scanlines.
             choices:
                 "Off":                          0
                 "On":                           1
-        daphne_joy:
+        hypseus_joy:
             group: ADVANCED OPTIONS
-            prompt:      CUSTOM CONTROLLER
+            prompt: CUSTOM CONTROLLER
             description: Use controller settings manually defined in custom.ini.
             choices:
                 "Off":                          0
                 "On":                           1
+  systems:
+    singe:
+      cfeatures:
+        singe_sprites:
+            group: ADVANCED OPTIONS
+            prompt: BLEND SPRITES (SINGE)
+            description: Restore BLENDMODE outline on Singe sprites.
+            choices:
+                "Off": 0
+                "On":  1
+        singe_joystick_range:
+          group: ADVANCED OPTIONS
+          prompt: JOYSTICK TO CURSOR SENSITIVITY
+          choices:
+            "5":  5
+            "10": 10
+            "15": 15
+            "20": 20
+        singe_crosshair:
+          group: LIGHT GUNS
+          prompt: HIDE LIGHT GUN CROSSHAIRS
+          description: Hide crosshairs in supported games e.g. ActionMax, Maddog II.
+          choices:
+            "Hidden": 1
+            "Shown":  0
+        singe_abs:
+            group: ADVANCED OPTIONS
+            prompt: ABSOLUTE MOUSE INPUT
+            description: This option is required for some gun games when playing with a mouse.
+            choices:
+                "Off": 0
+                "On":  1
 
 devilutionx:
   features: [padtokeyboard]
@@ -7458,6 +7524,13 @@ dolphin:
                     "Wiimote Sideway + Swing":   is
                     "Wiimote Sideway + Tilt":    it
                     "Wiimote Sideway + Nunchuk": in
+            sensorbar_position:
+                submenu: CONTROLLERS
+                prompt: SENSOR BAR POSITION
+                description: Position of wii sensor bar relative to the disaply for real wiimotes.
+                choices:
+                    "Bottom (Default)": 0
+                    "Top":  1
             dsmotion:
                 submenu: CONTROLLERS
                 prompt: DUALSHOCK MOTION CONTROL
@@ -7473,7 +7546,7 @@ dolphin:
                     "Off": 0
                     "On":  1
             dolphin-lightgun-hide-crosshair:
-                submenu: CONTROLLERS
+                group: LIGHT GUNS
                 prompt: SHOW LIGHT GUN CROSSHAIRS
                 choices:
                     "Off": 0
@@ -7825,7 +7898,7 @@ duckstation:
                 "PS1 Digital Controller": DigitalController
                 "PS1 Analog Joystick":    AnalogJoystick
                 "DualShock / Xbox Type":  AnalogController
-                "Namco GunCon (Rumble)":  NamcoGunCon
+                "Namco GunCon":  GunCon
                 "PlayStation Mouse":      PlayStationMouse
                 "NeGcon (Rumble)":        NeGcon
         duckstation_Controller2:
@@ -7837,7 +7910,7 @@ duckstation:
                 "PS1 Digital Controller": DigitalController
                 "PS1 Analog Joystick":    AnalogJoystick
                 "DualShock / Xbox Type":  AnalogController
-                "Namco GunCon (Rumble)":  NamcoGunCon
+                "Namco GunCon":  GunCon
                 "PlayStation Mouse":      PlayStationMouse
                 "NeGcon (Rumble)":        NeGcon
         duckstation_pgxp:
@@ -7907,6 +7980,13 @@ duckstation:
                 "8x SSAA":            "8-ssaa"
                 "16x SSAA":           "16-ssaa"
                 "32x SSAA":           "32-ssaa"
+        duckstation_crosshair:
+            group: LIGHT GUN
+            prompt: CROSSHAIR
+            description:
+            choices:
+                "Disabled (Default)": "0"
+                "Enabled":            "100"
 
 flycast:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
@@ -7958,6 +8038,50 @@ flycast:
         "Per Strip":              2
         "Per Triangle (Default)": 1
         "Per Pixel":              3
+    flycast_lightgun1_crosshair:
+        group: LIGHT GUN
+        prompt:      PLAYER 1 CROSSHAIR COLOR
+        choices:
+            "Red"       :   -1073741571
+            "Blue"      :   -1057153792
+            "Green"     :   -1073479933
+            "White"     :   -1056964609
+            "Disabled"  :   0
+    flycast_lightgun2_crosshair:
+        group: LIGHT GUN
+        prompt:      PLAYER 2 CROSSHAIR COLOR
+        choices:
+            "Red"       :   -1073741571
+            "Blue"      :   -1057153792
+            "Green"     :   -1073479933
+            "White"     :   -1056964609
+            "Disabled"  :   0
+    flycast_lightgun3_crosshair:
+        group: LIGHT GUN
+        prompt:      PLAYER 3 CROSSHAIR COLOR
+        choices:
+            "Red"       :   -1073741571
+            "Blue"      :   -1057153792
+            "Green"     :   -1073479933
+            "White"     :   -1056964609
+            "Disabled"  :   0
+    flycast_lightgun4_crosshair:
+        group: LIGHT GUN
+        prompt:      PLAYER 4 CROSSHAIR COLOR
+        choices:
+            "Red"       :   -1073741571
+            "Blue"      :   -1057153792
+            "Green"     :   -1073479933
+            "White"     :   -1056964609
+            "Disabled"  :   0
+    flycast_offscreen_reload:
+      group:       LIGHT GUN
+      prompt:      OFF-SCREEN RELOAD BUTTON
+      description: Set gun button 2 to reload.
+      choices:
+        "Off":     0
+        "On":      1
+
   systems:
     dreamcast:
       cfeatures:
@@ -8037,7 +8161,7 @@ fpinball:
   cfeatures:
     fpcontroller:
       prompt: CONTROLLER CONFIGURATION
-      description: Allow mapping Future Pinabll with Pad to Keyboard.
+      description: Allow mapping Future Pinball with Pad to Keyboard.
       choices:
         "Disabled (Default)": false
         "Enabled":            true
@@ -8778,6 +8902,13 @@ pcsx2:
               "Driving Force Pro":  DrivingForcePro
               "GT Force":           GTForce
               "Virtual":            Virtual
+        pcsx2_crosshairs:
+            group:       LIGHT GUN
+            prompt:      SHOW LIGHT GUN CROSSHAIRS
+            description:
+            choices:
+                "Off":     0
+                "On":      1
 
 ppsspp:
   shared: [powermode, tdp, videomode, ratio, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, rewind]
@@ -8978,13 +9109,13 @@ rpcs3:
             choices:
                 "Off (faster, unstable)": Off
                 "20":                     20
-                "25":                     25    
+                "25":                     25
                 "30":                     30
                 "35":                     35
                 "40":                     40
                 "45":                     45
                 "50":                     50
-                "55":                     55 
+                "55":                     55
                 "59.94":                  59.94
                 "60":                     60
         rpcs3_anisotropic:
@@ -9190,6 +9321,12 @@ rpcs3:
             choices:
                 "Off": 0
                 "On":  1
+        rpcs3_crosshairs:
+            group: LIGHT GUN
+            prompt: SHOW LIGHT GUN CROSSHAIRS
+            choices:
+                "Off": False
+                "On":  True
         rpcs3_controller1:
             submenu: CONTROLLERS
             prompt: PS3 CONTROLLER 1
@@ -9334,7 +9471,7 @@ redream:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
   cfeatures:
       redreamResolution:
-          prompt:      RENDERING RESOLUTION
+          prompt: RENDERING RESOLUTION
           description: Choose your render resolution (Requires personal redream.key file).
           choices:
               "1x (640x480)":            1
@@ -9344,42 +9481,40 @@ redream:
               "5x (3200x2400)":          5
               "6x (3840x2880)":          6
       redreamRatio:
-          prompt:      ASPECT RATIO
+          prompt: ASPECT RATIO
           description: Choose your preferred aspect ratio.
           choices:
               "4:3 (Default)": "4:3"
               "16:9":          "16:9"
               "Stretch":       stretch
       redreamFrameSkip:
-          prompt:      FRAMESKIP
+          prompt: FRAMESKIP
           description: Enable auto frameskipping for performance on lower-end systems.
           choices:
               "Off (Default)" : 0
               "On"            : 1
       redreamVsync:
-          group: ADVANCED OPTIONS
-          prompt:      VSYNC
+          prompt: VSYNC
           description: Enable vertical sync to avoid tearing in some cases.
           choices:
               "Off (Default)": 0
               "On"           : 1
-      redreamPolygon:
+      redreamRender:
           group: ADVANCED OPTIONS
-          prompt:      POLYGON SORT ACCURACY
-          description: Choose the amount of polygon sort accuracy (Higher may cause artifacts).
+          prompt: RENDER MODE
           choices:
-              "Per-strip (Default)":   0
-              "Per-pixel (32 layers)": 32
-              "Per-pixel (64 layers)": 64
+              "HLE (per-strip)": hle_perstrip
+              "HLE (per-pixel)": hle_perpixel
+              "LLE":             lle
       redreamRegion:
-          prompt:      REGION
+          prompt: REGION
           description: Choose the Dreamcast console region.
           choices:
               "USA (Default)": usa
               "Europe":        europe
               "Japan":         japan
       redreamLanguage:
-          prompt:      LANGUAGE
+          prompt: LANGUAGE
           description: Choose the Dreamcast console language.
           choices:
               "English (Default)": english
@@ -9389,7 +9524,7 @@ redream:
               "Italian":           italian
               "Japanese":          japanese
       redreamBroadcast:
-          prompt:      BROADCAST
+          prompt: BROADCAST
           description: Choose broadcast standard (for older TV's).
           choices:
               "NTSC (Default)": ntsc
@@ -9397,7 +9532,7 @@ redream:
               "PAL_M":          pal_m
               "PAL_N":          pal_n
       redreamCable:
-          prompt:      CABLE
+          prompt: CABLE
           description: Choose cable type for the TV.
           choices:
               "VGA (Default)": vga
@@ -9451,6 +9586,11 @@ supermodel:
             choices:
                 "Off":      0
                 "On":       1
+        joystickSensitivity:
+            prompt: STEERING SENSITIVITY
+            description: For playing driving games with a game pad, it is sometimes a good idea to use a value larger than 100% so that the steering feels less sensitive on a thumbstick.
+            preset: slider
+            preset_parameters: 70 200 10 100 %
         pedalSwap:
             group: ADVANCED OPTIONS
             prompt:      MODERN PEDAL CONTROLS
@@ -9601,6 +9741,13 @@ mame:
             group: ADVANCED OPTIONS
             prompt:      CRT SWITCHRES
             description: Allows the use of switchres profiles if present.
+            choices:
+                "Off":             0
+                "On":              1
+        multiscreens:
+            group: ADVANCED OPTIONS
+            prompt:      MULTISCREENS
+            description: Play this game on several screens (if available)
             choices:
                 "Off":             0
                 "On":              1
@@ -10006,6 +10153,7 @@ mame:
                     description: Use MAME software lists to identify ROM
                     choices:
                         "Don't Use (Default)":                          none
+                        "Tandy Radio Shack Color Computer cassettes":   coco_cass
                         "Tandy Radio Shack Color Computer cartridges":  coco_cart
                         "Tandy Radio Shack Color Computer disk images": coco_flop
                 altmodel:
@@ -10022,8 +10170,9 @@ mame:
                     prompt:      MEDIA TYPE
                     description: Type of ROM file to load.
                     choices:
-                        "Cassette":    cass
-                        "Cartridge":   cart
+                        "Cassette":       cass
+                        "Cartridge":      cart
+                        "Disk (Drive 1)": flop1
                 enableui:
                     group: ADVANCED OPTIONS
                     prompt:      UI KEYS
@@ -10759,6 +10908,10 @@ wine:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode]
   cfeatures:
+        wine-runner:
+            prompt: WINE RUNNER
+            description: Runners simplify compatibility of running Windows games. You must have a runner in it's own directory under /userdata/system/wine/custom.
+            preset: runners
         dxvk:
             prompt: DXVK FEATURE
             description: Converts DirectX 8/9/10/11/12 calls to Vulkan.
@@ -11358,27 +11511,28 @@ steam:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode]
 
-yuzu:
+suyu:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
   cfeatures:
-        yuzu_backend:
-          prompt: GRAPHICS API
-          description: Choose which graphics API library to use.
-          choices:
-            "OpenGL": 0
-            "Vulkan": 1
-        yuzu_scale:
+        suyu_scale:
+          submenu: VIDEO
           prompt: RENDERING RESOLUTION
           description: Enhancement. Increase the rendering resolution. Makes 3D objects clearer.
           choices:
-            "Native (720p/1080p)": 2
-            "2x (1440p/2160p)":    3
-            "3x (2160p/3240p)":    4
-            "4x (2880p/4320p)":    5
-            "5x (3600p/5400p)":    6
-            "6x (4320p/6480p)":    7
-        yuzu_ratio:
+            "0.5x (360p/540p) [EXPERIMENTAL]":   0
+            "0.75x (540p/810p) [EXPERIMENTAL]":  1
+            "1x (720p/1080p)":                   2
+            "1.5x (1080p/1620p) [EXPERIMENTAL]": 3
+            "2x (1440p/2160p)":                  4
+            "3x (2160p/3240p)":                  5
+            "4x (2880p/4320p)":                  6
+            "5x (3600p/5400p)":                  7
+            "6x (4320p/6480p)":                  8
+            "7x (5040p/7560p)":                  9
+            "8x (5760p/8640p)":                  10
+        suyu_ratio:
+          submenu: VIDEO
           prompt: ASPECT RATIO
           description: Change the output resolution ratio.
           choices:
@@ -11386,8 +11540,17 @@ yuzu:
             "Force 4:3":         1
             "Force 21:9":        2
             "Force 16:10":       3
-            "Stretch to window": 4
-        yuzu_anisotropy:
+            "Force 32:9":        4
+            "Stretch to window": 5
+        suyu_backend:
+          submenu: RENDERING
+          prompt: GRAPHICS API
+          description: Choose which graphics API library to use.
+          choices:
+            "OpenGL": 0
+            "Vulkan": 1
+        suyu_anisotropy:
+          submenu: RENDERING
           prompt: ANISOTROPIC FILTERING
           description: Improves clarity of distant textures.
           choices:
@@ -11396,7 +11559,62 @@ yuzu:
             "4x":      3
             "8x":      4
             "16x":     5
-        yuzu_language:
+        suyu_vsync:
+          submenu: RENDERING
+          prompt: VSYNC
+          description: Fix screen tearing. FIFO (Vsync) does not drop frames. FIFO Relaxed allows tearing as it recovers from a slow down. Mailbox can have lower latency but may drop frames.
+          choices:
+            "Immediate":             0
+            "Mailbox (Recommended)": 1
+            "FIFO (VSync On)":       2
+            "FIFO Relaxed":          3
+        suyu_async_shaders:
+          submenu: RENDERING
+          prompt: ASYNC SHADER COMPILE
+          description: Speed up shader compilation.
+          choices:
+            "Disabled": "false"
+            "Enabled":  "true"
+        suyu_aliasing_method:
+          submenu: RENDERING
+          prompt: ANTI-ALIASING METHOD
+          description: FXAA has a lower performance impact, goof for low resolutions. SMAA offers best quality.
+          choices:
+            "None": 0
+            "FXAA": 1
+            "SMAA": 2
+        suyu_scale_filter:
+          submenu: RENDERING
+          prompt: TEXTURE FILTERING
+          description: Smooth textures on 3D objects.
+          choices:
+            "Nearest Neighbour":               0
+            "Bilinear":                        1
+            "Bicubic":                         2
+            "Gaussian":                        3
+            "ScaleForce":                      4
+            "AMD FidelityFX Super Resolution": 5
+        suyu_accuracy:
+          submenu: RENDERING
+          prompt: ACCURACY LEVEL
+          description: GPU emulation accuracy. Most games render fine with Normal. High is required to ensure particles render correctly.
+          choices:
+            "Normal":  0
+            "High":    1
+            "Extreme": 2
+        suyu_sound_mode:
+          prompt: CHOOSE SOUND OUTPUT MODE
+          choices:
+            "Mono":     0
+            "Stereo":   1
+            "Surround": 2
+        suyu_dock_mode:
+          prompt: DOCK MODE
+          description: Choose whether the virtual switch is docked or not.
+          choices:
+            "Undocked":         "false"
+            "Docked (Default)": "true"
+        suyu_language:
           prompt: LANGUAGE
           description: Change the game's language.
           choices:
@@ -11418,7 +11636,7 @@ yuzu:
             "Simplified Chinese":     15
             "Traditional Chinese":    16
             "Brazilian Portuguese":   17
-        yuzu_region:
+        suyu_region:
           prompt: CHOOSE CONSOLE REGION
           description: Choose your console region.
           choices:
@@ -11429,7 +11647,7 @@ yuzu:
             "China":     4
             "Korea":     5
             "Taiwan":    6
-        ryujinx_timezone:
+        suyu_timezone:
           prompt: CHOOSE CONSOLE TIMEZONE
           description: Choose your console timezone.
           choices:
@@ -11478,43 +11696,6 @@ yuzu:
             "W-SU":      43
             "WET":       44
             "Zulu":      45
-        yuzu_sound_mode:
-          prompt: CHOOSE SOUND OUTPUT MODE
-          choices:
-            "Mono":     0
-            "Stereo":   1
-            "Surround": 2
-        yuzu_vsync:
-          prompt: VSYNC
-          description: Fix screen tearing.
-          choices:
-            "Disabled": "false"
-            "Enabled":  "true"
-        yuzu_async_shaders:
-          group: ADVANCED OPTIONS
-          prompt: ASYNC SHADER COMPILE
-          description: Speed up shader compilation.
-          choices:
-            "Disabled": "false"
-            "Enabled":  "true"
-        yuzu_aliasing_method:
-          group: ADVANCED OPTIONS
-          prompt:      ANTI-ALIASING METHOD
-          description: Toggle MSAA/SSAA. Depends on anti-aliasing being enabled.
-          choices:
-            "None": 0
-            "FXAA": 1
-        yuzu_scale_filter:
-          group: ADVANCED OPTIONS
-          prompt:      TEXTURE FILTERING
-          description: Smooth textures on 3D objects.
-          choices:
-            "Nearest Neighbour":            0
-            "Bilinear":                     1
-            "Bicubic":                      2
-            "Gaussian":                     3
-            "ScaleForce":                   4
-            "AMD FidelityFX (Vulkan Only)": 5
 
 ryujinx:
   features: [padtokeyboard]
@@ -11703,7 +11884,7 @@ xenia:
                 "Enabled":  "true"
         xeniaLicense:
             prompt: XBOX LIVE ARCADE
-            description: This option enables the ability to play Xbox Live Arcacde games. May cause compatibility issues with non-XBLA games.
+            description: This option enables the ability to play Xbox Live Arcade games. May cause compatibility issues with non-XBLA games.
             choices:
                 "No licenses enabled":                      0
                 "XBLA license enabled (Default)":           1
@@ -11809,7 +11990,7 @@ xenia:
                 "15s":           15
                 "30s (Default)": 30
                 "45s":           45
-                "15s":           60
+                "60s":           60
         xenia_cache:
             group: ADVANCED OPTIONS
             prompt: MOUNT CACHE
@@ -11824,7 +12005,7 @@ xenia-canary:
   cfeatures:
         xeniaLicense:
             prompt: XBOX LIVE ARCADE
-            description: This option enables the ability to play Xbox Live Arcacde games. May cause compatibility issues with non-XBLA games.
+            description: This option enables the ability to play Xbox Live Arcade games. May cause compatibility issues with non-XBLA games.
             choices:
                 "No licenses enabled":                     0
                 "XBLA license enabled (Default)":          1
@@ -11833,6 +12014,7 @@ xenia-canary:
             prompt: INTERNAL DISPLAY RESOLUTION
             description: Allow game that support different resolutions to be rendered in specific resolution.
             choices:
+                "640x480":            0
                 "640x576":            1
                 "720x480":            2
                 "720x576":            3
@@ -11977,7 +12159,7 @@ xenia-canary:
                 "15s":           15
                 "30s (Default)": 30
                 "45s":           45
-                "15s":           60
+                "60s":           60
         xenia_cache:
             group: ADVANCED OPTIONS
             prompt: MOUNT CACHE
@@ -12080,12 +12262,13 @@ vita3k:
   shared: [powermode, tdp, videomode]
   features: []
   cfeatures:
-    vita3k_gfxbackend:
-      prompt:      GRAPHICS API
-      description: Choose which graphics API library to use.
-      choices:
-        "OpenGL": "OpenGL"
-        "Vulkan": "Vulkan"
+    # Disabled until vulkan fixed upstream
+    #vita3k_gfxbackend:
+    #  prompt:      GRAPHICS API
+    #  description: Choose which graphics API library to use.
+    #  choices:
+    #    "OpenGL": "OpenGL"
+    #    "Vulkan": "Vulkan"
     vita3k_resolution:
       prompt:      RENDERING RESOLUTION
       description: Enhancement. Increase the rendering resolution. Makes 3D objects clearer.
@@ -12101,27 +12284,19 @@ vita3k:
     vita3k_surface:
       prompt: DISABLE SURFACE SYNC
       description: Speed hack, enable to disable surface syncing between CPU and GPU. Surface syncing is needed by a few games.
-      choices:
-        "Disabled":          "false"
-        "Enabled (Default)": "true"
+      preset: switchoff
     vita3k_linear:
       prompt: LINEAR FILTERING
       description: The image will be softer which could help with aliasing.
-      choices:
-        "Disabled (Default)": "false"
-        "Enabled":            "true"
+      preset: switchoff
     vita3k_fxaa:
       prompt: FXAA
       description: Anti-aliasing is a technique for smoothing out jagged edges.
-      choices:
-        "Disabled (Default)": "false"
-        "Enabled":            "true"
+      preset: switchoff
     vita3k_vsync:
       prompt: VSYNC
       description: Fix screen tearing.
-      choices:
-        "Disabled":          "false"
-        "Enabled (Default)": "true"
+      preset: switchon
     vita3k_anisotropic:
       prompt:      ANISOTROPIC FILTERING
       description: Improves clarity of distant textures.
@@ -12131,10 +12306,27 @@ vita3k:
         "4x":  4
         "8x":  8
         "16x": 16
+    vita3k_show_pointer:
+      prompt: SHOW POINTER
+      description: You can hide the pointer on touchscreen devices.
+      preset: switchon
 
 bigpemu:
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
   features: [padtokeyboard]
-  shared: [powermode, tdp, videomode]
+  cfeatures:
+    bigpemu_vsync:
+      prompt: VSYNC
+      description: Fix screen tearing.
+      choices:
+        "Disabled": 0
+        "Enabled":  1
+    bigpemu_ratio:
+      prompt: ASPECT RATIO
+      description: Change the output resolution ratio.
+      choices:
+        "4:3 (Default)": 2
+        "16:9":          8
 
 pyxel:
   features: [padtokeyboard]
@@ -12176,11 +12368,6 @@ vpinball:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
   cfeatures:
-    vpinball_enableconfiggen:
-      group: EXPERT SETTINGS
-      prompt: ENABLE EMULATIONSTATION CONFIGURATION
-      description: Turn on to configure settings from this GUI (Recommended). If disabled, you have to manually edit the Config File (Experts only - not recommended).
-      preset: switchon
     vpinball_folders:
       group: EXPERT SETTINGS
       prompt: PER TABLE FOLDER
@@ -12234,53 +12421,131 @@ vpinball:
         "Default Performance Settings": "defaults"
         "Low-end Computer": "lowend"
         "High-end Computer": "highend"
-        "Manual (Default)": "manual"
+        "Manual": "manual"
     vpinball_altcolor:
       group: DISPLAY
       prompt: ALTCOLOR
       description: Alternative Coloured Dot Matrix Display (needs additional file).
       preset: switchon
+    vpinball_playfield:
+      group: WINDOWS POSITIONS
+      prompt: PLAYFIELD
+      description: Playfield configuration
+      choices:
+        "Manual": "manual"
     vpinball_pinmame:
-      group: DISPLAY
+      group: WINDOWS POSITIONS
       prompt: PINMAME DMD
       description: Extra DMD (Dot Matrix Display) window to display the score for tables with a pinmame rom. By default, settings come from the VPinballX.ini configuration file.
       choices:
-        "Top-Right Position, Small": "pinmame_topright_small"
-        "Top-Right Position, Medium": "pinmame_topright_medium"
-        "Top-Right Position, Large": "pinmame_topright_large"
-        "Top-Left Position, Small": "pinmame_topleft_small"
-        "Top-Left Position, Medium": "pinmame_topleft_medium"
-        "Top-Left Position, Large": "pinmame_topleft_large"
-        "PinMAME DMD disabled": "pinmame_disabled"
+        "Top-Right Position, Small": "topright_small"
+        "Top-Right Position, Medium": "topright_medium"
+        "Top-Right Position, Large": "topright_large"
+        "Top-Left Position, Small": "topleft_small"
+        "Top-Left Position, Medium": "topleft_medium"
+        "Top-Left Position, Large": "topleft_large"
+        "On screen 2 if available": "screen2"
+        "On screen 3 if available": "screen3"
+        "Disabled": "disabled"
+        "Manual": "manual"
     vpinball_flexdmd:
-      group: DISPLAY
+      group: WINDOWS POSITIONS
       prompt: FLEX DMD
       description: Extra DMD (Dot Matrix Display) window to display the score for tables without a rom. By default, settings come from the VPinballX.ini configuration file.
       choices:
-        "Top-Right Position, Small": "flexdmd_topright_small"
-        "Top-Right Position, Medium": "flexdmd_topright_medium"
-        "Top-Right Position, Large": "flexdmd_topright_large"
-        "Top-Left Position, Small": "flexdmd_topleft_small"
-        "Top-Left Position, Medium": "flexdmd_topleft_medium"
-        "Top-Left Position, Large": "flexdmd_topleft_large"
-        "FlexDMD disabled": "flexdmd_disabled"
+        "Top-Right Position, Small": "topright_small"
+        "Top-Right Position, Medium": "topright_medium"
+        "Top-Right Position, Large": "topright_large"
+        "Top-Left Position, Small": "topleft_small"
+        "Top-Left Position, Medium": "topleft_medium"
+        "Top-Left Position, Large": "topleft_large"
+        "On screen 2 if available": "screen2"
+        "On screen 3 if available": "screen3"
+        "Disabled": "disabled"
+        "Manual": "manual"
     vpinball_b2s:
-      group: DISPLAY
+      group: WINDOWS POSITIONS
       prompt: BACKGLASS (B2S)
       description: Upright glass panel displaying some illuminated artwork. By default, settings come from the VPinballX.ini configuration file.
       choices:
-        "Top-Right Position, Small": "b2s_topright_small"
-        "Top-Right Position, Medium": "b2s_topright_medium"
-        "Top-Right Position, Large": "b2s_topright_large"
-        "Top-Left Position, Small": "b2s_topleft_small"
-        "Top-Left Position, Medium": "b2s_topleft_medium"
-        "Top-Left Position, Large": "b2s_topleft_large"
-        "Backglass disabled": "b2s_disabled"
+        "Top-Right Position, Small": "topright_small"
+        "Top-Right Position, Medium": "topright_medium"
+        "Top-Right Position, Large": "topright_large"
+        "Top-Left Position, Small": "topleft_small"
+        "Top-Left Position, Medium": "topleft_medium"
+        "Top-Left Position, Large": "topleft_large"
+        "On screen 2 if available": "screen2"
+        "Disabled": "disabled"
+        "Manual": "manual"
     vpinball_b2sdmd:
-      group: DISPLAY
+      group: WINDOWS POSITIONS
       prompt: DISPLAY BACKGLASS DMD
       description: When the Backglass is activated, display the small additional part with the scores.
       preset: switchon
+    vpinball_b2sgrill:
+      group: WINDOWS POSITIONS
+      prompt: DISPLAY BACKGLASS GRILL
+      description: When the Backglass is activated, display the grill.
+      preset: switchon
+    vpinball_dmdsize:
+      group: WINDOWS POSITIONS
+      prompt: DMD SIZE
+      description: DMD window ratio
+      choices:
+        "128x16": "128x16"
+        "128x32": "128x32"
+        "192x64": "192x64"
+        "256x64": "256x64"
+    vpinball_inverseplayfieldandb2s:
+      group: WINDOWS POSITIONS
+      prompt: INVERSE PLAYFIELD AND B2S
+      description: Inverse the Backglass and the Playfield. Usefull to use the Backglass as main screen for other emulators.
+      choices:
+        "On": 1
+        "Off": 0
+    vpinball_playfieldmode:
+      group: WINDOWS POSITIONS
+      prompt: PLAYFIELD MODE
+      description: FULLSCREEN gives you a top-down view on the playfield. For cabinet use or multi-window on desktop.
+      choices:
+        "DESKTOP": 0
+        "FULLSCREEN": 1
+        "FULL SINGLE SCREEN": 2
+    vpinball_customphysicalsetup:
+      group: DISPLAY PHYSICAL SETUP
+      prompt: ENABLE CUSTOM DISPLAY PHYSICAL SETUP
+      description: Enable the custom values below.
+      preset: switch
+    vpinball_screenwidth:
+      group: DISPLAY PHYSICAL SETUP
+      prompt: SCREEN WIDTH
+      description: Long visible screen edge (cm)
+      preset: slider
+      preset_parameters: 20 120 0.5 90
+    vpinball_screenheight:
+      group: DISPLAY PHYSICAL SETUP
+      prompt: SCREEN HEIGHT
+      description: Short visible screen edge (cm)
+      preset: slider
+      preset_parameters: 10 80 0.5 50
+    vpinball_screeninclination:
+      group: DISPLAY PHYSICAL SETUP
+      prompt: SCREEN INCLINATION
+      description: Screen inclination (degree)
+      preset: slider
+      preset_parameters: 0 90 0.5 0
+    vpinball_screenplayery:
+      group: DISPLAY PHYSICAL SETUP
+      prompt: SCREEN PLAYER Y
+      description: Player distance from lower screen edge (cm)
+      preset: slider
+      preset_parameters: -30 50 0.5 0
+    vpinball_screenplayerz:
+      group: DISPLAY PHYSICAL SETUP
+      prompt: SCREEN PLAYER Z
+      description: Player's eyes distance from lower screen edge (cm)
+      preset: slider
+      preset_parameters: 15 120 0.5 70
     vpinball_musicvolume:
       group: AUDIO
       prompt: MUSIC VOLUME
@@ -12320,6 +12585,11 @@ vpinball:
       prompt: ALTERNATIVE SOUND
       description: Alternative sounds for the table (needs additional files).
       preset: switchon
+    vpinball_pad_add_credit:
+      prompt: USE JOYPAD SOUTH BUTTON TO ADD CREDIT
+      group: EXPERT SETTINGS
+      description: This should not be necessary, unless you are not using the default pad2key mapping.
+      preset: switch
 
 theforceengine:
   features: [padtokeyboard]
@@ -12347,7 +12617,7 @@ theforceengine:
         "2160p": 2160
     force_widescreen:
       submenu: GRAPHICS
-      prompt: ENABLE WIDESCREEN
+      prompt: WIDESCREEN
       description: Enable widescreen support.
       choices:
         "Disabled (Default)": 0
@@ -12380,31 +12650,39 @@ theforceengine:
         "GPU / OpenGL (Default)": 1
     force_colour:
       submenu: GRAPHICS
-      prompt: ENABLE TRUE COLOUR
+      prompt: COLOUR MODE
+      choices:
+        "8-bit (Classic)":    0
+        "8-bit Interpolated": 1
+        "True Colour":        2
+    force_hd:
+      submenu: GRAPHICS
+      prompt: HD TEXTURES
+      description: Choose to render high definition graphics textures. Requires OpenGL, True Colour and the enhanced.gob file.
       choices:
         "Disabled (Default)": 0
         "Enabled":            1
     force_bilinear:
       submenu: GRAPHICS
-      prompt: ENABLE BILINEAR FILTER
+      prompt: BILINEAR FILTER
       choices:
         "Disabled (Default)": 0
         "Enabled":            1
     force_mipmapping:
       submenu: GRAPHICS
-      prompt: ENABLE MIPMAPPING
+      prompt: MIPMAPPING
       choices:
         "Disabled (Default)": 0
         "Enabled":            1
     force_crosshair:
       submenu: GRAPHICS
-      prompt: ENABLE CROSSHAIR
+      prompt: CROSSHAIR
       choices:
         "Disabled (Default)": 0
         "Enabled":            1
     force_postfx:
       submenu: GRAPHICS
-      prompt: ENABLE BLOOM
+      prompt: BLOOM
       description: Choose to use Bloom post processing.
       choices:
         "Disabled (Default)": 0

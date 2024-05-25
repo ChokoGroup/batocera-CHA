@@ -149,8 +149,8 @@ crvision:
 # D-L
 
 daphne:
-  emulator: daphne
-  core:     hypseus
+  emulator: hypseus-singe
+  core:     hypseus-singe
   options:
     hud_support: false
 devilutionx:
@@ -542,6 +542,11 @@ sg1000:
 sgb:
   emulator: libretro
   core:     mgba
+singe:
+  emulator: hypseus-singe
+  core:     hypseus-singe
+  options:
+    hud_support: false
 socrates:
   emulator: libretro
   core:     mame
@@ -585,10 +590,13 @@ supervision:
   emulator: libretro
   core:     potator
 switch:
-  emulator: yuzu
-  core:     yuzu
+  emulator: suyu
+  core:     suyu
   options:
     hud_support: false
+systemsp:
+  emulator: libretro
+  core:     flycast
 
 # T-Z
 
@@ -621,6 +629,9 @@ tyrian:
 tyrquake:
   emulator: libretro
   core:     tyrquake
+uqm:
+  emulator: uqm
+  core:     uqm
 uzebox:
   emulator: libretro
   core:     uzem

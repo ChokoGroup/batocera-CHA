@@ -3,8 +3,8 @@
 # MAME (GroovyMAME)
 #
 ################################################################################
-# Version: GroovyMAME 0.263 - Switchres 2.220a
-MAME_VERSION = gm0263sr220a
+# Version: GroovyMAME 0.265 - Switchres 2.220c
+MAME_VERSION = gm0265sr220c
 MAME_SITE = $(call github,antonioginer,GroovyMAME,$(MAME_VERSION))
 MAME_DEPENDENCIES = sdl2 sdl2_ttf zlib libpng fontconfig sqlite jpeg flac rapidjson expat glm
 MAME_LICENSE = MAME
@@ -128,6 +128,8 @@ define MAME_BUILD_CMDS
 	TOOLS=1
 endef
 
+MAME_CONF_INIT = $(TARGET_DIR)/usr/share/batocera/datainit/system/configs/mame/
+
 define MAME_INSTALL_TARGET_CMDS
 	# Create specific directories on target to store MAME distro
 	mkdir -p $(TARGET_DIR)/usr/bin/mame/
@@ -200,6 +202,10 @@ define MAME_INSTALL_TARGET_CMDS
 	# gameStop script when exiting a rotated screen
 	mkdir -p $(TARGET_DIR)/usr/share/batocera/configgen/scripts
 	cp $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/emulators/mame/rotation_fix.sh $(TARGET_DIR)/usr/share/batocera/configgen/scripts/rotation_fix.sh
+
+	# Copy user -autoboot_command overrides (batocera.linux/batocera.linux#11706)
+	mkdir -p $(MAME_CONF_INIT)/autoload
+	cp -R $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/emulators/mame/autoload			$(MAME_CONF_INIT)
 endef
 
 define MAME_EVMAPY
