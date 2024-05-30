@@ -7,7 +7,7 @@ import shutil
 import os
 import controllersConfig
 import filecmp
-import cv2
+import ffmpeg
 from utils.logger import get_logger
 
 eslog = get_logger(__name__)
@@ -39,10 +39,17 @@ class HypseusSingeGenerator(Generator):
 
     @staticmethod
     def get_resolution(video_path):
-        cap = cv2.VideoCapture(video_path)
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        cap.release()
+        probe = ffmpeg.probe(video_path)
+        video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
+        width = int(video_stream['width'])
+        height = int(video_stream['height'])
+        sar_num = video_stream['display_aspect_ratio'].split(':')[0]
+        sar_den = video_stream['display_aspect_ratio'].split(':')[1]
+        sar_num = int(sar_num) if sar_num else 0
+        sar_den = int(sar_den) if sar_den else 0
+        if sar_num != 0 and sar_den != 0:
+            ratio = sar_num / sar_den
+            width = int(height * ratio)
         return width, height
     
     # Main entry of the module
@@ -53,7 +60,7 @@ class HypseusSingeGenerator(Generator):
         bezel_to_rom = {
             "cliffhanger": ["cliffhanger", "cliff"],
             "conan": ["conan", "future_boy"],
-            "cochantze_hd": ["cochantze_hd", "triad_hd", "triadstone"],
+            "chantze_hd": ["chantze_hd", "triad_hd", "triadstone"],
             "crimepatrol": ["crimepatrol", "crimepatrol-hd", "cp_hd"],
             "drugwars": ["drugwars", "drugwars-hd", "cp2dw_hd"],
             "daitarn": ["daitarn", "daitarn_3"],
@@ -66,13 +73,11 @@ class HypseusSingeGenerator(Generator):
             "johnnyrock": ["johnnyrock", "johnnyrock-hd", "johnnyrocknoir", "wsjr_hd"],
         }
 
-        default_bezel = "default"
-
         def find_bezel(rom_name):
             for bezel, rom_names in bezel_to_rom.items():
                 if rom_name in rom_names:
                     return bezel
-            return default_bezel
+            return None
 
         if not os.path.isdir(batoceraFiles.hypseusDatadir):
             os.mkdir(batoceraFiles.hypseusDatadir)
@@ -114,7 +119,11 @@ class HypseusSingeGenerator(Generator):
         commandsFile = rom + "/" + romName + ".commands"
         singeFile = rom + "/" + romName + ".singe"
         
-        bezelFile = find_bezel(romName.lower()) + ".png"
+        bezelFile = find_bezel(romName.lower())
+        if bezelFile is not None:
+            bezelFile += ".png"
+        else:
+            bezelFile = romName.lower() + ".png"
         bezelPath = batoceraFiles.hypseusDatadir + "/bezels/" + bezelFile
 
         # get the first video file from frameFile to determine the resolution
@@ -181,7 +190,11 @@ class HypseusSingeGenerator(Generator):
             else:
                 eslog.debug("Video resolution not found - using stretch")
                 commandArray.extend(["-x", str(gameResolution["width"]), "-y", str(gameResolution["height"])])
-
+        
+        # Don't set bezel if screeen resolution is not conducive to needing them (i.e. CRT)
+        if gameResolution["width"] / gameResolution["height"] < 1.51:
+            bezelRequired = False
+        
         # Backend - Default OpenGL
         if system.isOptSet("hypseus_api") and system.config["hypseus_api"] == 'Vulkan':
             commandArray.append("-vulkan")
@@ -229,7 +242,10 @@ class HypseusSingeGenerator(Generator):
 
         # bezels
         if bezelRequired:
-            commandArray.extend(["-bezel", bezelFile])
+            if not os.path.exists(bezelPath):
+                commandArray.extend(["-bezel", "default.png"])
+            else:
+                commandArray.extend(["-bezel", bezelFile])
         
         # Invert HAT Axis
         if system.isOptSet('hypseus_axis') and system.getOptBoolean("hypseus_axis"):
