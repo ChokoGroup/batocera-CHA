@@ -242,6 +242,7 @@ shared:
         "On":  1
         "Off": 0
     wheel_rotation:
+      order: 100
       group: CONTROLS
       submenu: WHEELS
       prompt: WHEEL ROTATION
@@ -257,6 +258,7 @@ shared:
         "900": 900
         "1080": 1080
     wheel_deadzone:
+      order: 100
       group: CONTROLS
       submenu: WHEELS
       prompt: WHEEL DEADZONE
@@ -273,6 +275,7 @@ shared:
         "45": 45
         "50": 50
     wheel_midzone:
+      order: 100
       group: CONTROLS
       submenu: WHEELS
       prompt: WHEEL MIDZONE
@@ -7542,6 +7545,7 @@ dolphin:
                 description: Emulate the Wiimote pointer with a mouse.
                 preset: switchoff
             dolphin-lightgun-hide-crosshair:
+                order: 99
                 group: CONTROLS
                 submenu: LIGHT GUNS
                 prompt: SHOW LIGHT GUN CROSSHAIRS
@@ -7672,6 +7676,7 @@ dosbox-x:
 
 duckstation:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, use_guns, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
+  features: [cheevos]
   cfeatures:
         duckstation_clocking:
             submenu: EMULATION
@@ -7979,6 +7984,7 @@ duckstation:
 
 flycast:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
+  features: [cheevos]
   cfeatures:
     flycast_ratio:
       prompt:      GAME ASPECT RATIO
@@ -9775,6 +9781,13 @@ mame:
             choices:
                 "On":            1
                 "Off (Default)": 0
+        mame_crosshair:
+            group: LIGHT GUN
+            prompt: CROSSHAIR
+            description:
+            choices:
+                "Disabled (Default)": "0"
+                "Enabled":            "1"
   systems:
        adam:
             cfeatures:
@@ -12252,12 +12265,12 @@ vita3k:
   features: []
   cfeatures:
     # Disabled until vulkan fixed upstream
-    #vita3k_gfxbackend:
-    #  prompt:      GRAPHICS API
-    #  description: Choose which graphics API library to use.
-    #  choices:
-    #    "OpenGL": "OpenGL"
-    #    "Vulkan": "Vulkan"
+    vita3k_gfxbackend:
+      prompt:      GRAPHICS API
+      description: Choose which graphics API library to use.
+      choices:
+        "OpenGL": "OpenGL"
+        "Vulkan": "Vulkan"
     vita3k_resolution:
       prompt:      RENDERING RESOLUTION
       description: Enhancement. Increase the rendering resolution. Makes 3D objects clearer.
