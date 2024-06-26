@@ -37,6 +37,7 @@ Add support for the Rock 5c
   - Driving Wheel SV200
   - PNX-V10 (x-input only)
   - Logitech Driving Force Pro
+  - HORI Racing Wheel Overdrive (mode 2 only)
 - Dolphin: support for Retroachievements (when they are enabled)
 - Color Computer (coco) now autoloads cassettes and disks based on MAME software lists with default fallbacks
   - uses "usage" info field in MAME software list
@@ -141,7 +142,7 @@ Add support for the Rock 5c
 - Fheroes2 to 1.0.13
 - PCSX2 to v1.7.5913
 - Play! & Libretro Play! to 0.66
-- Dolphin to 5.0-21543
+- Dolphin to 5.0-21774
 - Libretro-Hatarib: bump to v0.3
 - Hatari to v2.5.0
 - Citra to r64e3e9f
