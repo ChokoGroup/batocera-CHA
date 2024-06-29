@@ -20,7 +20,12 @@ BATOCERA_DRMINFO_MAIN=batocera-drminfo.c
 
 # this resolution seems to cause issues on the rpi4 (dmanlfc)
 ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_BCM2711),y)
-BATOCERA_DRMINFO_MAIN=batocera-drminfo-no-1360x768.c
+	BATOCERA_DRMINFO_FLAGS += -DHAVE_IGNORE_1360x768_MODE
+endif
+
+# this limits max resolution to 1080p on AllWinner H3 devices
+ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_H3),y)
+	BATOCERA_DRMINFO_FLAGS += -DFORCE_1080P_MAX
 endif
 
 define BATOCERA_DRMINFO_BUILD_CMDS
