@@ -73,6 +73,7 @@ if grep -qE '^[ ]*autoresize[ ]*=[ ]*true[ ]*$' "${BOOTCONF}"; then
     # /userdata partition
     PART=$(batocera-part "share_internal")
     PARTNUM=$(batocera-part "share_internal_num")
+    PARTLABEL=$(lsblk -no label "$PART")
     echo "Partition name: $PART & number: $PARTNUM" >> "$LOG"
     # boot disk
     DISK=$(batocera-part prefix "${PART}")
@@ -114,7 +115,7 @@ if grep -qE '^[ ]*autoresize[ ]*=[ ]*true[ ]*$' "${BOOTCONF}"; then
            if test "${PARTTYPE}" = "ext4"
            then
                echo "Step $i: Formatting the ext4 file system" >> "$LOG"
-               textoutput $i 60 "mkfs.ext4 -L SHARE -q -F -F ${PART}"
+               textoutput $i 60 "mkfs.ext4 -L ${PARTLABEL} -q -F -F ${PART}"
            fi
            ;;
         9) 
@@ -147,16 +148,17 @@ else
             "Removing trigger.............." "Pending"
         )
         PART=$(batocera-part "share_internal")
+        PARTLABEL=$(lsblk -no label "$PART")
 
         case "${FORMAT_INTERNAL_TYPE}" in
             "btrfs")
-            textoutput 1 50 "mkfs.btrfs -L SHARE -f ${PART}"
+              textoutput 1 50 "mkfs.btrfs -L ${PARTLABEL} -f ${PART}"
             ;;
             "ext4")
-            textoutput 1 50 "mkfs.ext4 -L SHARE -q -F -F ${PART}"
+              textoutput 1 50 "mkfs.ext4 -L ${PARTLABEL} -q -F -F ${PART}"
             ;;
             "exfat")
-            textoutput 1 50 "mkfs.exfat -n SHARE ${PART}"
+              textoutput 1 50 "mkfs.exfat -n ${PARTLABEL} ${PART}"
             ;;
             *)
             # do nothing
