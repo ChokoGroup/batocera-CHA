@@ -2870,6 +2870,21 @@ msgctxt "game_options"
 msgid "USE SOFTWARE RENDERING"
 msgstr "ИСП. SOFTWARE РЕНДЕРИНГ"
 
+#. TRANSLATION: libretro/swanstation, duckstation
+msgctxt "game_options"
+msgid "Reduces wobbly polygons & warping textures."
+msgstr "Уменьшает шатание полигонов и деформацию текстур."
+
+#. TRANSLATION: libretro/swanstation, duckstation
+msgctxt "game_options"
+msgid "ENABLE PGXP CORRECTIONS"
+msgstr "ВКЛЮЧИТЬ PGXP КОРРЕКЦИЮ"
+
+#. TRANSLATION: libretro/swanstation, libretro/mame, libretro/mame, duckstation, duckstation, ...
+msgctxt "game_options"
+msgid "Enabled (Default)"
+msgstr "Включено (по умолчанию)"
+
 #. TRANSLATION: libretro/swanstation, libretro/duckstation, duckstation
 msgctxt "game_options"
 msgid "ANTI-ALIASING (MSAA/SSAA)"
@@ -4269,11 +4284,6 @@ msgstr "Включить или отключить сохранение высо
 msgctxt "game_options"
 msgid "HIGH SCORE PLUGIN"
 msgstr "ПЛАГИН РЕКОРДОВ"
-
-#. TRANSLATION: libretro/mame, libretro/mame, duckstation, duckstation, pcsx2, ...
-msgctxt "game_options"
-msgid "Enabled (Default)"
-msgstr "Включено (по умолчанию)"
 
 #. TRANSLATION: libretro/mame, mame/pcsx2, mame/pcsx2
 msgctxt "game_options"
@@ -9517,16 +9527,6 @@ msgstr "DualShock / Xbox Тип"
 msgctxt "game_options"
 msgid "NeGcon (Rumble)"
 msgstr "NeGcon (вибрация)"
-
-#. TRANSLATION: duckstation
-msgctxt "game_options"
-msgid "Reduces wobbly polygons & warping textures."
-msgstr "Уменьшает шатание полигонов и деформацию текстур."
-
-#. TRANSLATION: duckstation
-msgctxt "game_options"
-msgid "ENABLE PGXP CORRECTIONS"
-msgstr "ВКЛЮЧИТЬ PGXP КОРРЕКЦИЮ"
 
 #. TRANSLATION: duckstation
 msgctxt "game_options"
@@ -15300,12 +15300,12 @@ msgctxt "keys_files"
 msgid "Exit Duckstation"
 msgstr "Выйти из DuckStation"
 
-#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, nds.drastic.keys
+#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, nds.drastic.keys, mame.keys
 msgctxt "keys_files"
 msgid "Load State"
 msgstr "Загрузка"
 
-#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, nds.drastic.keys
+#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, nds.drastic.keys, mame.keys
 msgctxt "keys_files"
 msgid "Save State"
 msgstr "Сохранение"
@@ -15320,12 +15320,12 @@ msgctxt "keys_files"
 msgid "Restart Game"
 msgstr "Перезапустить игру"
 
-#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys
+#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, mame.keys
 msgctxt "keys_files"
 msgid "Slot -"
 msgstr "Слот -"
 
-#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys
+#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, mame.keys
 msgctxt "keys_files"
 msgid "Slot +"
 msgstr "Слот +"
@@ -15340,7 +15340,7 @@ msgctxt "keys_files"
 msgid "Next Disc (m3u)"
 msgstr "Следующий диск (m3u)"
 
-#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys
+#. TRANSLATION: psx.duckstation.keys, psp.ppsspp.keys, mame.keys
 msgctxt "keys_files"
 msgid "Fast Forward"
 msgstr "Быстрая перемотка"
@@ -15719,6 +15719,11 @@ msgstr "Быстрое меню"
 msgctxt "keys_files"
 msgid "FastForward"
 msgstr "Перемотка"
+
+#. TRANSLATION: mame.keys
+msgctxt "keys_files"
+msgid "Exit Emulator"
+msgstr ""
 
 #. TRANSLATION: scummvm.keys
 msgctxt "keys_files"
