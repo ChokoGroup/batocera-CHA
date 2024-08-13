@@ -1,23 +1,23 @@
 #
-## Batocera 39-Choko - Capcom Home Arcade - Dual Boot Edition
+## Batocera 40-Choko - Capcom Home Arcade - Dual Boot Edition
 
 This is the fork of [Batocera Linux](https://batocera.org) with a customized version for the [Capcom Home Arcade](https://capcomhomearcade.com) device.
 
 It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA-Multi-OS-Boot) repository.
 
 #
-![Batocera 39 UI](./ChokoGroup/BatoceraFavorites.png)
+![Batocera 40 UI](./ChokoGroup/BatoceraFavorites.png)
 #
 
-## What is special about batocera 39-Choko?
+## What is special about batocera 40-Choko?
 
-- It's a dual boot system image with both official OS v1.71 and Batocera 39. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
+- It's a dual boot system image with both official OS v1.7.1 and Batocera 40. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
 
 - We can use Emulation Station (Batocera style UI) or RetroArch (Lakka style UI).
 
 - Scanlines shader crt/GritsScanlines enabled by default for both Emulation Station and RetroArch.
 
-- Possibility to download and install future updates from our repository without the need of a computer.
+- Possibility to download and install future updates from our repository without the need of a computer. Don't let the screensaver activate while downloading update or it will be interrupted.
 
 - Use swap partition, if found, or create a swap file to expand available memory, if CHOKO_DISK partition exists or if running from SD card.
 
@@ -28,9 +28,7 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 ![Choko Menu](./ChokoGroup/ChokoMenu.png)
 #
 
-Compared to official Official Batocera 39, this version has some new or updated packages:
-
-- RetroArch and libretro-core-info v1.18.0 (instead of v1.16.0).
+Compared to official Official Batocera 40, this version has some new or updated packages:
 
 - FBalpha2012 libretro core added.
 
@@ -111,3 +109,5 @@ https://github.com/ChokoGroup/batocera-CHA/assets/55603581/3e674fc9-564e-42d9-a5
 - On rare ocasions, SD card and eMMC change order at boot (no idea why). When that happens, an error message is displayed asking to unplug the power cable and try again a couple of minutes later.
 
 - Sometimes a game crashes when starting, going back to UI (Emulation Station or RetroArch). Trying again usually runs the game without issues. This usually happens when changing games frequently.
+
+- Upgrading fails if screensaver is activated while downloading / upgrading.
