@@ -3,8 +3,11 @@
 # dolphin-emu
 #
 ################################################################################
-# Version: 2407-76 (5.0 development) - Commits on Jul 19, 2024
-DOLPHIN_EMU_VERSION = 139e6f6f1b748211c0bd4d13d03e7ef433bee670
+# Version: Commits on Aug 4, 2024
+# Add major & minor version accordingly for any bump
+DOLPHIN_EMU_VERSION = 7645cbff9a263b9b77e14e0ea1ab46be34239469
+DOLPHIN_EMU_VERSION_MAJOR = 2407
+DOLPHIN_EMU_VERSION_MINOR = 130
 DOLPHIN_EMU_SITE = https://github.com/dolphin-emu/dolphin
 DOLPHIN_EMU_SITE_METHOD = git
 DOLPHIN_EMU_LICENSE = GPLv2+
@@ -25,6 +28,7 @@ DOLPHIN_EMU_CONF_OPTS += -DENABLE_AUTOUPDATE=OFF
 DOLPHIN_EMU_CONF_OPTS += -DENABLE_ANALYTICS=OFF
 DOLPHIN_EMU_CONF_OPTS += -DUSE_SYSTEM_LIBS=AUTO
 DOLPHIN_EMU_CONF_OPTS += -DENABLE_CLI_TOOL=OFF
+DOLPHIN_EMU_CONF_OPTS += -DUSE_RETRO_ACHIEVEMENTS=ON
 
 ifeq ($(BR2_PACKAGE_QT6),y)
 DOLPHIN_EMU_DEPENDENCIES += qt6base qt6svg
@@ -54,6 +58,14 @@ define DOLPHIN_EMU_EVMAPY
         $(TARGET_DIR)/usr/share/evmapy
 endef
 
+define DOLPHIN_EMU_PRE_CONFIGURE_HOOK
+    sed -i 's/set(DOLPHIN_VERSION_MAJOR .*)/set(DOLPHIN_VERSION_MAJOR "$(DOLPHIN_EMU_VERSION_MAJOR)")/' \
+        $(@D)/CMake/ScmRevGen.cmake
+    sed -i 's/set(DOLPHIN_VERSION_MINOR .*)/set(DOLPHIN_VERSION_MINOR "$(DOLPHIN_EMU_VERSION_MINOR)")/' \
+        $(@D)/CMake/ScmRevGen.cmake
+endef
+
+DOLPHIN_EMU_PRE_CONFIGURE_HOOKS = DOLPHIN_EMU_PRE_CONFIGURE_HOOK
 DOLPHIN_EMU_POST_INSTALL_TARGET_HOOKS = DOLPHIN_EMU_EVMAPY
 
 $(eval $(cmake-package))
