@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+from pathlib import Path
+
 profiler = None
 
 # 1) touch /var/run/emulatorlauncher.perf
@@ -16,23 +18,23 @@ if os.path.exists("/var/run/emulatorlauncher.perf"):
 
 ### import always needed ###
 import argparse
-import GeneratorImporter
 import signal
 import time
 from sys import exit
 import subprocess
-import batoceraFiles
-import utils.videoMode as videoMode
-import utils.gunsUtils as gunsUtils
-import utils.wheelsUtils as wheelsUtils
-############################
-from utils.logger import get_logger
-eslog = get_logger(__name__)
-############################
+import json
 
-from Emulator import Emulator
-import controllersConfig as controllers
-import utils.bezels as bezelsUtil
+from . import controllersConfig as controllers
+from . import GeneratorImporter
+from .batoceraPaths import SAVES
+from .Emulator import Emulator
+from .utils import bezels as bezelsUtil
+from .utils import videoMode
+from .utils import gunsUtils
+from .utils import wheelsUtils
+from .utils.logger import get_logger
+
+eslog = get_logger(__name__)
 
 def squashfs_begin(rom):
     eslog.debug(f"squashfs_begin({rom})")
@@ -67,6 +69,14 @@ def squashfs_begin(rom):
     if len(os.listdir(rommountpoint)) == 1 and  os.path.exists(romsingle):
         eslog.debug(f"squashfs: single rom {romsingle}")
         return True, rommountpoint, romsingle
+
+    # If a .ROM symlink is present, use the linked file as the ROM.
+    try:
+        romlinked = os.path.realpath(os.path.join(rommountpoint, ".ROM"), strict=True)
+        eslog.debug(f"squashfs: linked rom {romlinked}")
+        return True, rommountpoint, romlinked
+    except:
+        pass
 
     return True, rommountpoint, rommountpoint
 
@@ -207,11 +217,10 @@ def start_rom(args, maxnbplayers, rom, romConfiguration):
         eslog.debug("resolution: {}x{}".format(str(gameResolution["width"]), str(gameResolution["height"])))
 
         # savedir: create the save directory if not already done
-#        dirname = os.path.join(batoceraFiles.savesDir, system.name)
-#        if not os.path.exists(dirname):
-#            os.makedirs(dirname)
-        if not os.path.exists(batoceraFiles.savesDir):
-            os.makedirs(batoceraFiles.savesDir)
+ #       dirname = SAVES / system.name
+        dirname = SAVES
+        if not dirname.exists():
+            dirname.mkdir(parents=True)
 
         # core
         effectiveCore = ""
@@ -260,8 +269,14 @@ def start_rom(args, maxnbplayers, rom, romConfiguration):
 
         # run the emulator
         try:
-            from Evmapy import Evmapy
+            from .Evmapy import Evmapy
             Evmapy.start(systemName, system.config['emulator'], effectiveCore, effectiveRomConfiguration, playersControllers, guns)
+
+            # hotkeygen context
+            hkc = generator.getHotkeysContext()
+            eslog.debug("hotkeygen: updating context to {}".format(hkc["name"]))
+            subprocess.call(["hotkeygen", "--new-context", hkc["name"], json.dumps(hkc["keys"])])
+
             # change directory if wanted
             executionDirectory = generator.executionDirectory(system.config, effectiveRom)
             if executionDirectory is not None:
@@ -287,6 +302,10 @@ def start_rom(args, maxnbplayers, rom, romConfiguration):
             if profiler:
                 profiler.enable()
         finally:
+            # reset hotkeygen context
+            eslog.debug("hotkeygen: resetting to default context")
+            subprocess.call(["hotkeygen", "--default-context"])
+
             Evmapy.stop()
 
         # run a script after emulator shuts down
@@ -349,7 +368,6 @@ def getHudBezel(system, generator, rom, gameResolution, bordersSize, bordersRati
     # bottom, top, left and right must not cover too much the image to be considered as compatible
     if os.path.exists(overlay_info_file):
         try:
-            import json
             infos = json.load(open(overlay_info_file))
         except:
             eslog.warning(f"unable to read {overlay_info_file}")
@@ -404,7 +422,7 @@ def getHudBezel(system, generator, rom, gameResolution, bordersSize, bordersRati
             if abs((infos_left  - ((bezel_width-img_width)/2.0)) / img_width) > max_cover:
                 eslog.debug(f"bezel left covers too much the game image : {infos_left  - ((bezel_width-img_width)/2.0)} / {img_width} > {max_cover}")
                 return None
-        
+
     if "right" not in infos:
         eslog.debug(f"bezel has no right info in {overlay_info_file}")
         # assume default is 4/3 over 16/9
@@ -575,7 +593,8 @@ def signal_handler(signal, frame):
         eslog.debug('killing proc')
         proc.kill()
 
-if __name__ == '__main__':
+def launch():
+    global proc
     proc = None
     signal.signal(signal.SIGINT, signal_handler)
     parser = argparse.ArgumentParser(description='emulator-launcher script')
@@ -624,6 +643,9 @@ if __name__ == '__main__':
     eslog.debug(f"Exiting configgen with status {str(exitcode)}")
 
     exit(exitcode)
+
+if __name__ == '__main__':
+    launch()
 
 # Local Variables:
 # tab-width:4

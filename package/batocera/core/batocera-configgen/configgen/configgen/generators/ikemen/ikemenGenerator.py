@@ -1,9 +1,16 @@
-import Command
-from generators.Generator import Generator
-from utils.logger import get_logger
-import controllersConfig
+from __future__ import annotations
+
 import json
-import os
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ... import Command, controllersConfig
+from ...batoceraPaths import ensure_parents_and_open
+from ...utils.logger import get_logger
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
 
 eslog = get_logger(__name__)
 
@@ -167,9 +174,19 @@ Joymapping =[
 
 class IkemenGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "ikemen",
+            "keys": { "exit": "KEY_Q", "menu": "KEY_ESC", "pause": "KEY_ESC" }
+        }
+
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
+        rom_path = Path(rom)
+        config_path = rom_path / "save" / "config.json"
+
         try:
-            conf = json.load(open(rom+"/save/config.json", "r"))
+            with config_path.open() as c:
+                conf = json.load(c)
         except:
             conf = {}
 
@@ -180,9 +197,7 @@ class IkemenGenerator(Generator):
         conf["Fullscreen"] = True
 
         js_out = json.dumps(conf, indent=2)
-        if not os.path.isdir(rom+"/save"):
-            os.mkdir(rom+"/save")
-        with open(rom+"/save/config.json", "w") as jout:
+        with ensure_parents_and_open(config_path, "w") as jout:
             jout.write(js_out)
 
         commandArray = ["/usr/bin/batocera-ikemen", rom]

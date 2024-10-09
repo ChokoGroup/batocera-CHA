@@ -1,14 +1,13 @@
-#!/usr/bin/env python
-import sys
-import os
-from controllersConfig import getDevicesInformation
-from controllersConfig import getAssociatedMouse
+from __future__ import annotations
 
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from typing import TYPE_CHECKING
 
-from settings.unixSettings import UnixSettings
-import batoceraFiles
+from ...controllersConfig import ControllerMapping, getAssociatedMouse, getDevicesInformation
+
+if TYPE_CHECKING:
+    from ...Emulator import Emulator
+    from ...settings.unixSettings import UnixSettings
+
 
 # Map an emulationstation direction to the corresponding retroarch
 retroarchdirs = {'up': 'up', 'down': 'down', 'left': 'left', 'right': 'right'}
@@ -29,7 +28,7 @@ systemToSwapDisable = {'amigacd32', 'amigacdtv', 'naomi', 'atomiswave', 'megadri
 
 # Write a configuration for a specified controller
 # Warning, function used by amiberry because it reads the same retroarch formatting
-def writeControllersConfig(retroconfig, system, controllers, lightgun):
+def writeControllersConfig(retroconfig: UnixSettings, system: Emulator, controllers: ControllerMapping, lightgun: bool) -> None:
     # Map buttons to the corresponding retroarch specials keys
     retroarchspecials = {'x': 'load_state', 'y': 'save_state', 'a': 'reset', 'start': 'exit_emulator', \
                          'up': 'state_slot_increase', 'down': 'state_slot_decrease', 'left': 'rewind', 'right': 'hold_fast_forward', \
@@ -52,10 +51,20 @@ def writeControllersConfig(retroconfig, system, controllers, lightgun):
                             '16': 'menu_toggle'}
     cleanControllerConfig(retroconfig, controllers, retroarchFullSpecial)
 
+    # hotkeys, forced to match with the hotkeys system
+    retroconfig.save('input_enable_hotkey',       '"shift"')
+    retroconfig.save('input_menu_toggle',         '"f1"')
+    retroconfig.save('input_exit_emulator',       '"escape"')
+    retroconfig.save('input_save_state',          '"f3"')
+    retroconfig.save('input_load_state',          '"f4"')
+    retroconfig.save('input_state_slot_decrease', '"f5"')
+    retroconfig.save('input_state_slot_increase', '"f6"')
+    retroconfig.save('input_player1_select',      '"f12"')
+
     # No menu in non full uimode
     if system.config["uimode"] != "Full":
         del retroarchspecials['b']
-    
+
     # Check if hotkeys need to be removed/disabled (Needed for N64 controllers without a dedicated hotkey button)
     # Assign value based on core
     if (system.config['core'] == 'mupen64plus-next'):
@@ -67,7 +76,7 @@ def writeControllersConfig(retroconfig, system, controllers, lightgun):
     # Check for limited hotkey setting
     if option and option in system.config and system.config[option] in ['n64limited']:
         retroarchspecials = {'start': 'exit_emulator'}
-    
+
     for controller in controllers:
         mouseIndex = None
         if system.name in ['nds', '3ds']:
@@ -80,21 +89,21 @@ def writeControllersConfig(retroconfig, system, controllers, lightgun):
     writeHotKeyConfig(retroconfig, controllers)
 
 # Remove all controller configurations
-def cleanControllerConfig(retroconfig, controllers, retroarchspecials):
-    retroconfig.disableAll('input_player')
+def cleanControllerConfig(retroconfig: UnixSettings, controllers, retroarchspecials):
+    retroconfig.disable_all('input_player')
     for specialkey in retroarchspecials:
-        retroconfig.disableAll(f'input_{retroarchspecials[specialkey]}')
+        retroconfig.disable_all(f'input_{retroarchspecials[specialkey]}')
 
 
 # Write the hotkey for player 1
-def writeHotKeyConfig(retroconfig, controllers):
+def writeHotKeyConfig(retroconfig: UnixSettings, controllers):
     if '1' in controllers:
         if 'hotkey' in controllers['1'].inputs and controllers['1'].inputs['hotkey'].type == 'button':
             retroconfig.save('input_enable_hotkey_btn', controllers['1'].inputs['hotkey'].id)
 
 
 # Write a configuration for a specified controller
-def writeControllerConfig(retroconfig, controller, playerIndex, system, retroarchspecials, lightgun, mouseIndex=0):
+def writeControllerConfig(retroconfig: UnixSettings, controller, playerIndex, system, retroarchspecials, lightgun, mouseIndex=0):
     generatedConfig = generateControllerConfig(controller, retroarchspecials, system, lightgun, mouseIndex)
     for key in generatedConfig:
         retroconfig.save(key, generatedConfig[key])

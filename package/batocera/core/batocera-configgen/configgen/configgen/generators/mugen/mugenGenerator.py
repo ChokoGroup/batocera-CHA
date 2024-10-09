@@ -1,16 +1,31 @@
-#!/usr/bin/env python
-from generators.Generator import Generator
-import Command
+from __future__ import annotations
+
 import os
-import controllersConfig
 import re
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ... import Command, controllersConfig
+from ...batoceraPaths import mkdir_if_not_exists
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
+
 
 class MugenGenerator(Generator):
 
-    def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "mugen",
+            "keys": { "exit": ["KEY_ESC"] }
+        }
 
-        settings_path = rom + "/data/mugen.cfg"
-        with open(settings_path, 'r', encoding='utf-8-sig') as f:
+    def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
+        rom_path = Path(rom)
+
+        settings_path = rom_path / "data" / "mugen.cfg"
+        with settings_path.open('r', encoding='utf-8-sig') as f:
             contents = f.read()
 
         #clean up
@@ -21,18 +36,17 @@ class MugenGenerator(Generator):
         contents = re.sub(r'^[ ;]*Width[ ]*=.*', 'Width = '+str(gameResolution["width"]), contents, 0, re.MULTILINE)
         contents = re.sub(r'^[ ;]*Height[ ]*=.*', 'Height = '+str(gameResolution["height"]), contents, 0, re.MULTILINE)
         contents = re.sub(r'^[ ;]*Language[ ]*=.*', 'Language = "en"', contents, 0, re.MULTILINE)
-        with open(settings_path, 'w') as f:
+        with settings_path.open('w') as f:
             f.write(contents)
 
         # Save config
-        if not os.path.exists(os.path.dirname(settings_path)):
-            os.makedirs(os.path.dirname(settings_path))
+        mkdir_if_not_exists(settings_path.parent)
 
         environment={
             "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers)
         }
         # ensure nvidia driver used for vulkan
-        if os.path.exists('/var/tmp/nvidia.prime'):
+        if Path('/var/tmp/nvidia.prime').exists():
             variables_to_remove = ['__NV_PRIME_RENDER_OFFLOAD', '__VK_LAYER_NV_optimus', '__GLX_VENDOR_LIBRARY_NAME']
             for variable_name in variables_to_remove:
                 if variable_name in os.environ:
@@ -45,7 +59,7 @@ class MugenGenerator(Generator):
                 }
             )
 
-        commandArray = ["batocera-wine", "mugen", "play", rom]
+        commandArray = ["batocera-wine", "mugen", "play", rom_path]
         return Command.Command(
             array=commandArray,
             env=environment

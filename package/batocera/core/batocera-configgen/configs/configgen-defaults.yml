@@ -137,6 +137,9 @@ coco:
 colecovision:
   emulator: libretro
   core:     bluemsx
+commanderx16:
+  emulator: x16emu
+  core:     x16emu
 corsixth:
   emulator: corsixth
   core:     corsixth
@@ -511,6 +514,9 @@ raze:
 reminiscence:
   emulator: libretro
   core:     reminiscence
+rott:
+  emulator: taradino
+  core:     taradino
 samcoupe:
   emulator: samcoupe
   core:     samcoupe

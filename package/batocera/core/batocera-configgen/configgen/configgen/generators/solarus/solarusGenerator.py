@@ -1,14 +1,26 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import Command
-from generators.Generator import Generator
-import controllersConfig
-import batoceraFiles
 import codecs
-import os
-import zipfile
+from typing import TYPE_CHECKING, Final
+
+from ... import Command, controllersConfig
+from ...batoceraPaths import CONFIGS, mkdir_if_not_exists
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...Emulator import Emulator
+    from ...types import HotkeysContext
+
+
+_CONFIG_DIR: Final = CONFIGS / "solarus"
 
 class SolarusGenerator(Generator):
+
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "solarus",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }
 
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
 
@@ -37,7 +49,7 @@ class SolarusGenerator(Generator):
         })
 
     @staticmethod
-    def padConfig(system, playersControllers):
+    def padConfig(system: Emulator, playersControllers: controllersConfig.ControllerMapping):
         keymapping = {
             "action": "a",
             "attack": "b",
@@ -67,11 +79,8 @@ class SolarusGenerator(Generator):
                 keymapping["left"]  = "joystick2left"
                 keymapping["right"] = "joystick2right"
 
-        configdir = "{}/{}".format(batoceraFiles.CONF, "solarus")
-        if not os.path.exists(configdir):
-            os.makedirs(configdir)
-        configFileName = "{}/{}".format(configdir, "pads.ini")
-        f = codecs.open(configFileName, "w", encoding="ascii")
+        mkdir_if_not_exists(_CONFIG_DIR)
+        f = codecs.open(str(_CONFIG_DIR / "pads.ini"), "w", encoding="ascii")
 
         nplayer = 1
         for playercontroller, pad in sorted(playersControllers.items()):

@@ -1,42 +1,40 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
-import batoceraFiles
-import Command
-import shutil
-import os
-from utils.logger import get_logger
-from os import path
-from os import environ
-import configparser
-from xml.dom import minidom
 import codecs
-import shutil
-import utils.bezels as bezelsUtil
-import subprocess
 import csv
+import os
+from typing import TYPE_CHECKING
 from xml.dom import minidom
-from PIL import Image, ImageOps
+
+from ...utils.logger import get_logger
+from .mamePaths import MAME_CONFIG, MAME_DEFAULT_DATA
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from ...controllersConfig import ControllerMapping
+    from ...Emulator import Emulator
+    from ...types import DeviceInfoMapping, GunMapping
 
 eslog = get_logger(__name__)
 
-def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customCfg, specialController, decorations, useGuns, guns, useWheels, wheels, useMouse, multiMouse, system):
+def generatePadsConfig(cfgPath: Path, playersControllers: ControllerMapping, sysName: str, altButtons: str, customCfg: bool, specialController: str, decorations: str | None, useGuns: bool, guns: GunMapping, useWheels: bool, wheels: DeviceInfoMapping, useMouse: bool, multiMouse: bool, system: Emulator) -> None:
     # config file
     config = minidom.Document()
-    configFile = cfgPath + "default.cfg"
-    if os.path.exists(configFile):
+    configFile = cfgPath / "default.cfg"
+    if configFile.exists():
         try:
-            config = minidom.parse(configFile)
+            config = minidom.parse(str(configFile))
         except:
             pass # reinit the file
-    if os.path.exists(configFile) and customCfg:
+    if configFile.exists() and customCfg:
         overwriteMAME = False
     else:
         overwriteMAME = True
-    
+
     # Load standard controls from csv
-    controlFile = '/usr/share/batocera/configgen/data/mame/mameControls.csv'
-    openFile = open(controlFile, 'r')
+    controlFile = MAME_DEFAULT_DATA / 'mameControls.csv'
+    openFile = controlFile.open('r')
     controlDict = {}
     with openFile:
         controlList = csv.reader(openFile)
@@ -79,8 +77,10 @@ def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customC
     for p in range(0, 4):
         xml_crosshair = config.createElement("crosshair")
         xml_crosshair.setAttribute("player", str(p))
-        if system.isOptSet("mame_crosshair") and system.config["mame_crosshair"] == "1":
+        if system.isOptSet("mame_crosshair") and system.config["mame_crosshair"] == "enabled":
             xml_crosshair.setAttribute("mode", "1")
+        elif system.isOptSet("mame_crosshair") and system.config["mame_crosshair"] == "onmove":
+            continue # keep no line
         else:
             xml_crosshair.setAttribute("mode", "0")
         xml_crosshairs.appendChild(xml_crosshair)
@@ -104,15 +104,15 @@ def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customC
     else:
         useControls = sysName
     eslog.debug(f"Using {useControls} for controller config.")
-    
+
     # Open or create alternate config file for systems with special controllers/settings
     # If the system/game is set to per game config, don't try to open/reset an existing file, only write if it's blank or going to the shared cfg folder
     specialControlList = [ "cdimono1", "apfm1000", "astrocde", "adam", "arcadia", "gamecom", "tutor", "crvision", "bbcb", "bbcm", "bbcm512", "bbcmc", "xegs", \
         "socrates", "vgmplay", "pdp1", "vc4000", "fmtmarty", "gp32", "apple2p", "apple2e", "apple2ee" ]
     if sysName in specialControlList:
         # Load mess controls from csv
-        messControlFile = '/usr/share/batocera/configgen/data/mame/messControls.csv'
-        openMessFile = open(messControlFile, 'r')
+        messControlFile = MAME_DEFAULT_DATA / 'messControls.csv'
+        openMessFile = messControlFile.open('r')
         with openMessFile:
             controlList = csv.reader(openMessFile, delimiter=';')
             for row in controlList:
@@ -153,22 +153,22 @@ def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customC
                     currentEntry['reversed'] == True
 
         config_alt = minidom.Document()
-        configFile_alt = cfgPath + sysName + ".cfg"
-        if os.path.exists(configFile_alt) and cfgPath == "/userdata/system/configs/mame/" + sysName + "/":
+        configFile_alt = cfgPath / f"{sysName}.cfg"
+        if configFile_alt.exists() and cfgPath == (MAME_CONFIG / sysName):
             try:
-                config_alt = minidom.parse(configFile_alt)
+                config_alt = minidom.parse(str(configFile_alt))
             except:
                 pass # reinit the file
-        elif os.path.exists(configFile_alt):
+        elif configFile_alt.exists():
             try:
-                config_alt = minidom.parse(configFile_alt)
+                config_alt = minidom.parse(str(configFile_alt))
             except:
                 pass # reinit the file
-        if cfgPath == "/userdata/system/configs/mame/" + sysName + "/":
+        if cfgPath == (MAME_CONFIG / sysName):
             perGameCfg = False
         else:
             perGameCfg = True
-        if os.path.exists(configFile_alt) and (customCfg or perGameCfg):
+        if configFile_alt.exists() and (customCfg or perGameCfg):
             overwriteSystem = False
         else:
             overwriteSystem = True
@@ -177,7 +177,7 @@ def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customC
         xml_mameconfig_alt.setAttribute("version", "10")
         xml_system_alt = getSection(config_alt, xml_mameconfig_alt, "system")
         xml_system_alt.setAttribute("name", sysName)
-        
+
         removeSection(config_alt, xml_system_alt, "input")
         xml_input_alt = config_alt.createElement("input")
         xml_system_alt.appendChild(xml_input_alt)
@@ -202,7 +202,7 @@ def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customC
             xml_kbenable_alt.setAttribute("tag", ":")
             xml_kbenable_alt.setAttribute("enabled", "1")
             xml_input_alt.appendChild(xml_kbenable_alt)
-    
+
     # Fill in controls on cfg files
     nplayer = 1
     maxplayers = len(playersControllers)
@@ -303,14 +303,14 @@ def generatePadsConfig(cfgPath, playersControllers, sysName, altButtons, customC
     # TODO: python 3 - workawround to encode files in utf-8
     if overwriteMAME:
         eslog.debug(f"Saving {configFile}")
-        mameXml = codecs.open(configFile, "w", "utf-8")
+        mameXml = codecs.open(str(configFile), "w", "utf-8")
         dom_string = os.linesep.join([s for s in config.toprettyxml().splitlines() if s.strip()]) # remove ugly empty lines while minicom adds them...
         mameXml.write(dom_string)
 
     # Write alt config (if used, custom config is turned off or file doesn't exist yet)
     if sysName in specialControlList and overwriteSystem:
         eslog.debug(f"Saving {configFile_alt}")
-        mameXml_alt = codecs.open(configFile_alt, "w", "utf-8")
+        mameXml_alt = codecs.open(str(configFile_alt), "w", "utf-8")
         dom_string_alt = os.linesep.join([s for s in config_alt.toprettyxml().splitlines() if s.strip()]) # remove ugly empty lines while minicom adds them...
         mameXml_alt.write(dom_string_alt)
 
@@ -378,6 +378,8 @@ def generateSpecialPortElementPlayer(pad, config, tag, nplayer, padindex, mappin
     xml_newseq.setAttribute("type", "standard")
     xml_port.appendChild(xml_newseq)
     keyval = input2definition(pad, key, input, padindex + 1, reversed, 0)
+    if mapping == "COIN" and nplayer <= 4:
+        keyval = keyval + " OR KEYCODE_{}_{}".format(nplayer, str(nplayer + 4)) # 5 for player 1, 6 for player 2, 7 for player 3 and 8 for player 4
     if mapping in gunmappings:
         keyval = keyval + " OR GUNCODE_{}_{}".format(nplayer, gunmappings[mapping])
         if gunmappings[mapping] == "BUTTON2" and pedalkey is not None:

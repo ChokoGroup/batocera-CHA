@@ -142,12 +142,12 @@ shared:
       prompt: RESIZE TATTOO
       description: Shrink/expand tattoo to fit within the bezel's border.
       submenu: DECORATIONS
-      preset: switchon
+      preset: switchauto
     ai_service_enabled:
       prompt: ENABLE AI TRANSLATION SERVICE
       description: During gameplay, press Hotkey + R1 to translate on-screen text. Only on libretro cores.
       submenu: AI GAME TRANSLATION
-      preset: switch
+      preset: switchauto
     ai_target_lang:
       prompt: TARGET LANGUAGE
       description: The language to translate into.
@@ -182,7 +182,7 @@ shared:
     ai_service_pause:
       prompt: PAUSE ON TRANSLATED SCREEN
       submenu: AI GAME TRANSLATION
-      preset: switch
+      preset: switchauto
     runahead:
       submenu:     LATENCY REDUCTION
       prompt:      RUN-AHEAD FRAMES
@@ -202,6 +202,13 @@ shared:
       choices:
         "On": 1
         "Off": 0
+    preemptiveframes:
+       submenu:     LATENCY REDUCTION
+       prompt:      USE PRE-EMPTIVE FRAMES
+       description: Use preemptive frames instead of run-ahead. Only runs ahead when controller state changes.
+       choices:
+         "On": "true"
+         "Off": "false"
     video_frame_delay_auto:
       submenu:     LATENCY REDUCTION
       prompt:      AUTOMATIC FRAME DELAY
@@ -327,10 +334,10 @@ shared:
         "hidden": "hidden"
 
 global:
-  shared: [powermode, batterymode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, rewind, runahead, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain]
+  shared: [powermode, batterymode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, rewind, runahead, preemptiveframes, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain]
 
 libretro:
-  shared: [powermode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, runahead, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain, audio_volume, bordersmode]
+  shared: [powermode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, runahead, preemptiveframes, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain, audio_volume, bordersmode]
   cfeatures:
     gfxbackend:
       archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
@@ -6817,6 +6824,7 @@ libretro:
       shared: [rewind, autosave]
 
     uzem:
+      features: [cheevos]
       shared: [rewind, autosave]
 
     #play:
@@ -7109,10 +7117,10 @@ hypseus-singe:
         hypseus_bezels:
             prompt: BEZELS
             description: Enable or disable bezels being added when content is a 4:3 aspect with a widescreen display.
-            preset: switchon
+            preset: switchauto
         hypseus_filter:
             prompt: SMOOTH GAMES (BILINEAR FILTERING)
-            preset: switchoff
+            preset: switchauto
         hypseus_scanlines:
             archs_include: [x86, x86_64]
             group: ADVANCED OPTIONS
@@ -7131,17 +7139,17 @@ hypseus-singe:
         hypseus_axis:
             prompt: INVERT AXIS
             description: Invert the vertical joystick axis on flight games.
-            preset: switchoff
+            preset: switchauto
         hypseus_texturestream:
             group: ADVANCED OPTIONS
             prompt: SDL TEXTURE ACCESS STREAMING
             description: Can improve video performance. Do not use with ActionMax games or scanlines.
-            preset: switchoff
+            preset: switchauto
         hypseus_joy:
             group: ADVANCED OPTIONS
             prompt: CUSTOM CONTROLLER
             description: Use controller settings manually defined in custom.ini.
-            preset: switchoff
+            preset: switchauto
   systems:
     singe:
       cfeatures:
@@ -7190,6 +7198,7 @@ dolphin:
                     prompt: GAME ASPECT RATIO
                     description: The final output image, unrelated to the Wii's emulated NAND setting.
                     choices:
+                        "Automatic ratio":   0
                         "Force 16:9":        1
                         "Force 4:3":         2
                         "Stretch to window": 3
@@ -7197,7 +7206,7 @@ dolphin:
                     submenu: DISPLAY
                     prompt: VSYNC
                     description: Fix screen tearing. CPU heavy.
-                    preset: switchon
+                    preset: switchauto
                 gfxbackend:
                     archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
                     submenu: RENDERING
@@ -7232,7 +7241,7 @@ dolphin:
                     submenu: RENDERING
                     prompt: PRE-CACHE SHADERS
                     description: Compile shaders on next launch of game (one time). Reduces micro-freezes. Vulkan only.
-                    preset: switchoff
+                    preset: switchauto
                 anisotropic_filtering:
                     submenu: RENDERING
                     prompt: ANISOTROPIC FILTERING
@@ -7256,61 +7265,61 @@ dolphin:
                     submenu: RENDERING
                     prompt: ANTI-ALIASING MODE
                     description: Use SSAA instead of MSAA for anti-aliasing. SSAA may look better but has a higher performance cost.
-                    preset: switchoff
+                    preset: switchauto
                 hires_textures:
                     submenu: RENDERING
                     prompt: LOAD CUSTOM TEXTURES
-                    preset: switchoff
+                    preset: switchauto
                 manual_texture_sampling:
                     submenu: RENDERING
                     prompt: MANUAL TEXTURE SAMPLING
                     description: Enabling will allow for correct emulation of texture wrapping. This comes at a cost of potential worse performance.
-                    preset: switchoff
+                    preset: switchauto
                 dual_core:
                     submenu: EMULATION
                     prompt: DUAL CORE MODE
                     description: Usually not much faster than single core mode.
-                    preset: switchoff
+                    preset: switchauto
                 gpu_sync:
                     submenu: EMULATION
                     prompt: GPU SYNC
                     description: Speed hack for dual core mode to fix some glitches.
-                    preset: switchoff
+                    preset: switchauto
                 perf_hacks:
                     submenu: EMULATION
                     prompt: PERFORMANCE HACKS
                     description: Increase emulator performance, at the cost of accuracy/stability.
-                    preset: switchoff
+                    preset: switchauto
                 enable_cheats:
                     submenu: EMULATION
                     prompt: ENABLE CHEATS
                     description: To use game cheats or 16/9 Aspect Ratio Fix codes.
-                    preset: switchoff
+                    preset: switchauto
                 enable_mmu:
                     submenu: EMULATION
                     prompt: MEMORY MANAGEMENT UNIT
                     description: Required by some games.
-                    preset: switchoff
+                    preset: switchauto
                 enable_fastdisc:
                     submenu: EMULATION
                     prompt: FAST DISK TRANSFER RATE
                     description: Enhancement. Removes disc loading.
-                    preset: switchoff
+                    preset: switchauto
                 vbi_hack:
                     submenu: EMULATION
                     prompt: VBI SKIP
                     description: Skips Vertical Blank Interrupts when lag is detected, allowing for smooth audio playback when emulation speed is not 100%.
-                    preset: switchoff
+                    preset: switchauto
                 use_pad_profiles:
                     group: CONTROLS
                     prompt: USE PAD PROFILES
                     description: Search for custom configured joystick profiles.
-                    preset: switchoff
+                    preset: switchauto
                 rumble:
                     group: CONTROLS
                     prompt: RUMBLE
                     description: Enable controller rumble capabilities if supported by the controller.
-                    preset: switchoff
+                    preset: switchauto
                 dolphin_port_1_type:
                     group: CONTROLS
                     submenu: GAMECUBE CONTROLLER 1
@@ -7376,25 +7385,25 @@ dolphin:
                     submenu: GAMECUBE CONTROLLER 1
                     prompt: ROTATE FACE BUTTONS
                     description: Moves South to West, West to North, etc. Standard controller type only.
-                    preset: switchoff
+                    preset: switchauto
                 alt_mappings_2:
                     group: CONTROLS
                     submenu: GAMECUBE CONTROLLER 2
                     prompt: ROTATE FACE BUTTONS
                     description: Moves South to West, West to North, etc. Standard controller type only.
-                    preset: switchoff
+                    preset: switchauto
                 alt_mappings_3:
                     group: CONTROLS
                     submenu: GAMECUBE CONTROLLER 3
                     prompt: ROTATE FACE BUTTONS
                     description: Moves South to West, West to North, etc. Standard controller type only.
-                    preset: switchoff
+                    preset: switchauto
                 alt_mappings_4:
                     group: CONTROLS
                     submenu: GAMECUBE CONTROLLER 4
                     prompt: ROTATE FACE BUTTONS
                     description: Moves South to West, West to North, etc. Standard controller type only.
-                    preset: switchoff
+                    preset: switchauto
                 deadzone_1:
                     group: CONTROLS
                     submenu: GAMECUBE CONTROLLER 1
@@ -7487,12 +7496,12 @@ dolphin:
                     group: AUDIO
                     prompt: DOLBY PRO LOGIC II
                     description: Enables Dolby Pro Logic II for surround sound. May impact performance.
-                    preset: switchoff
+                    preset: switchauto
                 ShowDpMsg:
                     submenu: DISPLAY
                     prompt: SHOW ON-SCREEN DISPLAY MESSAGES
                     description: Show on screen display messages (memory card saves..).
-                    preset: switchoff
+                    preset: switchauto
         systems:
             gamecube:
                 cfeatures:
@@ -7500,12 +7509,12 @@ dolphin:
                         submenu: DISPLAY
                         prompt: WIDESCREEN HACK (GLITCHY)
                         description: Enhancement. Only works with a 16/9 ratio and bezels disabled.
-                        preset: switchoff
+                        preset: switchauto
                     dolphin_SkipIPL:
                         submenu: EMULATION
                         prompt: ENABLE BOOT ANIMATION
                         description: Enable Gamecube boot animation and BIOS access (requires IPL.bin BIOS in appropriate user directory).
-                        preset: switchoff
+                        preset: switchauto
                     gamecube_language:
                         submenu: EMULATION
                         prompt: GAMECUBE LANGUAGE
@@ -7532,7 +7541,7 @@ dolphin:
                         submenu: WII CONTROLLERS
                         prompt: EMULATE WIIMOTE
                         description: Map your controller to an emulated Wiimote.
-                        preset: switchoff
+                        preset: switchauto
                     controller_mode:
                         group: CONTROLS
                         submenu: WII CONTROLLERS
@@ -7559,19 +7568,19 @@ dolphin:
                         submenu: WII CONTROLLERS
                         prompt: DUALSHOCK MOTION CONTROL
                         description: Emulate the Wiimote pointer with a DS4's gyroscope.
-                        preset: switchoff
+                        preset: switchauto
                     mouseir:
                         group: CONTROLS
                         submenu: WII CONTROLLERS
                         prompt: MOUSE AS WIIMOTE POINTER
                         description: Emulate the Wiimote pointer with a mouse.
-                        preset: switchoff
+                        preset: switchauto
                     dolphin-lightgun-hide-crosshair:
                         order: 99
                         group: CONTROLS
                         submenu: LIGHT GUNS
                         prompt: SHOW LIGHT GUN CROSSHAIRS
-                        preset: switchoff
+                        preset: switchauto
 
 dolphin_triforce:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -8002,7 +8011,7 @@ duckstation:
             description:
             choices:
                 "Disabled (Default)": "0"
-                "Enabled":            "100"
+                "Enabled":            "1"
 
 flycast:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
@@ -8698,6 +8707,18 @@ pcsx2:
       shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, use_guns, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
       features: [cheevos]
       cfeatures:
+        pcsx2_shaderset:
+            submenu: RENDERING
+            prompt: SHADER SET
+            description:
+            choices:
+               "scanlines":         1
+               "diagonal filter":   2
+               "triangular filter": 3
+               "wave filter":       4
+               "lottes crt":        5
+               "4xrgss":            6
+               "nxagss":            7
         pcsx2_osd_messages:
             submenu: DISPLAY
             prompt: OSD MESSAGES
@@ -8850,7 +8871,8 @@ pcsx2:
             choices:
                 "Off":                 0
                 "Unscaled (Default)":  1
-                "Basic (Recommended)": 2
+                "Scaled":              2
+                "Force 32bit":         3
         pcsx2_blending:
             submenu: RENDERING
             prompt: BLENDING ACCURACY
@@ -9339,60 +9361,111 @@ rpcs3:
                 "Off": 0
                 "On":  1
         rpcs3_crosshairs:
-            group: LIGHT GUN
+            order: 99
+            group: CONTROLS
+            submenu: LIGHT GUNS
             prompt: SHOW LIGHT GUN CROSSHAIRS
             choices:
                 "Off": False
                 "On":  True
         rpcs3_controller1:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 1
+            group: CONTROLS
+            submenu: CONTROLLER 1
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
         rpcs3_controller2:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 2
+            group: CONTROLS
+            submenu: CONTROLLER 2
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
         rpcs3_controller3:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 3
+            group: CONTROLS
+            submenu: CONTROLLER 3
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
         rpcs3_controller4:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 4
+            group: CONTROLS
+            submenu: CONTROLLER 4
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
         rpcs3_controller5:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 5
+            group: CONTROLS
+            submenu: CONTROLLER 5
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
         rpcs3_controller6:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 6
+            group: CONTROLS
+            submenu: CONTROLLER 6
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
         rpcs3_controller7:
-            submenu: CONTROLLERS
-            prompt: PS3 CONTROLLER 7
+            group: CONTROLS
+            submenu: CONTROLLER 7
+            prompt: PS3 CONTROLLER
             description: Default uses SDL2, otherwise enable controller specific capabilities. Sony DS won't work with clone controllers.
             choices:
                 "Legacy Evdev": "Evdev"
                 "Sony DS":      "Sony"
+        rpcs3_rumble1:
+            group: CONTROLS
+            submenu: CONTROLLER 1
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
+        rpcs3_rumble2:
+            group: CONTROLS
+            submenu: CONTROLLER 2
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
+        rpcs3_rumble3:
+            group: CONTROLS
+            submenu: CONTROLLER 3
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
+        rpcs3_rumble4:
+            group: CONTROLS
+            submenu: CONTROLLER 4
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
+        rpcs3_rumble5:
+            group: CONTROLS
+            submenu: CONTROLLER 5
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
+        rpcs3_rumble6:
+            group: CONTROLS
+            submenu: CONTROLLER 6
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
+        rpcs3_rumble7:
+            group: CONTROLS
+            submenu: CONTROLLER 7
+            prompt: RUMBLE
+            description: Enable controller rumble capabilities if supported by the controller.
+            preset: switchon
 
 scummvm:
   features: [padtokeyboard]
@@ -9588,6 +9661,25 @@ supermodel:
             choices:
                 "Off":      0
                 "On":       1
+        crt_colour:
+            group: ADVANCED OPTIONS
+            prompt: CRT COLOUR
+            description: CRT-like colour adaption. Requires New 3D engine.
+            choices:
+                "None (Default)":                                              0
+                "ARI/D93 (recommended for all JP developed games)":            1
+                "PVM_20M2U/D93":                                               2
+                "BT601_525/D93":                                               3
+                "BT601_525/D65 (recommended for all US developed games)":      4
+                "BT601_625/D65 (recommended for all EUR/AUS developed games)": 5
+        upscale_mode:
+            prompt: UPSCALE MODE
+            description: Upscale filter used for the 2D layers. Requires New 3D engine.
+            choices:
+                "None/Sharp Pixels":  0
+                "Biquintic":          1
+                "Bilinear (Default)": 2
+                "Bicubic":            3
         crosshairs:
             group:       LIGHT GUN
             prompt:      SHOW LIGHT GUN CROSSHAIRS
@@ -9808,8 +9900,9 @@ mame:
             prompt: CROSSHAIR
             description:
             choices:
-                "Disabled (Default)": "0"
-                "Enabled":            "1"
+                "Disabled (Default)": "disabled"
+                "Enabled":            "enabled"
+                "When moving":        "onmove"
   systems:
        adam:
             cfeatures:
@@ -11462,7 +11555,12 @@ model2emu:
             choices:
                 "Off (Default)": 0
                 "On":            1
-
+        model2_forceFeedback:
+            prompt:      RUMBLE
+            description: Only some games feature rumble. Not compatible with all controllers.
+            choices:
+                "Off":      0
+                "On":       1
 gsplus:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -12307,19 +12405,19 @@ vita3k:
     vita3k_surface:
       prompt: DISABLE SURFACE SYNC
       description: Speed hack, enable to disable surface syncing between CPU and GPU. Surface syncing is needed by a few games.
-      preset: switchoff
+      preset: switchauto
     vita3k_linear:
       prompt: LINEAR FILTERING
       description: The image will be softer which could help with aliasing.
-      preset: switchoff
+      preset: switchauto
     vita3k_fxaa:
       prompt: FXAA
       description: Anti-aliasing is a technique for smoothing out jagged edges.
-      preset: switchoff
+      preset: switchauto
     vita3k_vsync:
       prompt: VSYNC
       description: Fix screen tearing.
-      preset: switchon
+      preset: switchauto
     vita3k_anisotropic:
       prompt:      ANISOTROPIC FILTERING
       description: Improves clarity of distant textures.
@@ -12332,7 +12430,7 @@ vita3k:
     vita3k_show_pointer:
       prompt: SHOW POINTER
       description: You can hide the pointer on touchscreen devices.
-      preset: switchon
+      preset: switchauto
 
 bigpemu:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -12395,7 +12493,7 @@ vpinball:
       group: EXPERT SETTINGS
       prompt: PER TABLE FOLDER
       description: Per Table Folder requires all files to be in the associated rom table folder. If disabled, consult the Wiki for further details.
-      preset: switchon
+      preset: switchauto
     vpinball_balltrail:
       group: DISPLAY
       prompt: BALL TRAIL STRENGTH
@@ -12449,7 +12547,7 @@ vpinball:
       group: DISPLAY
       prompt: ALTCOLOR
       description: Alternative Coloured Dot Matrix Display (needs additional file).
-      preset: switchon
+      preset: switchauto
     vpinball_playfield:
       group: WINDOWS POSITIONS
       prompt: PLAYFIELD
@@ -12504,12 +12602,12 @@ vpinball:
       group: WINDOWS POSITIONS
       prompt: DISPLAY BACKGLASS DMD
       description: When the Backglass is activated, display the small additional part with the scores.
-      preset: switchon
+      preset: switchauto
     vpinball_b2sgrill:
       group: WINDOWS POSITIONS
       prompt: DISPLAY BACKGLASS GRILL
       description: When the Backglass is activated, display the grill.
-      preset: switchon
+      preset: switchauto
     vpinball_dmdsize:
       group: WINDOWS POSITIONS
       prompt: DMD SIZE
@@ -12538,7 +12636,7 @@ vpinball:
       group: DISPLAY PHYSICAL SETUP
       prompt: ENABLE CUSTOM DISPLAY PHYSICAL SETUP
       description: Enable the custom values below.
-      preset: switch
+      preset: switchauto
     vpinball_screenwidth:
       group: DISPLAY PHYSICAL SETUP
       prompt: SCREEN WIDTH
@@ -12607,12 +12705,12 @@ vpinball:
       group: AUDIO
       prompt: ALTERNATIVE SOUND
       description: Alternative sounds for the table (needs additional files).
-      preset: switchon
+      preset: switchauto
     vpinball_pad_add_credit:
       prompt: USE JOYPAD SOUTH BUTTON TO ADD CREDIT
       group: EXPERT SETTINGS
       description: This should not be necessary, unless you are not using the default pad2key mapping.
-      preset: switch
+      preset: switchauto
 
 theforceengine:
   features: [padtokeyboard]
@@ -13015,3 +13113,33 @@ sonic-mania:
 
 fba2x:
   shared: [videomode, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
+
+taradino:
+  features: [padtokeyboard]
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+
+x16emu:
+  features: [padtokeyboard]
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  cfeatures:
+    x16emu_scale:
+      prompt: RENDERING RESOLUTION
+      description: Enhancement. Increase the rendering resolution.
+      choices:
+        "640x480":            1
+        "1280x960 (Default)": 2
+        "1920x1440":          3
+        "2560x1920":          4
+    x16emu_ratio:
+      prompt: ASPECT RATIO
+      description: Change the output resolution ratio.
+      choices:
+        "4x3 (Default)": "4:3"
+        "16x9":          "16:9"
+    x16emu_quality:
+      prompt: IMAGE QUALITY
+      description: Change image scaling algorithm quality.
+      choices:
+        "Nearest pixel sampling": "nearest"
+        "Linear filtering":       "linear"
+        "Anisotropic filtering":  "best"

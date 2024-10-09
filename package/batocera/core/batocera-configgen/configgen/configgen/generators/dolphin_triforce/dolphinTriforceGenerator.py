@@ -1,22 +1,38 @@
-#!/usr/bin/env python
-import Command
-import batoceraFiles
-from generators.Generator import Generator
-import shutil
-import os.path
-from os import environ
+from __future__ import annotations
+
 import configparser
+from os import environ
+from typing import TYPE_CHECKING
+
+from ... import Command
+from ...batoceraPaths import CONFIGS, SAVES, mkdir_if_not_exists
+from ..Generator import Generator
 from . import dolphinTriforceControllers
+from .dolphinTriforcePaths import (
+    DOLPHIN_TRIFORCE_GAME_SETTINGS,
+    DOLPHIN_TRIFORCE_GFX_INI,
+    DOLPHIN_TRIFORCE_INI,
+    DOLPHIN_TRIFORCE_LOGGER_INI,
+    DOLPHIN_TRIFORCE_SAVES,
+)
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
+
 
 class DolphinTriforceGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "dolphin",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }
+
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
-        if not os.path.exists(os.path.dirname(batoceraFiles.dolphinTriforceIni)):
-            os.makedirs(os.path.dirname(batoceraFiles.dolphinTriforceIni))
+        mkdir_if_not_exists(DOLPHIN_TRIFORCE_INI.parent)
 
         # Dir required for saves
-        if not os.path.exists(batoceraFiles.dolphinTriforceData + "/StateSaves"):
-            os.makedirs(batoceraFiles.dolphinTriforceData + "/StateSaves")
+        mkdir_if_not_exists(DOLPHIN_TRIFORCE_SAVES / "StateSaves")
 
         dolphinTriforceControllers.generateControllerConfig(system, playersControllers, rom)
 
@@ -25,8 +41,8 @@ class DolphinTriforceGenerator(Generator):
         dolphinTriforceSettings = configparser.ConfigParser(interpolation=None)
         # To prevent ConfigParser from converting to lower case
         dolphinTriforceSettings.optionxform = str
-        if os.path.exists(batoceraFiles.dolphinTriforceIni):
-            dolphinTriforceSettings.read(batoceraFiles.dolphinTriforceIni)
+        if DOLPHIN_TRIFORCE_INI.exists():
+            dolphinTriforceSettings.read(DOLPHIN_TRIFORCE_INI)
 
         # Sections
         if not dolphinTriforceSettings.has_section("General"):
@@ -66,7 +82,7 @@ class DolphinTriforceGenerator(Generator):
 
         # PanicHandlers displaymessages
         dolphinTriforceSettings.set("Interface", "UsePanicHandlers",        "False")
-	
+
         # Disable OSD Messages
         if system.isOptSet("disable_osd_messages") and system.getOptBoolean("disable_osd_messages"):
             dolphinTriforceSettings.set("Interface", "OnScreenDisplayMessages", "False")
@@ -124,7 +140,7 @@ class DolphinTriforceGenerator(Generator):
             dolphinTriforceSettings.set("Core", "SIDevice0", "11")
 
         # Save dolphin.ini
-        with open(batoceraFiles.dolphinTriforceIni, 'w') as configfile:
+        with DOLPHIN_TRIFORCE_INI.open('w') as configfile:
             dolphinTriforceSettings.write(configfile)
 
         ## gfx.ini ##
@@ -132,7 +148,7 @@ class DolphinTriforceGenerator(Generator):
         dolphinTriforceGFXSettings = configparser.ConfigParser(interpolation=None)
         # To prevent ConfigParser from converting to lower case
         dolphinTriforceGFXSettings.optionxform = str
-        dolphinTriforceGFXSettings.read(batoceraFiles.dolphinTriforceGfxIni)
+        dolphinTriforceGFXSettings.read(DOLPHIN_TRIFORCE_GFX_INI)
 
         # Add Default Sections
         if not dolphinTriforceGFXSettings.has_section("Settings"):
@@ -140,17 +156,17 @@ class DolphinTriforceGenerator(Generator):
         if not dolphinTriforceGFXSettings.has_section("Hacks"):
             dolphinTriforceGFXSettings.add_section("Hacks")
         if not dolphinTriforceGFXSettings.has_section("Enhancements"):
-            dolphinTriforceGFXSettings.add_section("Enhancements")             
+            dolphinTriforceGFXSettings.add_section("Enhancements")
         if not dolphinTriforceGFXSettings.has_section("Hardware"):
-            dolphinTriforceGFXSettings.add_section("Hardware")  
-            
+            dolphinTriforceGFXSettings.add_section("Hardware")
+
         # Graphics setting Aspect Ratio
         if system.isOptSet('dolphin_aspect_ratio'):
             dolphinTriforceGFXSettings.set("Settings", "AspectRatio", system.config["dolphin_aspect_ratio"])
         else:
             # set to zero, which is 'Auto' in Dolphin & Batocera
             dolphinTriforceGFXSettings.set("Settings", "AspectRatio", "0")
-        
+
         # Show fps
         if system.isOptSet("showFPS") and system.getOptBoolean("showFPS"):
             dolphinTriforceGFXSettings.set("Settings", "ShowFPS", "True")
@@ -167,7 +183,7 @@ class DolphinTriforceGenerator(Generator):
 
         # Widescreen Hack
         if system.isOptSet('widescreen_hack') and system.getOptBoolean('widescreen_hack'):
-            # Prefer Cheats than Hack 
+            # Prefer Cheats than Hack
             if system.isOptSet('enable_cheats') and system.getOptBoolean('enable_cheats'):
                 dolphinTriforceGFXSettings.set("Settings", "wideScreenHack", "False")
             else:
@@ -187,7 +203,7 @@ class DolphinTriforceGenerator(Generator):
             dolphinTriforceGFXSettings.set("Enhancements", "ForceFiltering", "True")
             dolphinTriforceGFXSettings.set("Enhancements", "ArbitraryMipmapDetection", "True")
             dolphinTriforceGFXSettings.set("Enhancements", "DisableCopyFilter", "True")
-            dolphinTriforceGFXSettings.set("Enhancements", "ForceTrueColor", "True")            
+            dolphinTriforceGFXSettings.set("Enhancements", "ForceTrueColor", "True")
         else:
             if dolphinTriforceGFXSettings.has_section("Hacks"):
                 dolphinTriforceGFXSettings.remove_option("Hacks", "BBoxEnable")
@@ -201,7 +217,7 @@ class DolphinTriforceGenerator(Generator):
                 dolphinTriforceGFXSettings.remove_option("Enhancements", "ForceFiltering")
                 dolphinTriforceGFXSettings.remove_option("Enhancements", "ArbitraryMipmapDetection")
                 dolphinTriforceGFXSettings.remove_option("Enhancements", "DisableCopyFilter")
-                dolphinTriforceGFXSettings.remove_option("Enhancements", "ForceTrueColor")  
+                dolphinTriforceGFXSettings.remove_option("Enhancements", "ForceTrueColor")
 
         # Internal resolution settings
         if system.isOptSet('internal_resolution'):
@@ -228,7 +244,7 @@ class DolphinTriforceGenerator(Generator):
             dolphinTriforceGFXSettings.set("Settings", "MSAA", "0")
 
         # Save gfx.ini
-        with open(batoceraFiles.dolphinTriforceGfxIni, 'w') as configfile:
+        with DOLPHIN_TRIFORCE_GFX_INI.open('w') as configfile:
             dolphinTriforceGFXSettings.write(configfile)
 
         ## logger settings ##
@@ -236,7 +252,7 @@ class DolphinTriforceGenerator(Generator):
         dolphinTriforceLogSettings = configparser.ConfigParser(interpolation=None)
         # To prevent ConfigParser from converting to lower case
         dolphinTriforceLogSettings.optionxform = str
-        dolphinTriforceLogSettings.read(batoceraFiles.dolphinTriforceLoggerIni)
+        dolphinTriforceLogSettings.read(DOLPHIN_TRIFORCE_LOGGER_INI)
 
         # Sections
         if not dolphinTriforceLogSettings.has_section("Logs"):
@@ -246,20 +262,19 @@ class DolphinTriforceGenerator(Generator):
         dolphinTriforceLogSettings.set("Logs", "DVD", "False")
 
         # Save Logger.ini
-        with open(batoceraFiles.dolphinTriforceLoggerIni, 'w') as configfile:
+        with DOLPHIN_TRIFORCE_LOGGER_INI.open('w') as configfile:
             dolphinTriforceLogSettings.write(configfile)
 
         ## game settings ##
 
         # These cheat files are required to launch Triforce games, and thus should always be present and enabled.
 
-        if not os.path.exists(batoceraFiles.dolphinTriforceGameSettings):
-            os.makedirs(batoceraFiles.dolphinTriforceGameSettings)
+        mkdir_if_not_exists(DOLPHIN_TRIFORCE_GAME_SETTINGS)
 
         # GFZE01 F-Zero GX (convert to F-Zero AX)
-
-        if not os.path.exists(batoceraFiles.dolphinTriforceGameSettings + "/GFZE01.ini"):
-            dolphinTriforceGameSettingsGFZE01 = open(batoceraFiles.dolphinTriforceGameSettings + "/GFZE01.ini", "w")
+        GFZE01_ini = DOLPHIN_TRIFORCE_GAME_SETTINGS / "GFZE01.ini"
+        if not GFZE01_ini.exists():
+            dolphinTriforceGameSettingsGFZE01 = GFZE01_ini.open("w")
             dolphinTriforceGameSettingsGFZE01.write("""[Gecko]
 $AX
 06003F30 00000284
@@ -351,9 +366,9 @@ $AX
             dolphinTriforceGameSettingsGFZE01.close()
 
         # GVSJ8P Virtua Striker 2002
-
-        if not os.path.exists(batoceraFiles.dolphinTriforceGameSettings + "/GVSJ8P.ini"):
-            dolphinTriforceGameSettingsGVSJ8P = open(batoceraFiles.dolphinTriforceGameSettings + "/GVSJ8P.ini", "w")
+        GVSJ8P_ini = DOLPHIN_TRIFORCE_GAME_SETTINGS / "GVSJ8P.ini"
+        if not GVSJ8P_ini.exists():
+            dolphinTriforceGameSettingsGVSJ8P = GVSJ8P_ini.open("w")
             dolphinTriforceGameSettingsGVSJ8P.write("""[OnFrame]
 $DI Seed Blanker
 0x80000000:dword:0x00000000
@@ -366,8 +381,9 @@ $DI Seed Blanker
 
         # GGPE01 Mario Kart GP 1
 
-        if not os.path.exists(batoceraFiles.dolphinTriforceGameSettings + "/GGPE01.ini"):
-            dolphinTriforceGameSettingsGGPE01 = open(batoceraFiles.dolphinTriforceGameSettings + "/GGPE01.ini", "w")
+        GGPE01_ini = DOLPHIN_TRIFORCE_GAME_SETTINGS / "GGPE01.ini"
+        if not GGPE01_ini.exists():
+            dolphinTriforceGameSettingsGGPE01 = GGPE01_ini.open("w")
             dolphinTriforceGameSettingsGGPE01.write("""[OnFrame]
 $Disable crypto
 0x8023D828:dword:0x93A30008
@@ -392,8 +408,9 @@ EmulationIssues = AM-Baseboard
 
         # GGPE02 Mario Kart GP 2
 
-        if not os.path.exists(batoceraFiles.dolphinTriforceGameSettings + "/GGPE02.ini"):
-            dolphinTriforceGameSettingsGGPE02 = open(batoceraFiles.dolphinTriforceGameSettings + "/GGPE02.ini", "w")
+        GGPE02_ini = DOLPHIN_TRIFORCE_GAME_SETTINGS / "GGPE02.ini"
+        if not GGPE02_ini.exists():
+            dolphinTriforceGameSettingsGGPE02 = GGPE02_ini.open("w")
             dolphinTriforceGameSettingsGGPE02.write("""[Display]
 ProgressiveScan = 0
 [Wii]
@@ -448,7 +465,7 @@ $SeatLoopPatch
 99 credits
 """)
             dolphinTriforceGameSettingsGGPE02.close()
-        
+
         # # Cheats aren't in key = value format, so the allow_no_value option is needed.
         # dolphinTriforceGameSettingsGGPE01 = configparser.ConfigParser(interpolation=None, allow_no_value=True,delimiters=';')
         # # To prevent ConfigParser from converting to lower case
@@ -481,9 +498,9 @@ $SeatLoopPatch
             commandArray = ["dolphin-triforce-nogui", "-b", "-U", "/userdata/system/configs/dolphin-triforce", "-p", system.config["platform"], "-e", rom]
 
         # No environment variables work for now, paths are coded in above.
-        return Command.Command(array=commandArray, env={"XDG_CONFIG_HOME":batoceraFiles.CONF, "XDG_DATA_HOME":batoceraFiles.SAVES, "QT_QPA_PLATFORM":"xcb"})
+        return Command.Command(array=commandArray, env={"XDG_CONFIG_HOME":CONFIGS, "XDG_DATA_HOME":SAVES, "QT_QPA_PLATFORM":"xcb"})
         #return Command.Command(array=commandArray)
-            
+
     def getInGameRatio(self, config, gameResolution, rom):
         if 'dolphin_aspect_ratio' in config:
             if config['dolphin_aspect_ratio'] == "1":

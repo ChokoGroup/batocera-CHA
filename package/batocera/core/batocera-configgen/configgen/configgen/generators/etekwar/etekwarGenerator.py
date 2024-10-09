@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import Command
-from generators.Generator import Generator
-import controllersConfig
+from ... import Command, controllersConfig
+from ..Generator import Generator
 
 
 class EtekwarGenerator(Generator):

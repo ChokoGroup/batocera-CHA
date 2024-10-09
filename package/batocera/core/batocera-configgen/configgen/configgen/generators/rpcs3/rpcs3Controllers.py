@@ -1,18 +1,24 @@
-import os
-import batoceraFiles
-from os import path
+from __future__ import annotations
+
 import codecs
-from utils.logger import get_logger
+from typing import TYPE_CHECKING, Final
+
+from ...batoceraPaths import mkdir_if_not_exists
+from ...utils.logger import get_logger
+from .rpcs3Paths import RPCS3_CONFIG_DIR
+
+if TYPE_CHECKING:
+    from ...controllersConfig import ControllerMapping
+    from ...Emulator import Emulator
 
 eslog = get_logger(__name__)
 
-rpcs3_input_dir = batoceraFiles.CONF + "/rpcs3/input_configs/global"
+_RPCS3_INPUT_DIR: Final = RPCS3_CONFIG_DIR / "input_configs" / "global"
 
-def generateControllerConfig(system, controllers, rom):
-    
-    if not path.isdir(rpcs3_input_dir):
-        os.makedirs(rpcs3_input_dir)
-        
+def generateControllerConfig(system: Emulator, controllers: ControllerMapping, rom: str):
+
+    mkdir_if_not_exists(_RPCS3_INPUT_DIR)
+
     valid_sony_guids = [
         # ds3
         "030000004c0500006802000011010000",
@@ -32,7 +38,7 @@ def generateControllerConfig(system, controllers, rom):
         "030000004c050000e60c000011810000",
         "050000004c050000e60c000000810000"
     ]
-    
+
     # may need to expand this to support more controllers
     # from evdev_joystick_handler.h
     input_mapping = [
@@ -51,19 +57,19 @@ def generateControllerConfig(system, controllers, rom):
         ("joystick2up", "Right Stick Up", [("ABS_RY", "RY-")]),
         ("joystick2left", "Right Stick Left", [("ABS_RX", "RX-")])
     ]
-    
+
     mapping_dict = {}
     for input_name, config_name, event_variations in input_mapping:
         mapping_dict[input_name] = {
             "config_name": config_name,
             "event_variations": event_variations,
         }
-    
+
     nplayer, ds3player, ds4player, dsplayer = 1, 1, 1, 1
     controller_counts = {}
 
-    configFileName = f"{rpcs3_input_dir}/Default.yml"
-    f = codecs.open(configFileName, "w", encoding="utf_8_sig")
+    configFileName = _RPCS3_INPUT_DIR / "Default.yml"
+    f = codecs.open(str(configFileName), "w", encoding="utf_8_sig")
     for controller, pad in sorted(controllers.items()):
         if nplayer <= 7:
             eslog.debug(f"Controller #{nplayer} - {pad.guid}")
@@ -148,8 +154,12 @@ def generateControllerConfig(system, controllers, rom):
                 f.write('    Use LED as a battery indicator: false\n')
                 f.write('    LED battery indicator brightness: 10\n')
                 f.write('    Player LED enabled: true\n')
-                f.write('    Enable Large Vibration Motor: true\n')
-                f.write('    Enable Small Vibration Motor: true\n')
+                if system.isOptSet(f"rpcs3_rumble{nplayer}") and system.getOptBoolean(f"rpcs3_rumble{nplayer}") == False:
+                    f.write('    Enable Large Vibration Motor: false\n')
+                    f.write('    Enable Small Vibration Motor: false\n')
+                else:
+                    f.write('    Enable Large Vibration Motor: true\n')
+                    f.write('    Enable Small Vibration Motor: true\n')
                 f.write('    Switch Vibration Motors: false\n')
                 f.write('    Mouse Movement Mode: Relative\n')
                 f.write('    Mouse Deadzone X Axis: 60\n')
@@ -244,8 +254,12 @@ def generateControllerConfig(system, controllers, rom):
                 f.write('    Use LED as a battery indicator: false\n')
                 f.write('    LED battery indicator brightness: 50\n')
                 f.write('    Player LED enabled: true\n')
-                f.write('    Enable Large Vibration Motor: true\n')
-                f.write('    Enable Small Vibration Motor: true\n')
+                if system.isOptSet(f"rpcs3_rumble{nplayer}") and system.getOptBoolean(f"rpcs3_rumble{nplayer}") == False:
+                    f.write('    Enable Large Vibration Motor: false\n')
+                    f.write('    Enable Small Vibration Motor: false\n')
+                else:
+                    f.write('    Enable Large Vibration Motor: true\n')
+                    f.write('    Enable Small Vibration Motor: true\n')
                 f.write('    Switch Vibration Motors: false\n')
                 f.write('    Mouse Movement Mode: Relative\n')
                 f.write('    Mouse Deadzone X Axis: 60\n')
@@ -339,8 +353,12 @@ def generateControllerConfig(system, controllers, rom):
                 f.write(f'    Use LED as a battery indicator: false\n')
                 f.write(f'    LED battery indicator brightness: 10\n')
                 f.write(f'    Player LED enabled: true\n')
-                f.write(f'    Enable Large Vibration Motor: true\n')
-                f.write(f'    Enable Small Vibration Motor: true\n')
+                if system.isOptSet(f"rpcs3_rumble{nplayer}") and system.getOptBoolean(f"rpcs3_rumble{nplayer}") == False:
+                    f.write('    Enable Large Vibration Motor: false\n')
+                    f.write('    Enable Small Vibration Motor: false\n')
+                else:
+                    f.write('    Enable Large Vibration Motor: true\n')
+                    f.write('    Enable Small Vibration Motor: true\n')
                 f.write(f'    Switch Vibration Motors: false\n')
                 f.write(f'    Mouse Movement Mode: Relative\n')
                 f.write(f'    Mouse Deadzone X Axis: 60\n')

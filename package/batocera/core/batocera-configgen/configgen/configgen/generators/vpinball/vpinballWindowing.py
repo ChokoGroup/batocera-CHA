@@ -1,8 +1,17 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import utils.videoMode as videoMode
+from typing import TYPE_CHECKING
 
-def configureWindowing(vpinballSettings, system, gameResolution, hasDmd):
+from ...utils import videoMode
+
+if TYPE_CHECKING:
+    from configparser import ConfigParser
+
+    from ...Emulator import Emulator
+    from ...types import Resolution
+
+
+def configureWindowing(vpinballSettings: ConfigParser, system: Emulator, gameResolution: Resolution, hasDmd: bool) -> None:
     screens = videoMode.getScreensInfos(system.config)
 
     # disable full screen to move the window if necessary

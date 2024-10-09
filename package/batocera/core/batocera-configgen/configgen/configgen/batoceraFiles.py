@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 HOME_INIT = '/usr/share/batocera/datainit/system/'
 HOME = '/userdata/system'
 CONF_INIT = HOME_INIT + '/configs'
@@ -13,7 +11,6 @@ OVERLAYS = '/userdata/overlays'
 CACHE = '/userdata/system/cache'
 ROMS = '/userdata/roms'
 
-esInputs = CONF + '/emulationstation/es_input.cfg'
 esSettings = CONF + '/emulationstation/es_settings.cfg'
 esGunsMetadata = "/usr/share/emulationstation/resources/gungames.xml"
 esWheelsMetadata = "/usr/share/emulationstation/resources/wheelgames.xml"
@@ -112,6 +109,7 @@ overlayConfigFile = "/userdata/system/configs/retroarch/overlay.cfg"
 amiberryRoot = CONF + '/amiberry'
 amiberryRetroarchInputsDir = amiberryRoot + '/conf/retroarch/inputs'
 amiberryRetroarchCustom = amiberryRoot + '/conf/retroarch/retroarchcustom.cfg'
+amiberryConf = amiberryRoot + '/conf/amiberry.conf'
 
 hatariConf = CONF + '/hatari/hatari.cfg'
 

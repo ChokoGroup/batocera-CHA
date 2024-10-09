@@ -28,5 +28,6 @@ package/batocera/emulationstation/batocera-emulationstation/keys.txt
 .directory
 *.po~
 batocera-mok.key
+.venv*
 configs/batocera-h3_defconfig
 board/batocera/x86_64

@@ -170,7 +170,7 @@ amigacd32:
     fsuae:
       CD32:     { requireAnyOf: [BR2_PACKAGE_FSUAE]         }
     amiberry:
-      CD32:     { requireAnyOf: [BR2_PACKAGE_AMIBERRY], incompatible_extensions: [chd] }
+      CD32:     { requireAnyOf: [BR2_PACKAGE_AMIBERRY] }
     libretro:
       puae:     { requireAnyOf: [BR2_PACKAGE_LIBRETRO_PUAE] }
       puae2021: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_PUAE2021] }
@@ -185,6 +185,8 @@ amigacdtv:
   emulators:
     fsuae:
       CDTV:     { requireAnyOf: [BR2_PACKAGE_FSUAE]         }
+    amiberry:
+      CDTV:     { requireAnyOf: [BR2_PACKAGE_AMIBERRY] }
     libretro:
       puae:     { requireAnyOf: [BR2_PACKAGE_LIBRETRO_PUAE] }
       puae2021: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_PUAE2021] }
@@ -237,7 +239,7 @@ n64dd:
   manufacturer: Nintendo
   release: 1999
   hardware: console
-  extensions: [z64, n64, zip, 7z] # ndd, d64 : Not supported yet
+  extensions: [z64, n64, ndd, zip, 7z] # d64 : Not supported yet
   emulators:
     mupen64plus:
       gliden64:   { requireAnyOf: [BR2_PACKAGE_MUPEN64PLUS_GLIDEN64] }
@@ -532,7 +534,7 @@ msu-md:
   manufacturer: Sega
   release: 2020
   hardware: console
-  extensions: [md, zip, 7z]
+  extensions: [md, zip, 7z, squashfs]
   platform:   genesis, megadrive
   group:      megadrive
   emulators:
@@ -899,7 +901,6 @@ mame:
     libretro:
       imame4all:    { requireAnyOf: [BR2_PACKAGE_LIBRETRO_IMAME]          }
       mame078plus:  { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME2003_PLUS]  }
-      mame0139:     { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME2010]       }
       mame:         { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME]           }
     mame:
       mame:         { requireAnyOf: [BR2_PACKAGE_MAME]                    }
@@ -951,7 +952,6 @@ neogeo:
       fbalpha:      { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FBALPHA]        }
       imame4all:    { requireAnyOf: [BR2_PACKAGE_LIBRETRO_IMAME]          }
       mame078plus:  { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME2003_PLUS]  }
-      mame0139:     { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME2010]       }
       mame:         { requireAnyOf: [BR2_PACKAGE_LIBRETRO_MAME]           }
     mame:
       mame:         { requireAnyOf: [BR2_PACKAGE_MAME]                    }
@@ -1116,7 +1116,7 @@ lynx:
   manufacturer: Atari
   release: 1989
   hardware: portable
-  extensions: [lnx, lyx, o]
+  extensions: [bll, lnx, lyx, o, zip, 7z]
   theme: atarilynx
   platform: atarilynx
   emulators:
@@ -2192,7 +2192,7 @@ daphne:
   release: 1983
   hardware: arcade
   extensions: [daphne, squashfs]
-  platform: daphne, arcade
+  platform: alg, daphne, arcade
   emulators:
     hypseus-singe:
       hypseus-singe: { requireAnyOf: [BR2_PACKAGE_HYPSEUS_SINGE] }
@@ -2254,7 +2254,7 @@ singe:
   release: 1990
   hardware: arcade
   extensions: [daphne, squashfs]
-  platform: daphne, arcade
+  platform: alg, daphne, arcade
   emulators:
     hypseus-singe:
       hypseus-singe: { requireAnyOf: [BR2_PACKAGE_HYPSEUS_SINGE] }
@@ -2282,7 +2282,7 @@ thextech:
   manufacturer: Wohlstand
   release: 2020
   hardware: port
-  extensions: [smbx]
+  extensions: [smbx, squashfs]
   emulators:
     thextech:
       thextech:  { requireAnyOf: [BR2_PACKAGE_THEXTECH] }
@@ -2691,7 +2691,7 @@ ikemen:
   manufacturer: Elecbyte
   release: 2021
   hardware: port
-  extensions: [ikemen, pc, squashfs]
+  extensions: [ikemen, pc]
   emulators:
     ikemen:
       ikemen:  { requireAnyOf: [BR2_PACKAGE_IKEMEN] }
@@ -4686,7 +4686,7 @@ psvita:
   name: PlayStation Vita
   manufacturer: Sony
   release: 2012
-  hardware: console
+  hardware: portable
   extensions: [zip, psvita]
   emulators:
     vita3k:
@@ -4903,7 +4903,7 @@ namco2x6:
   release: 2000
   hardware: arcade
   extensions: [zip]
-  platform: namco2x6, arcade
+  platform: namco, sega, arcade
   emulators:
     play:
       play: { requireAnyOf: [BR2_PACKAGE_PLAY] }
@@ -5353,3 +5353,65 @@ chihiro:
     Pour plus d'informations consultez la documentation ici: https://wiki.batocera.org/systems:chihiro
   comment_br: |
     Para mais informações: https://wiki.batocera.org/systems:chihiro
+
+rott:
+  name: Rise of the Triad
+  manufacturer: Ports
+  release: 1994
+  hardware: port
+  extensions: [rott]
+  platform: pc
+  group: ports
+  emulators:
+    taradino:
+      taradino: { requireAnyOf: [BR2_PACKAGE_TARADINO] }
+  comment_en: |
+    Place your commercial version of Rise of the Triad installation files in here.
+
+    You should include DARKWAR.WAD, DARKWAR.RTL, DARKWAR.RTC & REMOTE1.RTS as a minimum.
+    File names can be upper or lower case.
+
+    Then create the file `Rise of the Triad.rott`. This will enable EmulationStation to launch the game.
+
+    You do not need to enable the joystick or gamepad as compatiblity doesn't work well yet.
+    We have mapped the controller to keyboard events as a result.
+
+    For more info: https://wiki.batocera.org/systems:taradino
+  comment_fr: |
+    Trouvez la documentation ici: https://wiki.batocera.org/systems:taradino
+  comment_br: |
+    Para mais informações: https://wiki.batocera.org/systems:taradino
+
+commanderx16:
+  name: Commander X16
+  manufacturer: The 8-Bit Guy
+  release: 2019
+  hardware: computer
+  extensions: [bas, img, prg]
+  platform: commanderx16
+  emulators:
+    x16emu:
+      x16emu: { requireAnyOf: [BR2_PACKAGE_X16EMU] }
+  comment_en: |
+    Extract your Commander X16 games here in their own directory.
+    The games with .IMG .PRG extensions will show in EmulationStation to run accordingly.
+
+    If you have a game without an appropriate extension you can create a .BAS file with DOS commands.
+    i.e. in the game folder create a PLANETX16.BAS file.
+    Then add into the file the DOS commands to load the game, like so...
+    
+    LOAD "PLANETX16"
+    RUN
+
+    If you have an .IMG file which doesn't load then create an autorun.cmd file with the DOS commands also.
+    i.e. X16 Wars would contain the following...
+    
+    LOAD "WARS.PRG"
+    ...
+    RUN
+
+    For more info: https://wiki.batocera.org/systems:commanderx16
+  comment_fr: |
+    Trouvez la documentation ici: https://wiki.batocera.org/systems:commanderx16
+  comment_br: |
+    Para mais informações: https://wiki.batocera.org/systems:commanderx16

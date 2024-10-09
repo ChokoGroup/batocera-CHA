@@ -1,14 +1,20 @@
-#!/usr/bin/env python
-import sys
-import os
-import configparser
-from settings.unixSettings import UnixSettings
-import batoceraFiles
-import csv
-from pathlib import Path
-import controllersConfig
+from __future__ import annotations
 
-def generateCoreSettings(coreSettings, system, rom, guns, wheels):
+import configparser
+from typing import TYPE_CHECKING
+
+from ... import controllersConfig
+from ...batoceraPaths import BIOS, ROMS, ensure_parents_and_open
+from .libretroPaths import RETROARCH_CONFIG
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from ...Emulator import Emulator
+    from ...settings.unixSettings import UnixSettings
+    from ...types import DeviceInfoMapping, GunMapping
+
+def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path, guns: GunMapping, wheels: DeviceInfoMapping) -> None:
 
     # Amstrad CPC / GX4000
     if (system.config['core'] == 'cap32'):
@@ -663,6 +669,7 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
             coreSettings.save('dolphin_osd_enabled', '"' + system.config['wii_osd'] + '"')
         else:
             coreSettings.save('dolphin_osd_enabled', '"enabled"')
+
     # Magnavox - Odyssey2 / Phillips Videopac+
     if (system.config['core'] == 'o2em'):
         # Virtual keyboard transparency
@@ -806,28 +813,6 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
             else:
                 status = '"disabled"'
             coreSettings.save('mame2003-plus_crosshair_enabled', status)
-
-    # MAME 2010
-    if (system.config['core'] == 'mame0139'):
-        # Skip Gameinfo / Nagscreen / Disclamers
-        coreSettings.save('mame_current_skip_gameinfo',    '"enabled"')
-        coreSettings.save('mame_current_skip_nagscreen',   '"enabled"')
-        coreSettings.save('mame_current_skip_warnings',    '"enabled"')
-        # Frameskip
-        if system.isOptSet('mame_current_frame_skip'):
-            coreSettings.save('mame_current_frame_skip', '"' + system.config['mame_current_frame_skip'] + '"')
-        else:
-            coreSettings.save('mame_current_frame_skip', '"0"')
-        # Enable autofire
-        if system.isOptSet('mame_current_turbo_button'):
-            coreSettings.save('mame_current_turbo_button', '"' + system.config['mame_current_turbo_button'] + '"')
-        else:
-            coreSettings.save('mame_current_turbo_button', '"disabled"')
-        # Set autofire pulse speed
-        if system.isOptSet('mame_current_turbo_delay'):
-            coreSettings.save('mame_current_turbo_delay', '"' + system.config['mame_current_turbo_delay'] + '"')
-        else:
-            coreSettings.save('mame_current_turbo_delay', '"medium"')
 
     # TODO: Add CORE options for MAME / iMame4all
 
@@ -1045,8 +1030,9 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
     # TODO: Add CORE Options for 3DS
     if (system.config['core'] == 'citra'):
         # Set OpenGL rendering
-        if not os.path.exists(batoceraFiles.CONF + "/retroarch/3ds.cfg"):
-            f = open(batoceraFiles.CONF + "/retroarch/3ds.cfg", "w")
+        n3ds_config = RETROARCH_CONFIG / "3ds.cfg"
+        if not n3ds_config.exists():
+            f = n3ds_config.open("w")
             f.write("video_driver = \"glcore\"\n")
             f.close()
 
@@ -2016,7 +2002,7 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
         # If ROM includes the word Disc, assume it's a multi disc game, and enable shared nvram if the option isn't set.
         if system.isOptSet('opera_nvram_storage'):
             coreSettings.save('opera_nvram_storage', '"' + system.config['opera_nvram_storage'] + '"')
-        elif 'disc' in rom.casefold():
+        elif 'disc' in str(rom).casefold():
             coreSettings.save('opera_nvram_storage', '"shared"')
         else:
             coreSettings.save('opera_nvram_storage', '"per game"')
@@ -2376,14 +2362,14 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
     # Sharp X68000
     if (system.config['core'] == 'px68k'):
         # Fresh config file
-        keropi_config = '/userdata/bios/keropi/config'
-        keropi_sram = '/userdata/bios/keropi/sram.dat'
+        keropi_config = BIOS / 'keropi' / 'config'
+        keropi_sram = BIOS / 'keropi' / 'sram.dat'
         for f in [ keropi_config, keropi_sram ]:
-            if os.path.exists(f):
-                os.remove(f)
-        fd = open(keropi_config, "w")
+            if f.exists():
+                f.unlink()
+        fd = keropi_config.open("w")
         fd.write("[WinX68k]\n")
-        fd.write("StartDir=/userdata/roms/x68000\n")
+        fd.write(f"StartDir={ROMS / 'x68000'}\n")
         fd.close()
 
         # To auto launch HDD games
@@ -2449,7 +2435,6 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
 
     # SNK Neogeo AES MVS / Neogeo CD
     if (system.config['core'] == 'fbneo'):
-        romBase = os.path.splitext(os.path.basename(rom))[0] # filename without extension
         # Diagnostic input
         coreSettings.save('fbneo-diagnostic-input', '"Start + L + R"')
         # Allow RetroAchievements in hardcore mode with FBNeo
@@ -2474,31 +2459,30 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
                 status = '"disabled"'
             coreSettings.save('fbneo-lightgun-hide-crosshair', status)
         if system.isOptSet('use_guns') and system.getOptBoolean('use_guns') and len(guns) >= 1:
-            coreSettings.save("fbneo-dipswitch-" + romBase+ "-Controls", '"Light Gun"')
+            coreSettings.save(f"fbneo-dipswitch-{rom.stem}-Controls", '"Light Gun"')
         else:
-            coreSettings.save("fbneo-dipswitch-" + romBase+ "-Controls", '"Joystick"')
+            coreSettings.save(f"fbneo-dipswitch-{rom.stem}-Controls", '"Joystick"')
 
         # NEOGEO
         if system.name == 'neogeo':
             # Neogeo Mode
-            romBase = os.path.splitext(os.path.basename(rom))[0] # filename without extension
             if system.isOptSet('fbneo-neogeo-mode-switch'):
                 coreSettings.save("fbneo-neogeo-mode", '"DIPSWITCH"')
                 if system.config['fbneo-neogeo-mode-switch'] == 'MVS Asia/Europe':
-                    coreSettings.save("fbneo-dipswitch-" + romBase + "-BIOS",  '"MVS Asia/Europe ver. 5 (1 slot)"')
+                    coreSettings.save(f"fbneo-dipswitch-{rom.stem}-BIOS",  '"MVS Asia/Europe ver. 5 (1 slot)"')
                 elif system.config['fbneo-neogeo-mode-switch'] == 'MVS USA':
-                    coreSettings.save("fbneo-dipswitch-" + romBase + "-BIOS",  '"MVS USA ver. 5 (2 slot)"')
+                    coreSettings.save(f"fbneo-dipswitch-{rom.stem}-BIOS",  '"MVS USA ver. 5 (2 slot)"')
                 elif system.config['fbneo-neogeo-mode-switch'] == 'MVS Japan':
-                    coreSettings.save("fbneo-dipswitch-" + romBase + "-BIOS",  '"MVS Japan ver. 5 (? slot)"')
+                    coreSettings.save(f"fbneo-dipswitch-{rom.stem}-BIOS",  '"MVS Japan ver. 5 (? slot)"')
                 elif system.config['fbneo-neogeo-mode-switch'] == 'AES Asia':
-                    coreSettings.save("fbneo-dipswitch-" + romBase + "-BIOS",  '"AES Asia"')
+                    coreSettings.save(f"fbneo-dipswitch-{rom.stem}-BIOS",  '"AES Asia"')
                 elif system.config['fbneo-neogeo-mode-switch'] == 'AES Japan':
-                    coreSettings.save("fbneo-dipswitch-" + romBase + "-BIOS",  '"AES Japan"')
+                    coreSettings.save(f"fbneo-dipswitch-{rom.stem}-BIOS",  '"AES Japan"')
                 else:
                     coreSettings.save("fbneo-neogeo-mode", '"UNIBIOS"')
             else:
                 coreSettings.save("fbneo-neogeo-mode",     '"UNIBIOS"')
-                #coreSettings.save("fbneo-dipswitch-" + romBase + "-BIOS",      '"Universe BIOS ver. 4.0"')
+                #coreSettings.save(f"fbneo-dipswitch-{rom.stem}-BIOS",      '"Universe BIOS ver. 4.0"')
             # Memory card mode
             if system.isOptSet('fbneo-memcard-mode'):
                 coreSettings.save('fbneo-memcard-mode', '"' + system.config['fbneo-memcard-mode'] + '"')
@@ -2840,15 +2824,13 @@ def generateCoreSettings(coreSettings, system, rom, guns, wheels):
         if user_config[:14] == "retroarchcore.":
             coreSettings.save(user_config[14:], '"' + system.config[user_config] + '"')
 
-def generateHatariConf(hatariConf):
+def generateHatariConf(hatariConf: Path) -> None:
     hatariConfig = configparser.ConfigParser(interpolation=None)
     # To prevent ConfigParser from converting to lower case
     hatariConfig.optionxform = str
-    if os.path.exists(hatariConf):
+    if hatariConf.exists():
         hatariConfig.read(hatariConf)
 
     # update the configuration file
-    if not os.path.exists(os.path.dirname(hatariConf)):
-        os.makedirs(os.path.dirname(hatariConf))
-    with open(hatariConf, 'w') as configfile:
+    with ensure_parents_and_open(hatariConf, 'w') as configfile:
         hatariConfig.write(configfile)
