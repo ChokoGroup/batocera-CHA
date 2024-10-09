@@ -1,8 +1,12 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import Command
-from generators.Generator import Generator
-import controllersConfig
+from typing import TYPE_CHECKING
+
+from ... import Command
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
 
 
 class LightsparkGenerator(Generator):
@@ -14,3 +18,9 @@ class LightsparkGenerator(Generator):
 
     def getMouseMode(self, config, rom):
         return True
+
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "lightspark",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }

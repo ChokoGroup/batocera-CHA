@@ -1,13 +1,33 @@
-import os
-import batoceraFiles
+from __future__ import annotations
+
 import struct
+from pathlib import Path
+from typing import TYPE_CHECKING, TypedDict
+
 from PIL import Image, ImageOps
+
+from ..batoceraPaths import BATOCERA_SHARE_DIR, SYSTEM_DECORATIONS, USER_DECORATIONS
+from .logger import get_logger
 from .videoMode import getAltDecoration
 
-from .logger import get_logger
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from PIL.ImageFile import ImageFile
+
+    from ..Emulator import Emulator
+
 eslog = get_logger(__name__)
 
-def getBezelInfos(rom, bezel, systemName, emulator):
+class BezelInfos(TypedDict):
+    png: Path
+    info: Path
+    layout: Path
+    mamezip: Path
+    specific_to_game: bool
+
+
+def getBezelInfos(rom: str | Path, bezel: str, systemName: str, emulator: str) -> BezelInfos | None:
     # by order choose :
     # rom name in the system subfolder of the user directory (gb/mario.png)
     # rom name in the system subfolder of the system directory (gb/mario.png)
@@ -21,90 +41,91 @@ def getBezelInfos(rom, bezel, systemName, emulator):
     # else return
     # mamezip files are for MAME-specific advanced artwork (bezels with overlays and backdrops, animated LEDs, etc)
     altDecoration = getAltDecoration(systemName, rom, emulator)
-    romBase = os.path.splitext(os.path.basename(rom))[0] # filename without extension
-    overlay_info_file = batoceraFiles.overlayUser + "/" + bezel + "/games/" + systemName + "/" + romBase + ".info"
-    overlay_png_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + systemName + "/" + romBase + ".png"
-    overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + systemName + "/" + romBase + ".lay"
-    overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + systemName + "/" + romBase + ".zip"
+    romBase = Path(rom).stem # filename without extension
+    overlay_info_file = USER_DECORATIONS / bezel / "games" / systemName / f"{romBase}.info"
+    overlay_png_file  = USER_DECORATIONS / bezel / "games" / systemName / f"{romBase}.png"
+    overlay_layout_file  = USER_DECORATIONS / bezel / "games" / systemName / f"{romBase}.lay"
+    overlay_mamezip_file  = USER_DECORATIONS / bezel / "games" / systemName / f"{romBase}.zip"
     bezel_game = True
-    if not os.path.exists(overlay_png_file):
-        overlay_info_file = batoceraFiles.overlaySystem + "/" + bezel + "/games/" + systemName + "/" + romBase + ".info"
-        overlay_png_file  = batoceraFiles.overlaySystem + "/" + bezel + "/games/" + systemName + "/" + romBase + ".png"
-        overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + systemName + "/" + romBase + ".lay"
-        overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + systemName + "/" + romBase + ".zip"
+    if not overlay_png_file.exists():
+        overlay_info_file = SYSTEM_DECORATIONS / bezel / "games" / systemName / f"{romBase}.info"
+        overlay_png_file  = SYSTEM_DECORATIONS / bezel / "games" / systemName / f"{romBase}.png"
+        overlay_layout_file  = USER_DECORATIONS / bezel / "games" / systemName / f"{romBase}.lay"
+        overlay_mamezip_file  = USER_DECORATIONS / bezel / "games" / systemName / f"{romBase}.zip"
         bezel_game = True
-        if not os.path.exists(overlay_png_file):
-            overlay_info_file = batoceraFiles.overlayUser + "/" + bezel + "/games/" + romBase + ".info"
-            overlay_png_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + romBase + ".png"
-            overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + romBase + ".lay"
-            overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + romBase + ".zip"
+        if not overlay_png_file.exists():
+            overlay_info_file = USER_DECORATIONS / bezel / "games" / f"{romBase}.info"
+            overlay_png_file  = USER_DECORATIONS / bezel / "games" / f"{romBase}.png"
+            overlay_layout_file  = USER_DECORATIONS / bezel / "games" / f"{romBase}.lay"
+            overlay_mamezip_file  = USER_DECORATIONS / bezel / "games" / f"{romBase}.zip"
             bezel_game = True
-            if not os.path.exists(overlay_png_file):
-                overlay_info_file = batoceraFiles.overlaySystem + "/" + bezel + "/games/" + romBase + ".info"
-                overlay_png_file  = batoceraFiles.overlaySystem + "/" + bezel + "/games/" + romBase + ".png"
-                overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + romBase + ".lay"
-                overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/games/" + romBase + ".zip"
+            if not overlay_png_file.exists():
+                overlay_info_file = SYSTEM_DECORATIONS / bezel / "games" / f"{romBase}.info"
+                overlay_png_file  = SYSTEM_DECORATIONS / bezel / "games" / f"{romBase}.png"
+                overlay_layout_file  = USER_DECORATIONS / bezel / "games" / f"{romBase}.lay"
+                overlay_mamezip_file  = USER_DECORATIONS / bezel / "games" / f"{romBase}.zip"
                 bezel_game = True
-                if not os.path.exists(overlay_png_file):
+                if not overlay_png_file.exists():
                     if altDecoration != 0:
-                      overlay_info_file = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".info"
-                      overlay_png_file  = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".png"
-                      overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".lay"
-                      overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".zip"
+                      overlay_info_file = USER_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.info"
+                      overlay_png_file  = USER_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.png"
+                      overlay_layout_file  = USER_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.lay"
+                      overlay_mamezip_file  = USER_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.zip"
                       bezel_game = False
-                    if not os.path.exists(overlay_png_file):
-                        overlay_info_file = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + ".info"
-                        overlay_png_file  = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + ".png"
-                        overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + ".lay"
-                        overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/systems/" + systemName + ".zip"
+                    if not overlay_png_file.exists():
+                        overlay_info_file = USER_DECORATIONS / bezel / "systems" / f"{systemName}.info"
+                        overlay_png_file  = USER_DECORATIONS / bezel / "systems" / f"{systemName}.png"
+                        overlay_layout_file  = USER_DECORATIONS / bezel / "systems" / f"{systemName}.lay"
+                        overlay_mamezip_file  = USER_DECORATIONS / bezel / "systems" / f"{systemName}.zip"
                         bezel_game = False
-                        if not os.path.exists(overlay_png_file):
+                        if not overlay_png_file.exists():
                             if altDecoration != 0:
-                              overlay_info_file = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".info"
-                              overlay_png_file  = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".png"
-                              overlay_layout_file  = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".lay"
-                              overlay_mamezip_file  = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + "-" + str(altDecoration) + ".zip"
+                              overlay_info_file = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.info"
+                              overlay_png_file  = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.png"
+                              overlay_layout_file  = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.lay"
+                              overlay_mamezip_file  = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}-{altDecoration!s}.zip"
                               bezel_game = False
-                            if not os.path.exists(overlay_png_file):
-                                overlay_info_file = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + ".info"
-                                overlay_png_file  = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + ".png"
-                                overlay_layout_file  = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + ".lay"
-                                overlay_mamezip_file  = batoceraFiles.overlaySystem + "/" + bezel + "/systems/" + systemName + ".zip"
+                            if not overlay_png_file.exists():
+                                overlay_info_file = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}.info"
+                                overlay_png_file  = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}.png"
+                                overlay_layout_file  = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}.lay"
+                                overlay_mamezip_file  = SYSTEM_DECORATIONS / bezel / "systems" / f"{systemName}.zip"
                                 bezel_game = False
-                                if not os.path.exists(overlay_png_file):
-                                    overlay_info_file = batoceraFiles.overlayUser + "/" + bezel + "/default-" + str(altDecoration) + ".info"
-                                    overlay_png_file  = batoceraFiles.overlayUser + "/" + bezel + "/default-" + str(altDecoration) + ".png"
-                                    overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/default-" + str(altDecoration) + ".lay"
-                                    overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/default-" + str(altDecoration) + ".zip"
+                                if not overlay_png_file.exists():
+                                    overlay_info_file = USER_DECORATIONS / bezel / f"default-{altDecoration!s}.info"
+                                    overlay_png_file  = USER_DECORATIONS / bezel / f"default-{altDecoration!s}.png"
+                                    overlay_layout_file  = USER_DECORATIONS / bezel / f"default-{altDecoration!s}.lay"
+                                    overlay_mamezip_file  = USER_DECORATIONS / bezel / f"default-{altDecoration!s}.zip"
                                     bezel_game = True
-                                    if not os.path.exists(overlay_png_file):
-                                      overlay_info_file = batoceraFiles.overlayUser + "/" + bezel + "/default.info"
-                                      overlay_png_file  = batoceraFiles.overlayUser + "/" + bezel + "/default.png"
-                                      overlay_layout_file  = batoceraFiles.overlayUser + "/" + bezel + "/default.lay"
-                                      overlay_mamezip_file  = batoceraFiles.overlayUser + "/" + bezel + "/default.zip"
+                                    if not overlay_png_file.exists():
+                                      overlay_info_file = USER_DECORATIONS / bezel / "default.info"
+                                      overlay_png_file  = USER_DECORATIONS / bezel / "default.png"
+                                      overlay_layout_file  = USER_DECORATIONS / bezel / "default.lay"
+                                      overlay_mamezip_file  = USER_DECORATIONS / bezel / "default.zip"
                                       bezel_game = True
-                                      if not os.path.exists(overlay_png_file):
-                                          overlay_info_file = batoceraFiles.overlaySystem + "/" + bezel + "/default-" + str(altDecoration) + ".info"
-                                          overlay_png_file  = batoceraFiles.overlaySystem + "/" + bezel + "/default-" + str(altDecoration) + ".png"
-                                          overlay_layout_file  = batoceraFiles.overlaySystem + "/" + bezel + "/default-" + str(altDecoration) + ".lay"
-                                          overlay_mamezip_file  = batoceraFiles.overlaySystem + "/" + bezel + "/default-" + str(altDecoration) + ".zip"
+                                      if not overlay_png_file.exists():
+                                          overlay_info_file = SYSTEM_DECORATIONS / bezel / f"default-{altDecoration!s}.info"
+                                          overlay_png_file  = SYSTEM_DECORATIONS / bezel / f"default-{altDecoration!s}.png"
+                                          overlay_layout_file  = SYSTEM_DECORATIONS / bezel / f"default-{altDecoration!s}.lay"
+                                          overlay_mamezip_file  = SYSTEM_DECORATIONS / bezel / f"default-{altDecoration!s}.zip"
                                           bezel_game = True
-                                          if not os.path.exists(overlay_png_file):
-                                            overlay_info_file = batoceraFiles.overlaySystem + "/" + bezel + "/default.info"
-                                            overlay_png_file  = batoceraFiles.overlaySystem + "/" + bezel + "/default.png"
-                                            overlay_layout_file  = batoceraFiles.overlaySystem + "/" + bezel + "/default.lay"
-                                            overlay_mamezip_file  = batoceraFiles.overlaySystem + "/" + bezel + "/default.zip"
+                                          if not overlay_png_file.exists():
+                                            overlay_info_file = SYSTEM_DECORATIONS / bezel / "default.info"
+                                            overlay_png_file  = SYSTEM_DECORATIONS / bezel / "default.png"
+                                            overlay_layout_file  = SYSTEM_DECORATIONS / bezel / "default.lay"
+                                            overlay_mamezip_file  = SYSTEM_DECORATIONS / bezel / "default.zip"
                                             bezel_game = True
-                                            if not os.path.exists(overlay_png_file):
-                                              return None
-    eslog.debug(f"Original bezel file used: {overlay_png_file}")
+                                            if not overlay_png_file.exists():
+                                                return None
+    eslog.debug(f"Original bezel file used: {overlay_png_file!s}")
     return { "png": overlay_png_file, "info": overlay_info_file, "layout": overlay_layout_file, "mamezip": overlay_mamezip_file, "specific_to_game": bezel_game }
 
 # Much faster than PIL Image.size
-def fast_image_size(image_file):
-    if not os.path.exists(image_file):
+def fast_image_size(image_file: str | Path) -> tuple[int, int]:
+    image_file = Path(image_file)
+    if not image_file.exists():
         return -1, -1
-    with open(image_file, 'rb') as fhandle:
+    with image_file.open('rb') as fhandle:
         head = fhandle.read(32)
         if len(head) != 32:
            # corrupted header, or not a PNG
@@ -115,7 +136,7 @@ def fast_image_size(image_file):
            return -1, -1
         return struct.unpack('>ii', head[16:24]) #image width, height
 
-def resizeImage(input_png, output_png, screen_width, screen_height, bezel_stretch=False):
+def resizeImage(input_png: str | Path, output_png: str | Path, screen_width: int, screen_height: int, bezel_stretch: bool = False) -> None:
     imgin = Image.open(input_png)
     fillcolor = 'black'
     eslog.debug(f"Resizing bezel: image mode {imgin.mode}")
@@ -125,7 +146,7 @@ def resizeImage(input_png, output_png, screen_width, screen_height, bezel_stretc
         imgout = imgin.resize((screen_width, screen_height), Image.BICUBIC)
         imgout.save(output_png, mode="RGBA", format="PNG")
 
-def padImage(input_png, output_png, screen_width, screen_height, bezel_width, bezel_height, bezel_stretch=False):
+def padImage(input_png: str | Path, output_png: str | Path, screen_width: int, screen_height: int, bezel_width: int, bezel_height: int, bezel_stretch: bool = False) -> None:
     imgin = Image.open(input_png)
     fillcolor = 'black'
     eslog.debug(f"Padding bezel: image mode {imgin.mode}")
@@ -138,24 +159,23 @@ def padImage(input_png, output_png, screen_width, screen_height, bezel_width, be
           imgout = ImageOps.pad(imgin, (screen_width, screen_height), color=fillcolor, centering=(0.5,0.5))
         imgout.save(output_png, mode="RGBA", format="PNG")
 
-def tatooImage(input_png, output_png, system):
+def tatooImage(input_png: str | Path, output_png: str | Path, system: Emulator) -> None:
   if system.config['bezel.tattoo'] == 'system':
       try:
-          tattoo_file = '/usr/share/batocera/controller-overlays/'+system.name+'.png'
-          if not os.path.exists(tattoo_file):
-              tattoo_file = '/usr/share/batocera/controller-overlays/generic.png'
+          tattoo_file = BATOCERA_SHARE_DIR / 'controller-overlays' / f'{system.name}.png'
+          if not tattoo_file.exists():
+              tattoo_file = BATOCERA_SHARE_DIR / 'controller-overlays' / 'generic.png'
           tattoo = Image.open(tattoo_file)
       except:
           eslog.error(f"Error opening controller overlay: {tattoo_file}")
-  elif system.config['bezel.tattoo'] == 'custom' and os.path.exists(system.config['bezel.tattoo_file']):
+  elif system.config['bezel.tattoo'] == 'custom' and (tattoo_file := Path(system.config['bezel.tattoo_file'])).exists():
       try:
-          tattoo_file = system.config['bezel.tattoo_file']
           tattoo = Image.open(tattoo_file)
       except:
           eslog.error(f"Error opening custom file: {tattoo_file}")
   else:
       try:
-          tattoo_file = '/usr/share/batocera/controller-overlays/generic.png'
+          tattoo_file = BATOCERA_SHARE_DIR / 'controller-overlays' / 'generic.png'
           tattoo = Image.open(tattoo_file)
       except:
           eslog.error(f"Error opening custom file: {tattoo_file}")
@@ -205,7 +225,7 @@ def tatooImage(input_png, output_png, system):
   imgnew.paste(back, (0,0,w,h))
   imgnew.save(output_png, mode="RGBA", format="PNG")
 
-def alphaPaste(input_png, output_png, imgin, fillcolor, screensize, bezel_stretch):
+def alphaPaste(input_png: str | Path, output_png: str | Path, imgin: ImageFile, fillcolor: str, screensize: tuple[int, int], bezel_stretch: bool) -> None:
   # screensize=(screen_width, screen_height)
   imgin = Image.open(input_png)
   # TheBezelProject have Palette + alpha, not RGBA. PIL can't convert from P+A to RGBA.
@@ -235,7 +255,7 @@ def alphaPaste(input_png, output_png, imgin, fillcolor, screensize, bezel_stretc
       imgout = ImageOps.pad(imgnew, screensize, color=fillcolor, centering=(0.5,0.5))
   imgout.save(output_png, mode="RGBA", format="PNG")
 
-def gunBordersSize(bordersSize):
+def gunBordersSize(bordersSize: str) -> tuple[int, int]:
     if bordersSize == "thin":
         return 1, 0
     if bordersSize == "medium":
@@ -244,20 +264,20 @@ def gunBordersSize(bordersSize):
         return 2, 1
     return 0, 0
 
-def gunBorderImage(input_png, output_png, aspect_ratio, innerBorderSizePer=2, outerBorderSizePer=3, innerBorderColor="#ffffff", outerBorderColor="#000000"):
+def gunBorderImage(input_png: str | Path, output_png: str | Path, aspect_ratio: str | None, innerBorderSizePer: int = 2, outerBorderSizePer: int = 3, innerBorderColor: str = "#ffffff", outerBorderColor: str = "#000000") -> int:
     # good default border that works in most circumstances is:
-    # 
+    #
     # 2% of the screen width in white.  Surrounded by 3% screen width of
     # black.  I have attached an example.  The black helps the lightgun detect
     # the border against a bright background behind the tv.
-    # 
+    #
     # The ideal solution is to draw the games inside the border rather than
     # overlap.  Then you can see the whole game.  The lightgun thinks that the
     # outer edge of the border is the edge of the game screen.  So you have to
     # make some adjustments in the lightgun settings to keep it aligned.  This
     # is why normally the border overlaps as it means that people do not need
     # to calculate an adjustment and is therefore easier.
-    # 
+    #
     # If all the games are drawn with the border this way then the settings
     # are static and the adjustment only needs to be calculated once.
 
@@ -276,9 +296,9 @@ def gunBorderImage(input_png, output_png, aspect_ratio, innerBorderSizePer=2, ou
     offset_x = (w - new_w) // 2
 
     # outer border
-    outerBorderSize = h * outerBorderSizePer // 100 # use only h to have homogen border size
+    outerBorderSize = w * outerBorderSizePer // 100 # use only h to have homogen border size
     if outerBorderSize < 1: # minimal size
-        outerBorderSize = 1
+        outerBorderSize = 0
     outerShapes = [
         [(offset_x, 0), (offset_x + new_w, outerBorderSize)],
         [(offset_x + new_w - outerBorderSize, 0), (offset_x + new_w, h)],
@@ -287,7 +307,7 @@ def gunBorderImage(input_png, output_png, aspect_ratio, innerBorderSizePer=2, ou
     ]
 
     # inner border
-    innerBorderSize = new_w * innerBorderSizePer // 100 # use only h to have homogen border size
+    innerBorderSize = w * innerBorderSizePer // 100 # use only h to have homogen border size
     if innerBorderSize < 1: # minimal size
         innerBorderSize = 1
     innerShapes = [
@@ -296,7 +316,7 @@ def gunBorderImage(input_png, output_png, aspect_ratio, innerBorderSizePer=2, ou
         [(offset_x + outerBorderSize, h - outerBorderSize - innerBorderSize), (offset_x + new_w - outerBorderSize, h - outerBorderSize)],
         [(offset_x + outerBorderSize, outerBorderSize), (offset_x + outerBorderSize + innerBorderSize, h - outerBorderSize)]
     ]
-    
+
     back = Image.open(input_png)
     imgnew = Image.new("RGBA", (w,h), (0,0,0,255))
     imgnew.paste(back, (0,0,w,h))
@@ -309,10 +329,10 @@ def gunBorderImage(input_png, output_png, aspect_ratio, innerBorderSizePer=2, ou
 
     return outerBorderSize + innerBorderSize
 
-def gunsBorderSize(w, h, innerBorderSizePer = 2, outerBorderSizePer = 3):
-    return (h * (innerBorderSizePer + outerBorderSizePer)) // 100
+def gunsBorderSize(w: int, h: int, innerBorderSizePer: int = 2, outerBorderSizePer: int = 3) -> int:
+    return (w * (innerBorderSizePer + outerBorderSizePer)) // 100
 
-def gunsBordersColorFomConfig(config):
+def gunsBordersColorFomConfig(config: Mapping[str, object]) -> str:
     if "controllers.guns.borderscolor" in config:
         if config["controllers.guns.borderscolor"] == "red":
             return "#ff0000"
@@ -324,7 +344,7 @@ def gunsBordersColorFomConfig(config):
             return "#ffffff"
     return "#ffffff"
 
-def createTransparentBezel(output_png, width, height):
+def createTransparentBezel(output_png: Path, width: int, height: int) -> None:
     from PIL import ImageDraw
     imgnew = Image.new("RGBA", (width,height), (0,0,0,0))
     imgnewdraw = ImageDraw.Draw(imgnew)

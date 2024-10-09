@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-24 15:53+0000\n"
+"PO-Revision-Date: 2024-10-05 07:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: German (Germany)\n"
 "Language: de-DE\n"
@@ -169,7 +169,7 @@ msgctxt "game_options"
 msgid "GAME RENDERING & SHADERS"
 msgstr "RENDERING & SHADERS"
 
-#. TRANSLATION: shared
+#. TRANSLATION: shared, pcsx2
 msgctxt "game_options"
 msgid "SHADER SET"
 msgstr "SHADER SET"
@@ -363,7 +363,7 @@ msgstr ""
 "Aktiviert Run-Ahead. Verdoppelt die CPU-Anforderungen. Hohe Werte können zu "
 "sichtbaren Leistungsschwankungen führen."
 
-#. TRANSLATION: shared, shared, shared, shared, shared
+#. TRANSLATION: shared, shared, shared, shared, shared, ...
 msgctxt "game_options"
 msgid "LATENCY REDUCTION"
 msgstr "LATENZREDUKTION"
@@ -377,13 +377,27 @@ msgstr "RUN-AHEAD FRAMES"
 msgctxt "game_options"
 msgid "Can prevent audio skips on button presses when using run-ahead."
 msgstr ""
-"Kann Audio-Aussetzer beim Tastendrücken verhindern, wenn  Run-Ahead "
-"verwendet wird."
+"Kann Audio-Aussetzer beim Tastendrücken verhindern, wenn Run-Ahead verwendet "
+"wird."
 
 #. TRANSLATION: shared
 msgctxt "game_options"
 msgid "USE SECOND INSTANCE FOR RUN-AHEAD"
 msgstr "ZWEITE INSTANZ FÜR RUN-AHEAD VERWENDEN"
+
+#. TRANSLATION: shared
+msgctxt "game_options"
+msgid ""
+"Use preemptive frames instead of run-ahead. Only runs ahead when controller "
+"state changes."
+msgstr ""
+"Benutze Präemptive Frames statt Run-Ahead. Führt nur dann einen Vorlauf aus, "
+"wenn sich der Controllerstatus ändert."
+
+#. TRANSLATION: shared
+msgctxt "game_options"
+msgid "USE PRE-EMPTIVE FRAMES"
+msgstr "BENUTZE PRÄEMTIVE FRAMES"
 
 #. TRANSLATION: shared
 msgctxt "game_options"
@@ -427,7 +441,7 @@ msgid "Use light guns instead of pads if light guns are connected."
 msgstr ""
 "Lightguns anstelle von Pads verwenden, wenn Lightguns angeschlossen sind."
 
-#. TRANSLATION: shared, dolphin
+#. TRANSLATION: shared, dolphin, rpcs3
 msgctxt "game_options"
 msgid "LIGHT GUNS"
 msgstr "LIGHTGUNS"
@@ -1290,7 +1304,7 @@ msgstr "Hybrid/Unten"
 msgctxt "game_options"
 msgid "Skip frames to improve performance, at the cost of choppy motion."
 msgstr ""
-"Überspringen einzelner Bilder zur Leistungssteigerung, kann zum Auftreten  "
+"Überspringen einzelner Bilder zur Leistungssteigerung, kann zum Auftreten "
 "ruckelnder Bewegungsabläufe führen."
 
 #. TRANSLATION: libretro/desmume, libretro/fbneo, libretro/flycast, libretro/mame078plus, libretro/mgba, ...
@@ -4697,7 +4711,7 @@ msgctxt "game_options"
 msgid "Select which joystick to emulate."
 msgstr "Joystick für Emulation auswählen."
 
-#. TRANSLATION: libretro/mame, cgenius, mame/pcsx2, iortcw
+#. TRANSLATION: libretro/mame, supermodel, cgenius, mame/pcsx2, iortcw
 msgctxt "game_options"
 msgid "None (Default)"
 msgstr "Keine (Standard)"
@@ -5891,7 +5905,7 @@ msgstr "JOYSTICK EMPFINDLICHKEIT"
 #. TRANSLATION: libretro/mupen64plus-next, libretro/parallel_n64
 msgctxt "game_options"
 msgid "100% (Default)"
-msgstr "100 % (Standard)"
+msgstr "100% (Standard)"
 
 #. TRANSLATION: libretro/mupen64plus-next, libretro/parallel_n64
 msgctxt "game_options"
@@ -6475,7 +6489,7 @@ msgstr "Aus ist sicherer, Ein für spezielle Spiele."
 #. TRANSLATION: libretro/pcsx_rearmed
 msgctxt "game_options"
 msgid "Double the rendering resolution."
-msgstr ""
+msgstr "Rendering-Auflösung verdoppeln."
 
 #. TRANSLATION: libretro/pcsx_rearmed, drastic
 msgctxt "game_options"
@@ -6485,7 +6499,7 @@ msgstr "VERBESSERTE RENDERING AUFLÖSUNG"
 #. TRANSLATION: libretro/pcsx_rearmed
 msgctxt "game_options"
 msgid "On (Speed hack)"
-msgstr ""
+msgstr "Ein (Speed-Hack)"
 
 #. TRANSLATION: libretro/pcsx_rearmed
 msgctxt "game_options"
@@ -8478,7 +8492,7 @@ msgctxt "game_options"
 msgid "UPSCALE FILTER"
 msgstr "UPSCALE FILTER"
 
-#. TRANSLATION: cemu, cemu, ppsspp, suyu
+#. TRANSLATION: cemu, cemu, ppsspp, supermodel, suyu
 msgctxt "game_options"
 msgid "Bicubic"
 msgstr "Bicubic"
@@ -8503,7 +8517,7 @@ msgctxt "game_options"
 msgid "DOWNSCALE FILTER"
 msgstr "DOWNSCALE FILTER"
 
-#. TRANSLATION: cemu, rpcs3
+#. TRANSLATION: cemu, rpcs3, supermodel
 msgctxt "game_options"
 msgid "Bilinear (Default)"
 msgstr "Bilinear (Standard)"
@@ -8869,6 +8883,11 @@ msgctxt "game_options"
 msgid "DISPLAY"
 msgstr "BILDSCHIRMANZEIGE"
 
+#. TRANSLATION: dolphin
+msgctxt "game_options"
+msgid "Automatic ratio"
+msgstr "Automatisches Seitenverhältnis"
+
 #. TRANSLATION: dolphin, dolphin_triforce
 msgctxt "game_options"
 msgid "Force 16:9"
@@ -9028,7 +9047,7 @@ msgctxt "game_options"
 msgid "USE PAD PROFILES"
 msgstr "PAD-PROFILE BENUTZEN"
 
-#. TRANSLATION: dolphin
+#. TRANSLATION: dolphin, rpcs3, rpcs3, rpcs3, rpcs3, ...
 msgctxt "game_options"
 msgid "Enable controller rumble capabilities if supported by the controller."
 msgstr ""
@@ -9111,11 +9130,13 @@ msgstr "GAMECUBE ANSCHLUSS 4 TYP"
 msgctxt "game_options"
 msgid "Moves South to West, West to North, etc. Standard controller type only."
 msgstr ""
+"Tausche Süden nach Westen, Westen nach Norden, usw. Nur Standard-Controller-"
+"Typ."
 
 #. TRANSLATION: dolphin, dolphin, dolphin, dolphin
 msgctxt "game_options"
 msgid "ROTATE FACE BUTTONS"
-msgstr ""
+msgstr "FACE-BUTTONS ROTIEREN"
 
 #. TRANSLATION: dolphin, dolphin, dolphin, dolphin
 msgctxt "game_options"
@@ -9130,7 +9151,7 @@ msgstr "TOTBEREICH"
 #. TRANSLATION: dolphin, dolphin, dolphin, dolphin
 msgctxt "game_options"
 msgid "5% (Default)"
-msgstr "5 % (Standard)"
+msgstr "5% (Standard)"
 
 #. TRANSLATION: dolphin, dolphin, dolphin, dolphin
 msgctxt "game_options"
@@ -10214,7 +10235,7 @@ msgstr "Anwendung beim Remote-Host schließen wenn Moonlight beendet wird."
 #. TRANSLATION: moonlight
 msgctxt "game_options"
 msgid "QUIT ON HOST"
-msgstr "BEENDEN BEIM HOST"
+msgstr "BEIM HOST BEENDEN"
 
 #. TRANSLATION: moonlight
 msgctxt "game_options"
@@ -10224,7 +10245,7 @@ msgstr "Verarbeitung aller Eingabesignale deaktivieren (Ansichtsmodus)"
 #. TRANSLATION: moonlight
 msgctxt "game_options"
 msgid "VIEW ONLY"
-msgstr "ANSICHTSMODUS"
+msgstr "NUR ANSCHAUEN"
 
 #. TRANSLATION: moonlight
 msgctxt "game_options"
@@ -10476,7 +10497,7 @@ msgctxt "game_options"
 msgid "LIMIT FPS"
 msgstr "FPS BEGRENZEN"
 
-#. TRANSLATION: openbor/openbor7530, supermodel
+#. TRANSLATION: openbor/openbor7530, supermodel, model2emu
 msgctxt "game_options"
 msgid "Only some games feature rumble. Not compatible with all controllers."
 msgstr ""
@@ -10499,6 +10520,41 @@ msgstr "BILDSCHIRMANZEIGE SEITENVERHÄLTNIS"
 msgctxt "game_options"
 msgid "Simple 2x"
 msgstr "Simple 2x"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "scanlines"
+msgstr "Scanlines"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "diagonal filter"
+msgstr "Diagonal-Filter"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "triangular filter"
+msgstr "Triangular-Filter"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "wave filter"
+msgstr "Wave-Filter"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "lottes crt"
+msgstr "Lottes CRT"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "4xrgss"
+msgstr "4xrgss"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "nxagss"
+msgstr "nxagss"
 
 #. TRANSLATION: pcsx2
 msgctxt "game_options"
@@ -10799,10 +10855,15 @@ msgctxt "game_options"
 msgid "Unscaled (Default)"
 msgstr "Unskaliert (Standard)"
 
-#. TRANSLATION: pcsx2, pcsx2
+#. TRANSLATION: pcsx2
 msgctxt "game_options"
-msgid "Basic (Recommended)"
-msgstr "Einfach (Empfohlen)"
+msgid "Scaled"
+msgstr "Skaliert"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "Force 32bit"
+msgstr "32bit erzwingen"
 
 #. TRANSLATION: pcsx2
 msgctxt "game_options"
@@ -10822,6 +10883,11 @@ msgstr "BLENDINGEFFEKT GENAUIGKEIT"
 msgctxt "game_options"
 msgid "Minimum"
 msgstr "Minimum"
+
+#. TRANSLATION: pcsx2
+msgctxt "game_options"
+msgid "Basic (Recommended)"
+msgstr "Einfach (Empfohlen)"
 
 #. TRANSLATION: pcsx2
 msgctxt "game_options"
@@ -11696,7 +11762,7 @@ msgstr "ZEITSTRECKUNGSSCHWELLE"
 #. TRANSLATION: rpcs3
 msgctxt "game_options"
 msgid "75% (Default)"
-msgstr "75 % (Standard)"
+msgstr "75% (Standard)"
 
 #. TRANSLATION: rpcs3
 msgctxt "game_options"
@@ -11719,10 +11785,10 @@ msgstr ""
 "Standardmäßig wird SDL2 verwendet, andernfalls werden Controller-spezifische "
 "Funktionen aktiviert. Sony DS funktioniert nicht mit Klon-Controllern."
 
-#. TRANSLATION: rpcs3
+#. TRANSLATION: rpcs3, rpcs3, rpcs3, rpcs3, rpcs3, ...
 msgctxt "game_options"
-msgid "PS3 CONTROLLER 1"
-msgstr "PS3 CONTROLLER 1"
+msgid "PS3 CONTROLLER"
+msgstr "PS3 CONTROLLER"
 
 #. TRANSLATION: rpcs3, rpcs3, rpcs3, rpcs3, rpcs3, ...
 msgctxt "game_options"
@@ -11734,35 +11800,20 @@ msgctxt "game_options"
 msgid "Sony DS"
 msgstr "Sony DS"
 
-#. TRANSLATION: rpcs3
+#. TRANSLATION: rpcs3, rpcs3
 msgctxt "game_options"
-msgid "PS3 CONTROLLER 2"
-msgstr "PS3 CONTROLLER 2"
+msgid "CONTROLLER 5"
+msgstr "CONTROLLER 5"
 
-#. TRANSLATION: rpcs3
+#. TRANSLATION: rpcs3, rpcs3
 msgctxt "game_options"
-msgid "PS3 CONTROLLER 3"
-msgstr "PS3 CONTROLLER 3"
+msgid "CONTROLLER 6"
+msgstr "CONTROLLER 6"
 
-#. TRANSLATION: rpcs3
+#. TRANSLATION: rpcs3, rpcs3
 msgctxt "game_options"
-msgid "PS3 CONTROLLER 4"
-msgstr "PS3 CONTROLLER 4"
-
-#. TRANSLATION: rpcs3
-msgctxt "game_options"
-msgid "PS3 CONTROLLER 5"
-msgstr "PS3 CONTROLLER 5"
-
-#. TRANSLATION: rpcs3
-msgctxt "game_options"
-msgid "PS3 CONTROLLER 6"
-msgstr "PS3 CONTROLLER 6"
-
-#. TRANSLATION: rpcs3
-msgctxt "game_options"
-msgid "PS3 CONTROLLER 7"
-msgstr "PS3 CONTROLLER 7"
+msgid "CONTROLLER 7"
+msgstr "CONTROLLER 7"
 
 #. TRANSLATION: scummvm
 msgctxt "game_options"
@@ -12111,6 +12162,62 @@ msgstr "QUAD RENDERING"
 
 #. TRANSLATION: supermodel
 msgctxt "game_options"
+msgid "CRT-like colour adaption. Requires New 3D engine."
+msgstr "CRT-ähnliche Farbanpassung. Erfordert neue 3D-Engine."
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "CRT COLOUR"
+msgstr "CRT-FARBE"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "ARI/D93 (recommended for all JP developed games)"
+msgstr "ARI/D93 (empfohlen für alle in Japan entwickelten Spiele)"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "PVM_20M2U/D93"
+msgstr "PVM_20M2U/D93"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "BT601_525/D93"
+msgstr "BT601_525/D93"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "BT601_525/D65 (recommended for all US developed games)"
+msgstr "BT601_525/D65 (empfohlen für alle in den USA entwickelten Spiele)"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "BT601_625/D65 (recommended for all EUR/AUS developed games)"
+msgstr "BT601_625/D65 (empfohlen für alle in EUR/AUS entwickelten Spiele)"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "Upscale filter used for the 2D layers. Requires New 3D engine."
+msgstr ""
+"Für die 2D-Ebenen wird ein Upscale-Filter verwendet. Benötigt neue 3D-Engine."
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "UPSCALE MODE"
+msgstr "UPSCALE-MODUS"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "None/Sharp Pixels"
+msgstr "Keine/Scharfe Pixel"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
+msgid "Biquintic"
+msgstr "Biquintic"
+
+#. TRANSLATION: supermodel
+msgctxt "game_options"
 msgid "Enable crosshairs in shooting games for the selected players."
 msgstr "Fadenkreuze in Shooter-Spielen für ausgewählte Spieler aktivieren."
 
@@ -12181,7 +12288,7 @@ msgctxt "game_options"
 msgid "Choose your preferred aspect ratio.."
 msgstr "Bevorzugtes Bildseitenverhältnis auswählen."
 
-#. TRANSLATION: cgenius
+#. TRANSLATION: cgenius, x16emu
 msgctxt "game_options"
 msgid "4x3 (Default)"
 msgstr "4x3 (Standard)"
@@ -12470,6 +12577,11 @@ msgctxt "game_options"
 msgid "DATA PLUGIN"
 msgstr "DATEN-PLUGIN"
 
+#. TRANSLATION: mame
+msgctxt "game_options"
+msgid "When moving"
+msgstr "Beim Bewegen"
+
 #. TRANSLATION: wine
 msgctxt "game_options"
 msgid ""
@@ -12488,7 +12600,7 @@ msgstr "WINE RUNNER"
 #. TRANSLATION: wine
 msgctxt "game_options"
 msgid "Converts DirectX 8/9/10/11/12 calls to Vulkan."
-msgstr "Konvertiert DirectX 8/9/10/11/12-Aufrufe in Vulkan."
+msgstr "Konvertiert DirectX 8/9/10/11/12-Aufrufe zu Vulkan."
 
 #. TRANSLATION: wine
 msgctxt "game_options"
@@ -15185,6 +15297,41 @@ msgctxt "game_options"
 msgid "TRIPLE BUFFERING"
 msgstr "DREIFACHE PUFFERUNG"
 
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "Enhancement. Increase the rendering resolution."
+msgstr "Enhancement. Rendering-Auflösung erhöhen."
+
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "1280x960 (Default)"
+msgstr "1280 x 960 (Standard)"
+
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "Change image scaling algorithm quality."
+msgstr "Qualität des Bildskalierungs-Algorithmus ändern."
+
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "IMAGE QUALITY"
+msgstr "BILDQUALITÄT"
+
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "Nearest pixel sampling"
+msgstr "Nearest pixel sampling"
+
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "Linear filtering"
+msgstr "Linear filtering"
+
+#. TRANSLATION: x16emu
+msgctxt "game_options"
+msgid "Anisotropic filtering"
+msgstr "Anisotropic filtering"
+
 #. TRANSLATION: steam.keys
 msgctxt "keys_files"
 msgid "Exit Steam"
@@ -15239,6 +15386,86 @@ msgstr "Zwischensequenz überspringen"
 msgctxt "keys_files"
 msgid "Screenshot"
 msgstr "Bildschirmfoto"
+
+#. TRANSLATION: rott.keys, theforceengine.keys, dreamcast.redream.keys, cave3rd.demul.keys, dreamcast.demul.keys, ...
+msgctxt "keys_files"
+msgid "Exit the emulator"
+msgstr "Emulator beenden"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Open door"
+msgstr "Tür öffnen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Toggle weapon"
+msgstr "Waffe wechseln"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Drop weapon"
+msgstr "Waffe fallen lassen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Aim up"
+msgstr "Nach oben zielen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Aim down"
+msgstr "Nach unten zielen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Strafe left"
+msgstr "Strafe (links)"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Strafe right"
+msgstr "Strafe (rechts)"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Run"
+msgstr "Rennen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Fire"
+msgstr "Feuer"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Menu back"
+msgstr "Zurück zum Menu"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Move left"
+msgstr "Nach links bewegen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Move right"
+msgstr "Nach rechts bewegen"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Move forward"
+msgstr "Vorwärts"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Move backward"
+msgstr "Rückwärts"
+
+#. TRANSLATION: rott.keys
+msgctxt "keys_files"
+msgid "Toggle run"
+msgstr "Rennen umschalten"
 
 #. TRANSLATION: corsixth.keys
 msgctxt "keys_files"
@@ -15379,11 +15606,6 @@ msgstr "Forschung"
 msgctxt "keys_files"
 msgid "Manage Staff"
 msgstr "Personal verwalten"
-
-#. TRANSLATION: theforceengine.keys, dreamcast.redream.keys, cave3rd.demul.keys, dreamcast.demul.keys, naomi.demul.keys, ...
-msgctxt "keys_files"
-msgid "Exit the emulator"
-msgstr "Emulator beenden"
 
 #. TRANSLATION: theforceengine.keys
 msgctxt "keys_files"
@@ -15718,7 +15940,7 @@ msgstr "Controller-Bildschirm anzeigen"
 #. TRANSLATION: wii.dolphin.keys
 msgctxt "keys_files"
 msgid "Exit Dolphin"
-msgstr ""
+msgstr "Dolphin beenden"
 
 #. TRANSLATION: psp.ppsspp.keys
 msgctxt "keys_files"
@@ -15828,7 +16050,7 @@ msgstr "Mikrofon"
 #. TRANSLATION: nds.drastic.keys
 msgctxt "keys_files"
 msgid "TouchScreen"
-msgstr "Touch-Bildschirm"
+msgstr "Touchscreen"
 
 #. TRANSLATION: nds.drastic.keys
 msgctxt "keys_files"
@@ -15869,21 +16091,3 @@ msgstr "Grafikfilter Ein/Aus"
 msgctxt "keys_files"
 msgid "Configuration menu"
 msgstr "Konfigurationsmenü"
-
-#~ msgctxt "game_options"
-#~ msgid ""
-#~ "Use alternative input mappings. Only applies to Standard Controller type."
-#~ msgstr ""
-#~ "Alternative Eingabebelegung. Gilt nur für den Typ Standard-Controller."
-
-#~ msgctxt "game_options"
-#~ msgid "ALT INPUT MAPPING"
-#~ msgstr "ALT EINGABEBELEGUNG"
-
-#~ msgctxt "game_options"
-#~ msgid "Face Buttons (CW)"
-#~ msgstr "Aktionstasten (im Uhrzeigersinn)"
-
-#~ msgctxt "game_options"
-#~ msgid "Face Buttons (CCW)"
-#~ msgstr "Aktionstasten (gegen Uhrzeigersinn)"

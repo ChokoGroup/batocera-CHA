@@ -1,37 +1,36 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import sys
-import os
-import io
-import batoceraFiles
-import settings
-from Emulator import Emulator
 import configparser
 import subprocess
+from typing import TYPE_CHECKING, Final
 
-from utils.logger import get_logger
+from ...batoceraPaths import ensure_parents_and_open
+from ...utils.logger import get_logger
+from .ppssppPaths import PPSSPP_PSP_SYSTEM_DIR
+
+if TYPE_CHECKING:
+    from ...Emulator import Emulator
+
+
 eslog = get_logger(__name__)
 
-ppssppConf     = batoceraFiles.CONF + '/ppsspp/PSP/SYSTEM'
-ppssppConfig   = ppssppConf + '/ppsspp.ini'
-ppssppControls = ppssppConf + '/controls.ini'
+ppssppConfig: Final   = PPSSPP_PSP_SYSTEM_DIR / 'ppsspp.ini'
+ppssppControls: Final = PPSSPP_PSP_SYSTEM_DIR / 'controls.ini'
 
-def writePPSSPPConfig(system):
+def writePPSSPPConfig(system: Emulator):
     iniConfig = configparser.ConfigParser(interpolation=None)
     # To prevent ConfigParser from converting to lower case
     iniConfig.optionxform = str
-    if os.path.exists(ppssppConfig):
+    if ppssppConfig.exists():
         try:
-            with io.open(ppssppConfig, 'r', encoding='utf_8_sig') as fp:
+            with ppssppConfig.open('r', encoding='utf_8_sig') as fp:
                 iniConfig.readfp(fp)
         except:
             pass
 
     createPPSSPPConfig(iniConfig, system)
     # Save the ini file
-    if not os.path.exists(os.path.dirname(ppssppConfig)):
-        os.makedirs(os.path.dirname(ppssppConfig))
-    with open(ppssppConfig, 'w') as configfile:
+    with ensure_parents_and_open(ppssppConfig, 'w') as configfile:
         iniConfig.write(configfile)
 
 def createPPSSPPConfig(iniConfig, system):
@@ -74,7 +73,7 @@ def createPPSSPPConfig(iniConfig, system):
                 iniConfig.set("Graphics", "GraphicsBackend", "0 (OPENGL)")
         except subprocess.CalledProcessError:
             eslog.debug("Error executing batocera-vulkan script.")
-    
+
     # Display FPS
     if system.isOptSet('showFPS') and system.getOptBoolean('showFPS') == True:
         iniConfig.set("Graphics", "ShowFPSCounter", "3") # 1 for Speed%, 2 for FPS, 3 for both
@@ -152,7 +151,7 @@ def createPPSSPPConfig(iniConfig, system):
     else:
         iniConfig.set("SystemParam", "NickName", "Batocera")
     # Disable Encrypt Save (permit to exchange save with different machines)
-    iniConfig.set("SystemParam", "EncryptSave", "False")   
+    iniConfig.set("SystemParam", "EncryptSave", "False")
 
 
     ## [GENERAL]
@@ -171,6 +170,12 @@ def createPPSSPPConfig(iniConfig, system):
         iniConfig.set("General", "EnableCheats", "False")
     # Don't check for a new version
     iniConfig.set("General", "CheckForNewVersion", "False")
+
+    # SaveState
+    if system.isOptSet('state_slot'):
+        iniConfig.set("General", "StateSlot", str(system.config["state_slot"]))
+    else:
+        iniConfig.set("General", "StateSlot", "0")
 
     ## [UPGRADE] - don't upgrade
     if not iniConfig.has_section("Upgrade"):

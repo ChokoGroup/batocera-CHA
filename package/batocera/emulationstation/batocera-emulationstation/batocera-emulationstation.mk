@@ -3,8 +3,8 @@
 # batocera-emulationstation
 #
 ################################################################################
-# Last update: Commits on Aug 11, 2024
-BATOCERA_EMULATIONSTATION_VERSION = 1ec19f3a5ca44a337867d4c0d3f54e4c06ecc3f2
+# Last update: Commits on Sept 27, 2024
+BATOCERA_EMULATIONSTATION_VERSION = 7c43b74063b150016152a9bcd505589b0e4e6e2a
 BATOCERA_EMULATIONSTATION_SITE = https://github.com/batocera-linux/batocera-emulationstation
 BATOCERA_EMULATIONSTATION_SITE_METHOD = git
 BATOCERA_EMULATIONSTATION_LICENSE = MIT
@@ -43,7 +43,7 @@ BATOCERA_EMULATIONSTATION_CONF_OPTS += -DENABLE_TTS=ON
 BATOCERA_EMULATIONSTATION_DEPENDENCIES += espeak
 endif
 
-ifeq ($(BR2_PACKAGE_KODI)$(BR2_PACKAGE_KODI20),y)
+ifeq ($(BR2_PACKAGE_KODI)$(BR2_PACKAGE_KODI21),y)
 BATOCERA_EMULATIONSTATION_CONF_OPTS += -DDISABLE_KODI=OFF
 else
 BATOCERA_EMULATIONSTATION_CONF_OPTS += -DDISABLE_KODI=ON
@@ -119,6 +119,8 @@ define BATOCERA_EMULATIONSTATION_RESOURCES
 	$(INSTALL) -m 0755 -d $(TARGET_DIR)/usr/share/emulationstation/resources/flags
 	$(INSTALL) -m 0755 -d $(TARGET_DIR)/usr/share/emulationstation/resources/battery
 	$(INSTALL) -m 0755 -d $(TARGET_DIR)/usr/share/emulationstation/resources/services
+	$(INSTALL) -m 0755 -d $(TARGET_DIR)/usr/share/emulationstation/resources/shaders
+	$(INSTALL) -m 0755 -d $(TARGET_DIR)/usr/share/emulationstation/resources/shaders/kawase
 	$(INSTALL) -m 0644 -D $(@D)/resources/*.* \
 	    $(TARGET_DIR)/usr/share/emulationstation/resources
 	$(INSTALL) -m 0644 -D $(@D)/resources/help/*.* \
@@ -127,13 +129,17 @@ define BATOCERA_EMULATIONSTATION_RESOURCES
 	    $(TARGET_DIR)/usr/share/emulationstation/resources/flags
 	$(INSTALL) -m 0644 -D $(@D)/resources/battery/*.* \
 	    $(TARGET_DIR)/usr/share/emulationstation/resources/battery
-	$(INSTALL) -m 0644 -D $(@D)/resources/services/*.* \
-	    $(TARGET_DIR)/usr/share/emulationstation/resources/services
+	$(INSTALL) -m 0644 -D $(@D)/resources/shaders/*.* \
+	    $(TARGET_DIR)/usr/share/emulationstation/resources/shaders
+	$(INSTALL) -m 0644 -D $(@D)/resources/shaders/*.* \
+	    $(TARGET_DIR)/usr/share/emulationstation/resources/shaders/kawase
 
 	# es_input.cfg
 	mkdir -p $(TARGET_DIR)/usr/share/batocera/datainit/system/configs/emulationstation
-	cp $(BATOCERA_EMULATIONSTATION_SOURCE_PATH)/controllers/es_input.cfg \
-		$(TARGET_DIR)/usr/share/batocera/datainit/system/configs/emulationstation
+	cp $(BATOCERA_EMULATIONSTATION_SOURCE_PATH)/controllers/es_input.cfg $(TARGET_DIR)/usr/share/emulationstation
+
+	# savestates config
+	$(INSTALL) -m 0644 $(BATOCERA_EMULATIONSTATION_SOURCE_PATH)/es_savestates.cfg $(TARGET_DIR)/usr/share/emulationstation
 
 	# hooks
 	cp $(BATOCERA_EMULATIONSTATION_SOURCE_PATH)/batocera-preupdate-gamelists-hook \

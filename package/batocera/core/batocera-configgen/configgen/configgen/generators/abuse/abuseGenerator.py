@@ -1,8 +1,12 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import Command
-from generators.Generator import Generator
-import controllersConfig
+from typing import TYPE_CHECKING
+
+from ... import Command, controllersConfig
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
 
 
 class AbuseGenerator(Generator):
@@ -15,3 +19,9 @@ class AbuseGenerator(Generator):
             env={
                 'SDL_GAMECONTROLLERCONFIG': controllersConfig.generateSdlGameControllerConfig(playersControllers)
             })
+
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "abuse",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }

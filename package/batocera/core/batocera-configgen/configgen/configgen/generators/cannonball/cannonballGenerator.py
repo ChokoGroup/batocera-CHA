@@ -1,26 +1,36 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-from generators.Generator import Generator
-import batoceraFiles
-import os
-from xml.dom import minidom
 import codecs
-import Command
-from . import cannonballControllers
+import os
+from typing import TYPE_CHECKING
+from xml.dom import minidom
+
+from ... import Command
+from ...batoceraPaths import CONFIGS, mkdir_if_not_exists
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
+
 
 class CannonballGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "cannonball",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }
+
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
-        configFile = batoceraFiles.CONF + '/cannonball/config.xml'
-        
-        if not os.path.exists(os.path.dirname(configFile)):
-            os.makedirs(os.path.dirname(configFile))
+        configFile = CONFIGS / 'cannonball' / 'config.xml'
+
+        mkdir_if_not_exists(configFile.parent)
 
         # config file
         config = minidom.Document()
-        if os.path.exists(configFile):
+        if configFile.exists():
             try:
-                config = minidom.parse(configFile)
+                config = minidom.parse(str(configFile))
             except:
                 pass # reinit the file
 
@@ -49,15 +59,16 @@ class CannonballGenerator(Generator):
             CannonballGenerator.setSectionConfig(config, xml_video, "hires", "0")
 
         # controllers
-        cannonballControllers.generateControllerConfig(config, xml_root, playersControllers)
+        from .cannonballControllers import generateControllerConfig
+        generateControllerConfig(config, xml_root, playersControllers)
 
         # save the config file
         #cannonballXml = open(configFile, "w")
         # TODO: python 3 - workawround to encode files in utf-8
-        cannonballXml = codecs.open(configFile, "w", "utf-8")
+        cannonballXml = codecs.open(str(configFile), "w", "utf-8")
         dom_string = os.linesep.join([s for s in config.toprettyxml().splitlines() if s.strip()]) # remove ugly empty lines while minicom adds them...
         cannonballXml.write(dom_string)
-        
+
         return Command.Command(array=["cannonball"])
 
     @staticmethod
@@ -71,7 +82,7 @@ class CannonballGenerator(Generator):
             xml_section = xml_section[0]
 
         return xml_section
-    
+
     @staticmethod
     def getSection(config, xml_root, name):
         xml_section = xml_root.getElementsByTagName(name)

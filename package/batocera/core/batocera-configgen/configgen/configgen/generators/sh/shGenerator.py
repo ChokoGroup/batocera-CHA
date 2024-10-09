@@ -1,20 +1,29 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-from generators.Generator import Generator
-import Command
-import controllersConfig
-import glob
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ... import Command, controllersConfig
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
+
 
 class ShGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "shell",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }
+
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
+        rom_path = Path(rom)
 
         # in case of squashfs, the root directory is passed
-        shInDir = glob.glob(rom + "/run.sh")
-        if len(shInDir) == 1:
-            shrom = shInDir[0]
-        else:
-            shrom = rom
+        runsh = rom_path / "run.sh"
+        shrom = runsh if runsh.exists() else rom_path
 
         commandArray = ["/bin/bash", shrom]
         return Command.Command(array=commandArray,env={

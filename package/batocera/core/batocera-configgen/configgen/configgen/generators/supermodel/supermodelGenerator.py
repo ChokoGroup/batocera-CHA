@@ -1,26 +1,43 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import Command
-from generators.Generator import Generator
-import controllersConfig
-import os
 import configparser
-import io
 import re
 import shutil
+from pathlib import Path
 from shutil import copyfile
+from typing import TYPE_CHECKING, Final
+
+from ... import Command, controllersConfig
+from ...batoceraPaths import CONFIGS, SAVES, ensure_parents_and_open, mkdir_if_not_exists
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...Emulator import Emulator
+    from ...types import GunMapping, HotkeysContext
+
+
+SUPERMODEL_SHARE: Final = Path('/usr/share/supermodel')
+SUPERMODEL_CONFIG: Final = CONFIGS / 'supermodel'
+SUPERMODEL_SAVES: Final = SAVES / 'supermodel'
+
 
 class SupermodelGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "supermodel",
+            "keys": { "exit": "KEY_ESC" }
+        }
+
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
         commandArray = ["supermodel", "-fullscreen", "-channels=2"]
-        
+
         # legacy3d
         if system.isOptSet("engine3D") and system.config["engine3D"] == "new3d":
             commandArray.append("-new3d")
         else:
-             commandArray.extend(["-multi-texture", "-legacy-scsp", "-legacy3d"])
-        
+            commandArray.extend(["-multi-texture", "-legacy-scsp", "-legacy3d"])
+
         # widescreen
         if system.isOptSet("m3_wideScreen") and system.getOptBoolean("m3_wideScreen"):
             commandArray.append("-wide-screen")
@@ -49,17 +66,25 @@ class SupermodelGenerator(Generator):
         if system.isOptSet("ppcFreq"):
             commandArray.append("-ppc-frequency={}".format(system.config["ppcFreq"]))
 
+        # crt colour
+        if system.isOptSet("crt_colour"):
+            commandArray.append("-crtcolors={}".format(system.config["crt_colour"]))
+
+        # upscale mode
+        if system.isOptSet("upscale_mode"):
+            commandArray.append("-upscalemode={}".format(system.config["upscale_mode"]))
+
         #driving controls
         if system.isOptSet("pedalSwap") and system.getOptBoolean("pedalSwap"):
             drivingGame = 1
         else:
             drivingGame = 0
-        
+
         #driving sensitivity
         if system.isOptSet("joystickSensitivity"):
-            sensitivity = system.config["joystickSensitivity"]
+            sensitivity: str = system.config["joystickSensitivity"]
         else:
-            sensitivity = "100"
+            sensitivity: str = "100"
 
         # resolution
         commandArray.append("-res={},{}".format(gameResolution["width"], gameResolution["height"]))
@@ -76,61 +101,56 @@ class SupermodelGenerator(Generator):
         # copy xml
         copy_xml()
 
-        # config
-        configPadsIni(system, rom, playersControllers, guns, drivingGame, sensitivity)
+        # controller config
+        configPadsIni(system, Path(rom), playersControllers, guns, drivingGame, sensitivity)
 
         return Command.Command(array=commandArray, env={"SDL_VIDEODRIVER":"x11"})
 
 def copy_nvram_files():
-    sourceDir = "/usr/share/supermodel/NVRAM"
-    targetDir = "/userdata/saves/supermodel/NVRAM"
-    if not os.path.exists(targetDir):
-        os.makedirs(targetDir)
+    sourceDir = SUPERMODEL_SHARE / "NVRAM"
+    targetDir = SUPERMODEL_SAVES / "NVRAM"
+
+    mkdir_if_not_exists(targetDir)
 
     # create nv files which are in source and have a newer modification time than in target
-    for file in os.listdir(sourceDir):
-        extension = os.path.splitext(file)[1][1:]
-        if extension == "nv":
-            sourceFile = os.path.join(sourceDir, file)
-            targetFile = os.path.join(targetDir, file)
-            if not os.path.exists(targetFile):
+    for sourceFile in sourceDir.iterdir():
+        if sourceFile.suffix == ".nv":
+            targetFile = targetDir / sourceFile.name
+            if not targetFile.exists():
                 # if the target file doesn't exist, just copy the source file
                 copyfile(sourceFile, targetFile)
             else:
                 # if the target file exists and has an older modification time than the source file, create a backup and copy the new file
-                if os.path.getmtime(sourceFile) > os.path.getmtime(targetFile):
-                    backupFile = targetFile + ".bak"
-                    if os.path.exists(backupFile):
-                        os.remove(backupFile)
-                    os.rename(targetFile, backupFile)
+                if sourceFile.stat().st_mtime > targetFile.stat().st_mtime:
+                    backupFile = targetFile.with_suffix(targetFile.suffix + ".bak")
+                    if backupFile.exists():
+                        backupFile.unlink()
+                    targetFile.rename(backupFile)
                     copyfile(sourceFile, targetFile)
 
 def copy_asset_files():
-    sourceDir = "/usr/share/supermodel/Assets"
-    targetDir = "/userdata/system/configs/supermodel/Assets"
-    if not os.path.exists(sourceDir):
+    sourceDir = SUPERMODEL_SHARE / "Assets"
+    targetDir = SUPERMODEL_CONFIG / "Assets"
+    if not sourceDir.exists():
         return
-    if not os.path.exists(targetDir):
-        os.makedirs(targetDir)
+    mkdir_if_not_exists(targetDir)
 
     # create asset files which are in source and have a newer modification time than in target
-    for file in os.listdir(sourceDir):
-        sourceFile = os.path.join(sourceDir, file)
-        targetFile = os.path.join(targetDir, file)
-        if not os.path.exists(targetFile) or os.path.getmtime(sourceFile) > os.path.getmtime(targetFile):
+    for sourceFile in sourceDir.iterdir():
+        targetFile = targetDir / sourceFile.name
+        if not targetFile.exists() or sourceFile.stat().st_mtime > targetFile.stat().st_mtime:
             copyfile(sourceFile, targetFile)
 
 def copy_xml():
-    source_path = '/usr/share/supermodel/Games.xml'
-    dest_path = '/userdata/system/configs/supermodel/Games.xml'
-    if not os.path.exists('/userdata/system/configs/supermodel'):
-        os.makedirs('/userdata/system/configs/supermodel')
-    if not os.path.exists(dest_path) or os.path.getmtime(source_path) > os.path.getmtime(dest_path):
+    source_path = SUPERMODEL_SHARE / 'Games.xml'
+    dest_path = SUPERMODEL_CONFIG / 'Games.xml'
+    mkdir_if_not_exists(dest_path.parent)
+    if not dest_path.exists() or source_path.stat().st_mtime > dest_path.stat().st_mtime:
         shutil.copy2(source_path, dest_path)
 
-def configPadsIni(system, rom, playersControllers, guns, altControl, sensitivity):
-    if bool(altControl):
-        templateFile = "/usr/share/supermodel/Supermodel-Driving.ini.template"
+def configPadsIni(system: Emulator, rom: Path, playersControllers: controllersConfig.ControllerMapping, guns: GunMapping, altControl: bool, sensitivity: str) -> None:
+    if altControl:
+        templateFile = SUPERMODEL_SHARE / "Supermodel-Driving.ini.template"
         mapping = {
             "button1": "y",
             "button2": "b",
@@ -154,7 +174,7 @@ def configPadsIni(system, rom, playersControllers, guns, altControl, sensitivity
             "down": "joystick1down"
         }
     else:
-        templateFile = "/usr/share/supermodel/Supermodel.ini.template"
+        templateFile = SUPERMODEL_SHARE / "Supermodel.ini.template"
         mapping = {
             "button1": "y",
             "button2": "b",
@@ -177,7 +197,7 @@ def configPadsIni(system, rom, playersControllers, guns, altControl, sensitivity
             "up": "joystick1up",
             "down": "joystick1down"
         }
-    targetFile = "/userdata/system/configs/supermodel/Supermodel.ini"
+    targetFile = SUPERMODEL_CONFIG / "Supermodel.ini"
 
     mapping_fallback = {
         "axisX": "left",
@@ -192,7 +212,7 @@ def configPadsIni(system, rom, playersControllers, guns, altControl, sensitivity
     templateConfig = configparser.ConfigParser(interpolation=None)
     # To prevent ConfigParser from converting to lower case
     templateConfig.optionxform = str
-    with io.open(templateFile, 'r', encoding='utf_8_sig') as fp:
+    with templateFile.open('r', encoding='utf_8_sig') as fp:
         templateConfig.readfp(fp)
 
     # target
@@ -207,8 +227,7 @@ def configPadsIni(system, rom, playersControllers, guns, altControl, sensitivity
 
     # apply guns
     for section in targetConfig.sections():
-        romBase = os.path.splitext(os.path.basename(rom))[0] # filename without extension
-        if section.strip() in [ "Global", romBase ]:
+        if section.strip() in [ "Global", rom.stem ]:
             # for an input sytem
             if section.strip() != "Global":
                 targetConfig.set(section, "InputSystem", "to be defined")
@@ -294,9 +313,7 @@ def configPadsIni(system, rom, playersControllers, guns, altControl, sensitivity
             targetConfig.set(section, "InputJoy1XSaturation", sensitivity)
 
     # save the ini file
-    if not os.path.exists(os.path.dirname(targetFile)):
-        os.makedirs(os.path.dirname(targetFile))
-    with open(targetFile, 'w') as configfile:
+    with ensure_parents_and_open(targetFile, 'w') as configfile:
         targetConfig.write(configfile)
 
 def transformValue(value, playersControllers, mapping, mapping_fallback):
@@ -331,7 +348,7 @@ def transformElement(elt, playersControllers, mapping, mapping_fallback):
         return input2input(playersControllers, matches.group(1), joy2realjoyid(playersControllers, matches.group(1)), mapping["button" + matches.group(2)])
     matches = re.search("^JOY([12])_UP$", elt)
     if matches:
-        # check joystick type if it's hat or axis 
+        # check joystick type if it's hat or axis
         joy_type = hatOrAxis(playersControllers, matches.group(1))
         if joy_type == "hat":
             key_up = "up"

@@ -1,16 +1,19 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
-import sys
-import os
 import configparser
-import batoceraFiles
-from utils.logger import get_logger
+from typing import TYPE_CHECKING, Final
+
+from ...batoceraPaths import mkdir_if_not_exists
+from ...utils.logger import get_logger
+from .ppssppPaths import PPSSPP_CONFIG_INIT, PPSSPP_PSP_SYSTEM_DIR
+
+if TYPE_CHECKING:
+    from ...controllersConfig import Controller
 
 eslog = get_logger(__name__)
 
-ppssppControlsIni  = batoceraFiles.CONF + '/ppsspp/PSP/SYSTEM/controls.ini'
-ppssppControlsInit = batoceraFiles.HOME_INIT + 'configs/ppsspp/PSP/SYSTEM/controls.ini'
+ppssppControlsIni: Final  = PPSSPP_PSP_SYSTEM_DIR / 'controls.ini'
+ppssppControlsInit: Final = PPSSPP_CONFIG_INIT / 'controls.ini'
 
 # This configgen is based on PPSSPP 1.5.4.
 # Therefore, all code/github references are valid at this version, and may not be valid with later updates
@@ -125,7 +128,7 @@ ppssppMapping =  { 'a' :             {'button': 'Circle'},
 }
 
 # Create the controller configuration file
-def generateControllerConfig(controller):
+def generateControllerConfig(controller: Controller):
     # Set config file name
     configFileName = ppssppControlsIni
     Config = configparser.ConfigParser(interpolation=None)
@@ -141,17 +144,17 @@ def generateControllerConfig(controller):
         input = controller.inputs[index]
         if input.name not in ppssppMapping or input.type not in ppssppMapping[input.name]:
             continue
-        
+
         var = ppssppMapping[input.name][input.type]
         padnum = controller.index
-        
+
         code = input.code
         if input.type == 'button':
             pspcode = sdlNameToNKCode[input.name]
             val = f"{DEVICE_ID_PAD_0 + padnum}-{pspcode}"
             val = optionValue(Config, section, var, val)
             Config.set(section, var, val)
-            
+
         elif input.type == 'axis':
             # Get the axis code
             nkAxisId = SDLJoyAxisMap[input.id]
@@ -161,7 +164,7 @@ def generateControllerConfig(controller):
             val = optionValue(Config, section, var, val)
             eslog.debug(f"Adding {var} to {val}")
             Config.set(section, var, val)
-            
+
             # Skip the rest if it's an axis dpad
             if input.name in [ 'up', 'down', 'left', 'right' ] : continue
             # Also need to do the opposite direction manually. The input.id is the same as up/left, but the direction is opposite
@@ -173,12 +176,12 @@ def generateControllerConfig(controller):
                 var = ppssppMapping['joystick2down'][input.type]
             elif input.name == 'joystick2left':
                 var = ppssppMapping['joystick2right'][input.type]
-                
+
             pspcode = axisToCode(nkAxisId, -int(input.value))
             val = f"{DEVICE_ID_PAD_0 + padnum}-{pspcode}"
             val = optionValue(Config, section, var, val)
             Config.set(section, var, val)
-        
+
         elif input.type == 'hat' and input.name in SDLHatMap:
             var = ppssppMapping[input.name][input.type]
             pspcode = SDLHatMap[input.name]
@@ -186,9 +189,8 @@ def generateControllerConfig(controller):
             val = optionValue(Config, section, var, val)
             Config.set(section, var, val)
 
-        if not os.path.exists(os.path.dirname(configFileName)):
-                os.makedirs(os.path.dirname(configFileName))
-    
+        mkdir_if_not_exists(configFileName.parent)
+
     # hotkey controls are called via evmapy.
     # configuring specific hotkey in ppsspp is not simple without patching
     Config.set(section, "Rewind",        "1-131")
@@ -199,10 +201,9 @@ def generateControllerConfig(controller):
     Config.set(section, "Next Slot",     "1-136")
     Config.set(section, "Screenshot",    "1-137")
     Config.set(section, "Pause",         "1-139")
-    
-    cfgfile = open(configFileName,'w+')
-    Config.write(cfgfile)
-    cfgfile.close()
+
+    with configFileName.open('w+') as cfgfile:
+        Config.write(cfgfile)
     return configFileName
 
 def axisToCode(axisId, direction) :

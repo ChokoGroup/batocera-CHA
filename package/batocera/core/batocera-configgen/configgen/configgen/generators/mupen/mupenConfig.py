@@ -1,11 +1,19 @@
-#!/usr/bin/env python
-import os, sys
-import batoceraFiles
-import settings
-import subprocess
-import json
+from __future__ import annotations
 
-def setMupenConfig(iniConfig, system, controllers, gameResolution):
+from typing import TYPE_CHECKING
+
+from ...batoceraPaths import BIOS, SCREENSHOTS
+from .mupenPaths import MUPEN_CONFIG_DIR, MUPEN_SAVES
+
+if TYPE_CHECKING:
+    from configparser import ConfigParser
+
+    from ...controllersConfig import ControllerMapping
+    from ...Emulator import Emulator
+    from ...types import Resolution
+
+
+def setMupenConfig(iniConfig: ConfigParser, system: Emulator, controllers: ControllerMapping, gameResolution: Resolution):
 
     # Hotkeys
     setHotKeyConfig(iniConfig, controllers, system)
@@ -14,10 +22,10 @@ def setMupenConfig(iniConfig, system, controllers, gameResolution):
     if not iniConfig.has_section("Core"):
         iniConfig.add_section("Core")
     iniConfig.set("Core", "Version", "1.01") # Version is important for the .ini creation otherwise, mupen remove the section
-    iniConfig.set("Core", "ScreenshotPath", batoceraFiles.SCREENSHOTS)
-    iniConfig.set("Core", "SaveStatePath",  batoceraFiles.mupenSaves)
-    iniConfig.set("Core", "SaveSRAMPath",   batoceraFiles.mupenSaves)
-    iniConfig.set("Core", "SharedDataPath", batoceraFiles.mupenConf)
+    iniConfig.set("Core", "ScreenshotPath", str(SCREENSHOTS))
+    iniConfig.set("Core", "SaveStatePath",  str(MUPEN_SAVES))
+    iniConfig.set("Core", "SaveSRAMPath",   str(MUPEN_SAVES))
+    iniConfig.set("Core", "SharedDataPath", str(MUPEN_CONFIG_DIR))
     iniConfig.set("Core", "SaveFilenameFormat", "1000") # forces savesstates with rom name
     # TODO : Miss Mupen64Plus\hires_texture
 
@@ -26,6 +34,16 @@ def setMupenConfig(iniConfig, system, controllers, gameResolution):
         iniConfig.set("Core", "DisableExtraMem", "True")
     else:
         iniConfig.set("Core", "DisableExtraMem", "False")        # Disable 4MB expansion RAM pack. May be necessary for some games
+
+    # state_slot option, AutoStateSlotIncrement could be set too depending on the es option
+    if system.isOptSet('state_slot'):
+        iniConfig.set("Core", "CurrentStateSlot", str(system.config["state_slot"]))
+
+    # increment savestates
+    if system.isOptSet('incrementalsavestates') and not system.getOptBoolean('incrementalsavestates'):
+        iniConfig.set("Core", "AutoStateSlotIncrement", "False")
+    else:
+        iniConfig.set("Core", "AutoStateSlotIncrement", "True")
 
     # Create section for Audio-SDL
     if not iniConfig.has_section("Audio-SDL"):
@@ -182,7 +200,7 @@ def setMupenConfig(iniConfig, system, controllers, gameResolution):
         iniConfig.add_section("64DD")
     # Filename of the 64DD IPL ROM
     if (system.name == 'n64dd'):
-        iniConfig.set("64DD", "IPL-ROM", batoceraFiles.BIOS + "/64DD_IPL.bin")
+        iniConfig.set("64DD", "IPL-ROM", str(BIOS / "64DD_IPL.bin"))
     else:
         iniConfig.set("64DD", "IPL-ROM", "")
     iniConfig.set("64DD", "Disk", "")
@@ -207,7 +225,7 @@ def setMupenConfig(iniConfig, system, controllers, gameResolution):
                     iniConfig.add_section(custom_section)
                 iniConfig.set(custom_section, custom_option, str(system.config[user_config]))
 
-def setHotKeyConfig(iniConfig, controllers, system):
+def setHotKeyConfig(iniConfig: ConfigParser, controllers: ControllerMapping, system: Emulator):
     if not iniConfig.has_section("CoreEvents"):
         iniConfig.add_section("CoreEvents")
     iniConfig.set("CoreEvents", "Version", "1")
@@ -229,10 +247,10 @@ def setHotKeyConfig(iniConfig, controllers, system):
                     iniConfig.set("CoreEvents", "Joy Mapping Fast Forward", "")
                 if 'a' in controllers['1'].inputs:
                     iniConfig.set("CoreEvents", "Joy Mapping Reset", "")
-                if 'b' in controllers['1'].inputs:                   
+                if 'b' in controllers['1'].inputs:
                     iniConfig.set("CoreEvents", "Joy Mapping Pause", "")
                 return
-               
+
             if 'y' in controllers['1'].inputs:
                 iniConfig.set("CoreEvents", "Joy Mapping Save State", "\"J{}{}/{}\"".format(controllers['1'].index, createButtonCode(controllers['1'].inputs['hotkey']), createButtonCode(controllers['1'].inputs['y'])))
             if 'x' in controllers['1'].inputs:

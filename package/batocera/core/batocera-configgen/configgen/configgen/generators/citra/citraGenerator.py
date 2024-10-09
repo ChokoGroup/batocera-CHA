@@ -1,33 +1,44 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import Command
-import batoceraFiles # GLOBAL VARIABLES
-from generators.Generator import Generator
-import shutil
-import os
-from os import environ
 import configparser
-import controllersConfig
 import subprocess
+from os import environ
+from pathlib import Path
+from typing import TYPE_CHECKING
 
-from utils.logger import get_logger
+from ... import Command, controllersConfig
+from ...batoceraPaths import CACHE, CONFIGS, SAVES, ensure_parents_and_open
+from ...utils.logger import get_logger
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...Emulator import Emulator
+    from ...types import HotkeysContext
+
+
 eslog = get_logger(__name__)
 
 class CitraGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "citra",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }
+
     # Main entry of the module
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
-        CitraGenerator.writeCITRAConfig(batoceraFiles.CONF + "/citra-emu/qt-config.ini", system, playersControllers)
+        CitraGenerator.writeCITRAConfig(CONFIGS / "citra-emu" / "qt-config.ini", system, playersControllers)
 
-        if os.path.exists('/usr/bin/citra-qt'):
+        if Path('/usr/bin/citra-qt').exists():
             commandArray = ['/usr/bin/citra-qt', rom]
         else:
             commandArray = ['/usr/bin/citra', rom]
-        return Command.Command(array=commandArray, env={ 
-            "XDG_CONFIG_HOME":batoceraFiles.CONF,
-            "XDG_DATA_HOME":batoceraFiles.SAVES + "/3ds",
-            "XDG_CACHE_HOME":batoceraFiles.CACHE,
-            "XDG_RUNTIME_DIR":batoceraFiles.SAVES + "/3ds/citra-emu",
+        return Command.Command(array=commandArray, env={
+            "XDG_CONFIG_HOME":CONFIGS,
+            "XDG_DATA_HOME":SAVES / "3ds",
+            "XDG_CACHE_HOME":CACHE,
+            "XDG_RUNTIME_DIR":SAVES / "3ds" / "citra-emu",
             "QT_QPA_PLATFORM":"xcb",
             "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
             "SDL_JOYSTICK_HIDAPI": "0"
@@ -40,9 +51,13 @@ class CitraGenerator(Generator):
             return False
         else:
             return True
-    
+
     @staticmethod
-    def writeCITRAConfig(citraConfigFile, system, playersControllers):
+    def writeCITRAConfig(
+        citraConfigFile: Path,
+        system: Emulator,
+        playersControllers: controllersConfig.ControllerMapping
+    ) -> None:
         # Pads
         citraButtons = {
             "button_a":      "a",
@@ -70,7 +85,7 @@ class CitraGenerator(Generator):
         # ini file
         citraConfig = configparser.RawConfigParser(strict=False)
         citraConfig.optionxform=str             # Add Case Sensitive comportement
-        if os.path.exists(citraConfigFile):
+        if citraConfigFile.exists():
             citraConfig.read(citraConfigFile)
 
         ## [LAYOUT]
@@ -104,7 +119,7 @@ class CitraGenerator(Generator):
 
         ## [UI]
         if not citraConfig.has_section("UI"):
-            citraConfig.add_section("UI")       
+            citraConfig.add_section("UI")
         # Start Fullscreen
         citraConfig.set("UI", "fullscreen", "true")
         citraConfig.set("UI", "fullscreen\default", "false")
@@ -196,7 +211,7 @@ class CitraGenerator(Generator):
             citraConfig.set("Renderer", "use_frame_limit", "false")
         else:
             citraConfig.set("Renderer", "use_frame_limit", "true")
-        
+
         ## [WEB SERVICE]
         if not citraConfig.has_section("WebService"):
             citraConfig.add_section("WebService")
@@ -227,7 +242,7 @@ class CitraGenerator(Generator):
         citraConfig.set("Utility", "async_custom_loading\\default", "true")
         citraConfig.set("Utility", "custom_textures\\default", "false")
         citraConfig.set("Utility", "preload_textures\\default", "false")
-        
+
         ## [CONTROLS]
         if not citraConfig.has_section("Controls"):
             citraConfig.add_section("Controls")
@@ -235,7 +250,7 @@ class CitraGenerator(Generator):
         # Options required to load the functions when the configuration file is created
         if not citraConfig.has_option("Controls", "profiles\\size"):
             citraConfig.set("Controls", "profile", 0)
-            citraConfig.set("Controls", "profile\\default", "true")    
+            citraConfig.set("Controls", "profile\\default", "true")
             citraConfig.set("Controls", "profiles\\1\\name", "default")
             citraConfig.set("Controls", "profiles\\1\\name\\default", "true")
             citraConfig.set("Controls", "profiles\\size", 1)
@@ -252,9 +267,7 @@ class CitraGenerator(Generator):
             break
 
         ## Update the configuration file
-        if not os.path.exists(os.path.dirname(citraConfigFile)):
-            os.makedirs(os.path.dirname(citraConfigFile))
-        with open(citraConfigFile, 'w') as configfile:
+        with ensure_parents_and_open(citraConfigFile, 'w') as configfile:
             citraConfig.write(configfile)
 
     @staticmethod

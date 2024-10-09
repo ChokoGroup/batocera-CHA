@@ -64,7 +64,6 @@ PACKAGES_LIBRETRO="libretro-81
                    libretro-lutro
                    libretro-mame
                    libretro-mame2003-plus
-                   libretro-mame2010
                    libretro-melonds
                    libretro-melonds-ds
                    libretro-mesen
@@ -196,6 +195,7 @@ PACKAGES_EMULATORS="amiberry
                     vice
                     vita3k
                     vpinball
+                    x16emu
                     xemu
                     xenia
                     xenia-canary"
@@ -226,6 +226,7 @@ PACKAGES_PORTS="abuse
                 sonic2013
                 soniccd
                 sonic-mania
+                taradino
                 theforceengine
                 tyrian
                 uqm
@@ -235,8 +236,7 @@ PACKAGES_PORTS="abuse
                 hlsdk-xash3d-opfor
                 xash3d-fwgs"
 
-PACKAGES_WINE="d8vk
-               dxvk
+PACKAGES_WINE="dxvk
                dxvk-nvapi
                faudio
                mf

@@ -1,15 +1,22 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-from generators.Generator import Generator
-import Command
 import os
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ... import Command
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
+
 
 class FlatpakGenerator(Generator):
 
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
 
         romId = None
-        with open(rom) as f:
+        with Path(rom).open() as f:
             romId = str.strip(f.read())
 
         # bad hack in a first time to get audio for user batocera
@@ -22,3 +29,9 @@ class FlatpakGenerator(Generator):
 
     def getMouseMode(self, config, rom):
         return True
+
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "flatpak",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }

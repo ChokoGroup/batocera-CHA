@@ -1,27 +1,40 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
-import os
-import Command
-from generators.Generator import Generator
-import controllersConfig
+from typing import TYPE_CHECKING, Final
+
+from ... import Command, controllersConfig
+from ...batoceraPaths import ROMS, SAVES, mkdir_if_not_exists
+from ..Generator import Generator
+
+if TYPE_CHECKING:
+    from ...types import HotkeysContext
+
+_UQM_SAVES: Final = SAVES / 'uqm'
+_UQM_ROMS: Final = ROMS / 'uqm'
+
 
 class UqmGenerator(Generator):
 
+    def getHotkeysContext(self) -> HotkeysContext:
+        return {
+            "name": "uqm",
+            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+        }
+
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
         directories = [
-            '/userdata/saves/uqm',
-            '/userdata/saves/uqm/teams',
-            '/userdata/saves/uqm/save'
+            _UQM_SAVES / 'teams',
+            _UQM_SAVES / 'save',
         ]
 
         for directory in directories:
-            os.makedirs(directory, exist_ok=True)
+            mkdir_if_not_exists(directory)
 
-        with open('/userdata/roms/uqm/version', 'a'): # Create file if does not exist
+        with (_UQM_ROMS / 'version').open('a'): # Create file if does not exist
             pass
 
-        commandArray = ["urquan","--contentdir=/userdata/roms/uqm",
-                        "--configdir=/userdata/saves/uqm"]
+        commandArray = ["urquan",f"--contentdir={_UQM_ROMS}",
+                        f"--configdir={_UQM_SAVES}"]
 
         return Command.Command(
             array=commandArray,
