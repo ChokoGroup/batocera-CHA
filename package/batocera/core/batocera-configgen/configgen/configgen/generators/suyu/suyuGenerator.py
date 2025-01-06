@@ -1,23 +1,23 @@
 from __future__ import annotations
 
-import configparser
+import logging
 import subprocess
 from os import environ
 from typing import TYPE_CHECKING, Final
 
 from ... import Command
 from ...batoceraPaths import CACHE, CONFIGS, SAVES, ensure_parents_and_open, mkdir_if_not_exists
-from ...utils.logger import get_logger
+from ...utils.configparser import CaseSensitiveRawConfigParser
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from ...controllersConfig import ControllerMapping
+    from ...controller import ControllerMapping
     from ...Emulator import Emulator
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 SUYU_CONFIG: Final = CONFIGS / 'suyu'
 
@@ -73,8 +73,7 @@ class SuyuGenerator(Generator):
         }
 
         # ini file
-        suyuConfig = configparser.RawConfigParser()
-        suyuConfig.optionxform=str
+        suyuConfig = CaseSensitiveRawConfigParser()
         if suyuConfigFile.exists():
             suyuConfig.read(suyuConfigFile)
 
@@ -331,7 +330,7 @@ class SuyuGenerator(Generator):
                 suyuConfig.set("Controls", "player_{}_type".format(nplayer-1), system.config["p{}_pad".format(nplayer)])
             else:
                 suyuConfig.set("Controls", "player_{}_type".format(nplayer-1), 0)
-            suyuConfig.set("Controls", "player_{}_type\default".format(nplayer-1), "false")
+            suyuConfig.set("Controls", "player_{}_type\\default".format(nplayer-1), "false")
 
             for x in suyuButtonsMapping:
                 suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_" + x, '"{}"'.format(SuyuGenerator.setButton(suyuButtonsMapping[x], pad.guid, pad.inputs, nplayer-1)))
@@ -340,7 +339,7 @@ class SuyuGenerator(Generator):
             suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_motionleft", '"[empty]"')
             suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_motionright", '"[empty]"')
             suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_connected", "true")
-            suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_connected\default", "false")
+            suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_connected\\default", "false")
             suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_vibration_enabled", "true")
             suyuConfig.set("Controls", "player_" + str(nplayer-1) + "_vibration_enabled\\default", "false")
             nplayer += 1
@@ -350,7 +349,7 @@ class SuyuGenerator(Generator):
 
         for y in range(nplayer, 9):
             suyuConfig.set("Controls", "player_" + str(y-1) + "_connected", "false")
-            suyuConfig.set("Controls", "player_" + str(y-1) + "_connected\default", "false")
+            suyuConfig.set("Controls", "player_" + str(y-1) + "_connected\\default", "false")
 
         # telemetry section
         if not suyuConfig.has_section("WebService"):

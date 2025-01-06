@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-import configparser
 import os
 import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS, ROMS, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 
 if TYPE_CHECKING:
@@ -55,8 +56,7 @@ class Fallout1Generator(Generator):
         ## Configure
 
         ## CFG Configuration
-        fout1Cfg = configparser.ConfigParser()
-        fout1Cfg.optionxform = str
+        fout1Cfg = CaseSensitiveConfigParser()
         if fout1ConfigFile.exists():
             fout1Cfg.read(fout1ConfigFile)
 
@@ -107,8 +107,7 @@ class Fallout1Generator(Generator):
             fout1Cfg.write(configfile)
 
         ## INI Configuration
-        fout1Ini = configparser.ConfigParser()
-        fout1Ini.optionxform = str
+        fout1Ini = CaseSensitiveConfigParser()
         if fout1IniFile.exists():
             fout1Ini.read(fout1IniFile)
 
@@ -139,7 +138,7 @@ class Fallout1Generator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                "SDL_GAMECONTROLLERCONFIG":controllersConfig.generateSdlGameControllerConfig(playersControllers)
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers)
             }
         )
 

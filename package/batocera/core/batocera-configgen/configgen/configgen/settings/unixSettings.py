@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import configparser
-from dataclasses import dataclass, InitVar, field
-from pathlib import Path
-import re
 import io
+import logging
+import re
 import typing
+from dataclasses import InitVar, dataclass, field
+from pathlib import Path
 
-from ..utils.logger import get_logger
+from ..utils.configparser import CaseSensitiveConfigParser
 
 if typing.TYPE_CHECKING:
     from _typeshed import StrPath
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 def _protect_string(string: str) -> str:
     return re.sub(r'[^A-Za-z0-9-\.]+', '_', string)
@@ -22,16 +22,14 @@ class UnixSettings:
     filename_or_path: InitVar[StrPath]
     separator: str = field(default='', kw_only=True)
     settings_path: Path = field(init=False)
-    config: configparser.ConfigParser = field(init=False)
+    config: CaseSensitiveConfigParser = field(init=False)
 
     def __post_init__(self, filename_or_path: StrPath) -> None:
         self.settings_path = Path(filename_or_path)
 
         # use ConfigParser as backend.
         eslog.debug(f"Creating parser for {self.settings_path!s}")
-        self.config = configparser.ConfigParser(interpolation=None, strict=False) # strict=False to allow to read duplicates set by users
-        # To prevent ConfigParser from converting to lower case
-        self.config.optionxform = lambda optionstr: str(optionstr)
+        self.config = CaseSensitiveConfigParser(interpolation=None, strict=False) # strict=False to allow to read duplicates set by users
 
         try:
             # TODO: remove me when we migrate to Python 3.13 and can use allow_unnamed_section=True

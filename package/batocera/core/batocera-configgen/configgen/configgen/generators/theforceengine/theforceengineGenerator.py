@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import configparser
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS, ensure_parents_and_open, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 
 if TYPE_CHECKING:
@@ -47,8 +48,7 @@ class TheForceEngineGenerator(Generator):
                 mod_name = first_line
 
         ## Configure
-        forceConfig = configparser.ConfigParser()
-        forceConfig.optionxform=str
+        forceConfig = CaseSensitiveConfigParser()
         if forceConfigFile.exists():
             forceConfig.read(forceConfigFile)
 
@@ -235,7 +235,7 @@ class TheForceEngineGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "TFE_DATA_HOME": forceConfigDir
             }
         )

@@ -41,12 +41,12 @@ DSYSTEM="${TMPDIR}/system"
 
 # in case xorg is in use
 if test -z "${DISPLAY}"; then
-    export DISPLAY=:0.0
+    export DISPLAY=$(getLocalXDisplay)
 fi
 
 dmesg 	         	> "${DSYSTEM}/dmesg.txt"
 lsmod 	         	> "${DSYSTEM}/lsmod.txt"
-ps    	         	> "${DSYSTEM}/ps.txt"
+ps -ef 	         	> "${DSYSTEM}/ps.txt"
 df -h 	         	> "${DSYSTEM}/df.txt"
 netstat -tuan    	> "${DSYSTEM}/netstat.txt"
 lsusb -v         	> "${DSYSTEM}/lsusb.txt" 2>/dev/null
@@ -58,6 +58,8 @@ lspci -v                > "${DSYSTEM}/lspci_v.txt"
 hciconfig -a            > "${DSYSTEM}/bt-capabilities.txt"
 amixer                  > "${DSYSTEM}/amixer.txt"
 aplay -l                > "${DSYSTEM}/aplay-l.txt"
+alsactl info            > "${DSYSTEM}/alsactl-info.txt"
+batocera-audio list     > "${DSYSTEM}/batocera-audio-list.txt"
 command -v glxinfo >/dev/null && glxinfo    > "${DSYSTEM}/glxinfo.txt"
 command -v xrandr  >/dev/null && xrandr     > "${DSYSTEM}/xrandr.txt"
 blkid                   > "${DSYSTEM}/disks.txt"
@@ -86,6 +88,10 @@ f_cp /var/log/bluetooth-agent.log                              "${DSYSTEM}"
 # resize.log
 if [ -f /tmp/resize.log ]; then
     f_cp /tmp/resize.log                                       "${DSYSTEM}"
+fi
+# boot.log
+if [ -f /var/run/boot.log ]; then
+    f_cp /var/run/boot.log                                     "${DSYSTEM}"
 fi
 
 # clear passwords

@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import configparser
+import logging
 import shutil
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
 from ...utils.batoceraServices import batoceraServices
-from ...utils.logger import get_logger
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 from . import vpinballOptions, vpinballWindowing
 
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
     from ...types import HotkeysContext
 
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 class VPinballGenerator(Generator):
 
@@ -42,15 +44,13 @@ class VPinballGenerator(Generator):
 
         ## [ VPinballX.ini ] ##
         try:
-            vpinballSettings = configparser.ConfigParser(interpolation=None, allow_no_value=True)
-            vpinballSettings.optionxform = str
+            vpinballSettings = CaseSensitiveConfigParser(interpolation=None, allow_no_value=True)
             vpinballSettings.read(vpinballConfigFile)
         except configparser.DuplicateOptionError as e:
             eslog.debug(f"Error reading VPinballX.ini: {e}")
             eslog.debug(f"*** Using default VPinballX.ini file ***")
             shutil.copy("/usr/bin/vpinball/assets/Default_VPinballX.ini", vpinballConfigFile)
-            vpinballSettings = configparser.ConfigParser(interpolation=None, allow_no_value=True)
-            vpinballSettings.optionxform = str
+            vpinballSettings = CaseSensitiveConfigParser(interpolation=None, allow_no_value=True)
             vpinballSettings.read(vpinballConfigFile)
 
         # init sections
@@ -89,7 +89,7 @@ class VPinballGenerator(Generator):
         ]
 
         # SDL_RENDER_VSYNC is causing perf issues (set by emulatorlauncher.py)
-        return Command.Command(array=commandArray, env={"SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers), "SDL_RENDER_VSYNC": "0"})
+        return Command.Command(array=commandArray, env={"SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers), "SDL_RENDER_VSYNC": "0"})
 
     def getInGameRatio(self, config, gameResolution, rom):
         return 16/9

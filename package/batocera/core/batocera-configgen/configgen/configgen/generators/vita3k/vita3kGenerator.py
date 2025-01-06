@@ -6,8 +6,9 @@ from typing import TYPE_CHECKING
 import ruamel.yaml
 import ruamel.yaml.util
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CACHE, CONFIGS, SAVES, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
@@ -40,7 +41,12 @@ class Vita3kGenerator(Generator):
                         shutil.move(item, vitaSaves)
 
         # Create the config.yml file if it doesn't exist
-        vita3kymlconfig = {}
+        mkdir_if_not_exists(vitaConfig)
+
+        vita3kymlconfig = None
+        indent = None
+        block_seq_indent = None
+
         if vitaConfigFile.is_file():
             with vitaConfigFile.open('r') as stream:
                 vita3kymlconfig, indent, block_seq_indent = ruamel.yaml.util.load_yaml_guess_indent(stream)
@@ -48,8 +54,14 @@ class Vita3kGenerator(Generator):
         if vita3kymlconfig is None:
             vita3kymlconfig = {}
 
+        if indent is None:
+            indent = 2
+
+        if block_seq_indent is None:
+            block_seq_indent = 0
+
         # ensure the correct path is set
-        vita3kymlconfig["pref-path"] = vitaSaves
+        vita3kymlconfig["pref-path"] = f"{vitaSaves!s}"
 
         # Set the renderer
         if system.isOptSet("vita3k_gfxbackend"):
@@ -112,7 +124,7 @@ class Vita3kGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0",
                 "XDG_CONFIG_HOME": CONFIGS,
                 "XDG_DATA_HOME": SAVES,

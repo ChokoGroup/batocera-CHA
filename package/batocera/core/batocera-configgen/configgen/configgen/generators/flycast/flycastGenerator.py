@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import configparser
 from shutil import copyfile
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS, ensure_parents_and_open, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 from . import flycastControllers
 from .flycastPaths import FLYCAST_BIOS, FLYCAST_CONFIG, FLYCAST_SAVES, FLYCAST_VMU_BLANK, FLYCAST_VMUA1, FLYCAST_VMUA2
@@ -19,15 +20,20 @@ class FlycastGenerator(Generator):
     def getHotkeysContext(self) -> HotkeysContext:
         return {
             "name": "flycast",
-            "keys": { "exit": ["KEY_LEFTALT", "KEY_F4"] }
+            "keys": {
+                "exit": "KEY_F7",
+                "menu": "KEY_TAB",
+                "fast_foward": "KEY_SPACE",
+                "load_state": "KEY_F8",
+                "save_state": "KEY_F9"
+            }
         }
 
     # Main entry of the module
     # Configure fba and return a command
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
         # Write emu.cfg to map joysticks, init with the default emu.cfg
-        Config = configparser.ConfigParser(interpolation=None)
-        Config.optionxform = str
+        Config = CaseSensitiveConfigParser(interpolation=None)
         if FLYCAST_CONFIG.exists():
             try:
                 Config.read(FLYCAST_CONFIG)
@@ -47,17 +53,20 @@ class FlycastGenerator(Generator):
                 flycastControllers.generateControllerConfig(controller, "arcade")
 
             # Set the controller type per Port
-            Config.set("input", 'device' + str(controller.player), "0") # Sega Controller
-            Config.set("input", 'device' + str(controller.player) + '.1', "1") # Sega VMU
+            Config.set("input", 'device' + str(controller.player_number), "0") # Sega Controller
+            Config.set("input", 'device' + str(controller.player_number) + '.1', "1") # Sega VMU
             # Set controller pack, gui option
-            ctrlpackconfig = "flycast_ctrl{}_pack".format(controller.player)
+            ctrlpackconfig = "flycast_ctrl{}_pack".format(controller.player_number)
             if system.isOptSet(ctrlpackconfig):
-                Config.set("input", 'device' + str(controller.player) + '.2', str(system.config[ctrlpackconfig]))
+                Config.set("input", 'device' + str(controller.player_number) + '.2', str(system.config[ctrlpackconfig]))
             else:
-                Config.set("input", 'device' + str(controller.player) + '.2', "1") # Sega VMU
+                Config.set("input", 'device' + str(controller.player_number) + '.2', "1") # Sega VMU
             # Ensure controller(s) are on seperate Ports
-            port = int(controller.player)-1
+            port = controller.player_number-1
             Config.set("input", 'maple_sdl_joystick_' + str(port), str(port))
+
+        # add the keyboard mappings for hotkeys
+        flycastControllers.generateKeyboardConfig()
 
         if not Config.has_section("config"):
             Config.add_section("config")
@@ -123,7 +132,7 @@ class FlycastGenerator(Generator):
             Config.set("config", "Dreamcast.Language", "1")
         # region
         if system.isOptSet("flycast_region"):
-            Config.set("config", "Dreamcast.Region", str(system.config["flycast_language"]))
+            Config.set("config", "Dreamcast.Region", str(system.config["flycast_region"]))
         else:
             Config.set("config", "Dreamcast.Region", "1")
         # save / load states
@@ -148,19 +157,19 @@ class FlycastGenerator(Generator):
         # Guns (WIP)
         # Guns crosshairs
         if system.isOptSet("flycast_lightgun1_crosshair"):
-            Config.set("config", "rend.CrossHairColor1", + str(system.config["flycast_lightgun1_crosshair"]))
+            Config.set("config", "rend.CrossHairColor1", str(system.config["flycast_lightgun1_crosshair"]))
         else:
             Config.set("config", "rend.CrossHairColor1", "0")
         if system.isOptSet("flycast_lightgun2_crosshair"):
-            Config.set("config", "rend.CrossHairColor2", + str(system.config["flycast_lightgun2_crosshair"]))
+            Config.set("config", "rend.CrossHairColor2", str(system.config["flycast_lightgun2_crosshair"]))
         else:
             Config.set("config", "rend.CrossHairColor2", "0")
         if system.isOptSet("flycast_lightgun3_crosshair"):
-            Config.set("config", "rend.CrossHairColor3", + str(system.config["flycast_lightgun3_crosshair"]))
+            Config.set("config", "rend.CrossHairColor3", str(system.config["flycast_lightgun3_crosshair"]))
         else:
             Config.set("config", "rend.CrossHairColor3", "0")
         if system.isOptSet("flycast_lightgun4_crosshair"):
-            Config.set("config", "rend.CrossHairColor4", + str(system.config["flycast_lightgun4_crosshair"]))
+            Config.set("config", "rend.CrossHairColor4", str(system.config["flycast_lightgun4_crosshair"]))
         else:
             Config.set("config", "rend.CrossHairColor4", "0")
 
@@ -228,7 +237,7 @@ class FlycastGenerator(Generator):
                 "XDG_DATA_HOME":FLYCAST_SAVES.parent,
                 "FLYCAST_DATADIR":FLYCAST_SAVES.parent,
                 "FLYCAST_BIOS_PATH":FLYCAST_BIOS,
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0"
             }
         )

@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import ensure_parents_and_open
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 Keymapping =[
         {
@@ -202,4 +203,4 @@ class IkemenGenerator(Generator):
 
         commandArray = ["/usr/bin/batocera-ikemen", rom]
 
-        return Command.Command(array=commandArray, env={ "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers) })
+        return Command.Command(array=commandArray, env={ "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers) })

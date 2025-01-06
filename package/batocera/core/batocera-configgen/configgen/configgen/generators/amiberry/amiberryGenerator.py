@@ -1,20 +1,21 @@
 from __future__ import annotations
 
+import logging
 import zipfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
 from ...settings.unixSettings import UnixSettings
-from ...utils.logger import get_logger
 from ..Generator import Generator
 from ..libretro import libretroControllers
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 _CONFIG_DIR: Final = CONFIGS / 'amiberry'
 _CONFIG: Final = _CONFIG_DIR / 'conf' / 'amiberry.conf'
@@ -30,6 +31,8 @@ class AmiberryGenerator(Generator):
         }
 
     def generate(self, system, rom, playersControllers, metadata, guns, wheels, gameResolution):
+        mkdir_if_not_exists(_RETROARCH_CUSTOM.parent)
+
         retroconfig = UnixSettings(_RETROARCH_CUSTOM, separator=' ')
         amiberryconf = UnixSettings(_CONFIG, separator=' ')
         amiberryconf.save('default_quit_key', 'F10')
@@ -46,8 +49,6 @@ class AmiberryGenerator(Generator):
         amiberryconf.save('default_vkbd_transparency', '60') # TODO: make an option in ES
         amiberryconf.save('default_vkbd_toggle', 'leftstick')
         amiberryconf.write()
-
-        mkdir_if_not_exists(_RETROARCH_CUSTOM.parent)
 
         romType = self.getRomType(rom)
         eslog.debug("romType: "+romType)
@@ -92,7 +93,7 @@ class AmiberryGenerator(Generator):
             for playercontroller, pad in sorted(playersControllers.items()):
                 replacements = {'_player' + str(nplayer) + '_':'_'}
                 # amiberry remove / included in pads names like "USB Downlo01.80 PS3/USB Corded Gamepad"
-                padfilename = pad.realName.replace("/", "")
+                padfilename = pad.real_name.replace("/", "")
                 playerInputFilename = _RETROARCH_INPUTS_DIR / f"{padfilename}.cfg"
                 with _RETROARCH_CUSTOM.open() as infile, playerInputFilename.open('w') as outfile:
                     for line in infile:
@@ -202,7 +203,7 @@ class AmiberryGenerator(Generator):
             return Command.Command(array=commandArray,env={
                 "AMIBERRY_DATA_DIR": "/usr/share/amiberry/",
                 "AMIBERRY_HOME_DIR": "/userdata/system/configs/amiberry/",
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers)})
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers)})
         # otherwise, unknown format
         return Command.Command(array=[])
 
@@ -215,7 +216,7 @@ class AmiberryGenerator(Generator):
         # for example, "/path/toto0.zip" becomes ["/path/toto0.zip", "/path/toto1.zip", "/path/toto2.zip"]
         if rom_path.stem[-1:].isdigit():
             # path without the number
-            fileprefix = rom_path.stem[-1:]
+            fileprefix = rom_path.stem[:-1]
 
             # special case for 0 while numerotation can start at 1
             zero_file = rom_path.with_name(f"{fileprefix}0{rom_path.suffix}")

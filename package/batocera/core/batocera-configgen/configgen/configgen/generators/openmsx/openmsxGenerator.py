@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 import shutil
 import xml.dom.minidom as minidom
@@ -11,13 +12,12 @@ from typing import TYPE_CHECKING, Final
 
 from ... import Command
 from ...batoceraPaths import CONFIGS, SCREENSHOTS, mkdir_if_not_exists
-from ...utils.logger import get_logger
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 openMSX_Homedir: Final = CONFIGS / 'openmsx'
 openMSX_Config: Final = Path('/usr/share/openmsx')
@@ -114,8 +114,16 @@ class OpenmsxGenerator(Generator):
                 if nplayer <= 2:
                     if nplayer == 1:
                         file.write("plug joyporta joystick1\n")
+                        file.write('dict set joystick1_config LEFT {-axis0 L_hat0}\n')
+                        file.write('dict set joystick1_config RIGHT {+axis0 R_hat0}\n')
+                        file.write('dict set joystick1_config UP {-axis1 U_hat0}\n')
+                        file.write('dict set joystick1_config DOWN {+axis1 D_hat0}\n')
                     if nplayer == 2:
                         file.write("plug joyportb joystick2\n")
+                        file.write('dict set joystick2_config LEFT {-axis0 L_hat0}\n')
+                        file.write('dict set joystick2_config RIGHT {+axis0 R_hat0}\n')
+                        file.write('dict set joystick2_config UP {-axis1 U_hat0}\n')
+                        file.write('dict set joystick2_config DOWN {+axis1 D_hat0}\n')
                     for x in pad.inputs:
                         input = pad.inputs[x]
                         if input.name == "y":

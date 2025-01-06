@@ -92,9 +92,6 @@ atomiswave:
 bbc:
   emulator: libretro
   core:     mame
-boom3:
-  emulator: libretro
-  core:     boom3
 c64:
   emulator: libretro
   core:     vice_x64
@@ -116,9 +113,6 @@ cannonball:
 cavestory:
   emulator: libretro
   core:     nxengine
-cave3rd:
-  emulator: demul
-  core:     demul
 cdi:
   emulator: mame
   core:     mame
@@ -159,6 +153,9 @@ daphne:
 devilutionx:
   emulator: devilutionx
   core:     devilutionx
+doom3:
+  emulator: dhewm3
+  core:     dhewm3
 dos:
   emulator: libretro
   core:     dosbox_pure
@@ -214,9 +211,6 @@ fmtowns:
 fury:
   emulator: eduke32
   core:     fury
-gaelco:
-  emulator: demul
-  core:     demul
 gamate:
   emulator: libretro
   core:     mame
@@ -272,9 +266,6 @@ hcl:
   core:     hcl
   options:
     bezel: none
-hikaru:
-  emulator: demul
-  core:     demul
 hurrican:
   emulator: hurrican
   core:     hurrican
@@ -294,6 +285,12 @@ iortcw:
 jaguar:
   emulator: libretro
   core:     virtualjaguar
+jaguarcd:
+  emulator: libretro
+  core:     virtualjaguar
+jazz2:
+  emulator: jazz2-native
+  core:     jazz2-native
 kodi:
   emulator: kodi
   options:
@@ -369,7 +366,7 @@ msxturbor:
   core:     bluemsx
 mugen:
   emulator: mugen
-  core:     ge-custom
+  core:     wine-tkg
 fpinball:
   emulator: fpinball
   core:     fpinball
@@ -487,6 +484,9 @@ ps2:
 ps3:
   emulator: rpcs3
   core:     rpcs3
+ps4:
+  emulator: shadps4
+  core:     shadps4
 psp:
   emulator: ppsspp
   core: ppsspp
@@ -654,6 +654,9 @@ vgmplay:
 videopacplus:
   emulator: libretro
   core:     o2em
+vircon32:
+  emulator: libretro
+  core:     vircon32
 virtualboy:
   emulator: libretro
   core:     vb
@@ -682,12 +685,12 @@ wiiu:
   core:     cemu
 windows:
   emulator: wine
-  core:     ge-custom
+  core:     wine-tkg
   options:
     hud_support: false
 windows_installers:
   emulator: wine
-  core:     ge-custom
+  core:     wine-tkg
   options:
     hud_support: false
 wswan:
