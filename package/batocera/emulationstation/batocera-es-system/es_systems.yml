@@ -431,8 +431,6 @@ dreamcast:
       flycast:        { requireAnyOf: [BR2_PACKAGE_FLYCAST]          }
     redream:
       redream:        { requireAnyOf: [BR2_PACKAGE_REDREAM]          }
-    demul:
-      demul:          { requireAnyOf: [BR2_PACKAGE_DEMUL]            }
   comment_en: |
     For more info: https://wiki.batocera.org/systems:dreamcast
   comment_fr: |
@@ -453,8 +451,6 @@ naomi:
       flycastvl:    { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FLYCASTVL] }
     flycast:
       flycast:  { requireAnyOf: [BR2_PACKAGE_FLYCAST]           }
-    demul:
-      demul:    { requireAnyOf: [BR2_PACKAGE_DEMUL]             }
 
 atomiswave:
   name:       Atomiswave
@@ -469,8 +465,6 @@ atomiswave:
       flycastvl:    { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FLYCASTVL] }
     flycast:
       flycast: { requireAnyOf: [BR2_PACKAGE_FLYCAST]          }
-    demul:
-      demul:   { requireAnyOf: [BR2_PACKAGE_DEMUL]            }
 
 systemsp:
   name:       Sega System SP
@@ -819,10 +813,10 @@ dos:
      Para mais informações: https://wiki.batocera.org/systems:dos
 
 devilutionx:
-  name:       DevilutionX
+  name: Diablo
   manufacturer: Ports
-  release:
-  hardware:   port
+  release: 1996
+  hardware: port
   extensions: [mpq]
   platform: pc
   group: ports
@@ -834,29 +828,34 @@ devilutionx:
 
     Place diabdat.mpq from your CD or GoG installation into:
 
-        /userdata/roms/devilution/
+        /userdata/roms/devilutionx/
 
     For Hellfire, also copy hellfire.mpq, hfmonk.mpq, hfmusic.mpq, and hfvoice.mpq.
 
     For Chinese, Japanese, and Korean text support copy:
-    https://github.com/diasurgical/devilutionx-assets/releases/download/v1/fonts.mpq
+    https://github.com/diasurgical/devilutionx-assets/releases/download/v4/fonts.mpq
 
-    For the Polish voice pack copy:
-    https://github.com/diasurgical/devilutionx-assets/releases/download/v1/pl.mpq
+    Voice packs:
+    * Polish: https://github.com/diasurgical/devilutionx-assets/releases/download/v4/pl.mpq
+    * Russian: https://github.com/diasurgical/devilutionx-assets/releases/download/v4/ru.mpq
+    * Spanish: https://github.com/diasurgical/devilutionx-assets/releases/download/v4/es.mpq
   comment_br: |
     Diablo 1.
 
     Coloque o arquivo diabdat.mpq do seu CD ou instalação do GoG em:
 
-        /userdata/roms/devilution/
+        /userdata/roms/devilutionx/
 
     Para Hellfire, copie também hellfire.mpq, hfmonk.mpq, hfmusic.mpq e hfvoice.mpq.
 
     Para cópia de suporte de texto em chinês, japonês e coreano:
-    https://github.com/diasurgical/devilutionx-assets/releases/download/v1/fonts.mpq
+    https://github.com/diasurgical/devilutionx-assets/releases/download/v4/fonts.mpq
 
-    Para a cópia do pacote de voz em polonês:
-    https://github.com/diasurgical/devilutionx-assets/releases/download/v1/pl.mpq
+    Pacotes de voz:
+    * Polonês: https://github.com/diasurgical/devilutionx-assets/releases/download/v4/pl.mpq
+    * Russo: https://github.com/diasurgical/devilutionx-assets/releases/download/v4/ru.mpq
+    * Espanhol: https://github.com/diasurgical/devilutionx-assets/releases/download/v4/es.mpq
+
 
 fbneo:
   name:       Final Burn Neo
@@ -1303,6 +1302,16 @@ pyxel:
   comment_fr: |
     Une fantasy console avec plein de jeux disponibles sur https://github.com/kitao/pyxel/wiki/Pyxel-User-Examples
 
+vircon32:
+  name:       vircon32
+  manufacturer: Fantasy
+  release: 2022
+  hardware: console
+  extensions: [v32, zip]
+  emulators:
+    libretro:
+      vircon32: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_VIRCON32] }
+
 channelf:
   name:       Channel-F
   manufacturer: Fairchild
@@ -1436,19 +1445,19 @@ atarist:
   manufacturer: Atari
   release: 1985
   hardware: computer
-  extensions: [st, msa, stx, dim, ipf, m3u, zip, 7z, hd, gemdos, vhd, gem, ide]
+  extensions: [st, msa, stx, dim, ipf, m3u, zip, 7z, hd, gemdos]
   emulators:
-    libretro:
-      hatari: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_HATARI], incompatible_extensions: [ hd, gemdos ] }
-      hatarib: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_HATARIB], incompatible_extensions: [ hd, gemdos ] }
     hatari:
       hatari: { requireAnyOf: [BR2_PACKAGE_HATARI] }
+    libretro:
+      hatarib: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_HATARIB] }
+      hatari: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_HATARI], incompatible_extensions: [ hd, gemdos ] }
   comment_en: |
-    To enable GEMDOS support within the non-libretro version of Hatari.
+    To enable GEMDOS support,
     Create a directory within the roms folder that has a .gemdos extension.
     i.e. /userdata/roms/atarist/<drive name>.gemdos
   comment_fr: |
-    Pour activer le support GEMDOS dans la version non libretro de Hatari.
+    Pour activer le support GEMDOS,
     Créez un répertoire dans le dossier roms portant une extension .gemdos.
     c'est-à-dire /userdata/roms/atarist/<nom du lecteur>.gemdos
 amstradcpc:
@@ -1928,11 +1937,28 @@ jaguar:
   manufacturer: Atari
   release: 1993
   hardware: console
-  extensions: [cue, j64, jag, cof, abs, cdi, rom, zip, 7z]
+  extensions: [j64, jag, cof, abs, rom, zip, 7z]
+  group: jaguar
+  platform: jaguar
   theme: atarijaguar
   emulators:
     libretro:
       virtualjaguar: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_VIRTUALJAGUAR], incompatible_extensions: [zip, 7z] }
+    bigpemu:
+      bigpemu: { requireAnyOf: [BR2_PACKAGE_BIGPEMU] }
+
+jaguarcd:
+  name: Jaguar CD
+  manufacturer: Atari
+  release: 1995
+  hardware: console
+  extensions: [cue, cdi]
+  group: jaguar
+  platform: jaguar
+  theme: atarijaguarcd
+  emulators:
+    libretro:
+      virtualjaguar: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_VIRTUALJAGUAR] }
     bigpemu:
       bigpemu: { requireAnyOf: [BR2_PACKAGE_BIGPEMU] }
 
@@ -2373,9 +2399,7 @@ windows:
   theme:      windows
   emulators:
     wine:
-      #lutris:    { requireAnyOf: [BR2_PACKAGE_WINE_LUTRIS] }
-      #proton:    { requireAnyOf: [BR2_PACKAGE_WINE_PROTON] }
-      ge-custom: { requireAnyOf: [BR2_PACKAGE_WINE_GE_CUSTOM] }
+      wine-tkg: { requireAnyOf: [BR2_PACKAGE_WINE_TKG] }
   comment_en: |
     For more info: https://wiki.batocera.org/systems:windows
   comment_fr: |
@@ -2393,9 +2417,7 @@ windows_installers:
   group:      windows
   emulators:
     wine:
-      #lutris:    { requireAnyOf: [BR2_PACKAGE_WINE_LUTRIS] }
-      #proton:    { requireAnyOf: [BR2_PACKAGE_WINE_PROTON] }
-      ge-custom: { requireAnyOf: [BR2_PACKAGE_WINE_GE_CUSTOM] }
+      wine-tkg: { requireAnyOf: [BR2_PACKAGE_WINE_TKG] }
   comment_en: |
     For more info: https://wiki.batocera.org/systems:windows
   comment_fr: |
@@ -2404,10 +2426,10 @@ windows_installers:
     Para mais informações: https://wiki.batocera.org/systems:windows
 
 xash3d_fwgs:
-  name:       Xash3D-FWGS
+  name: Half-Life 1
   manufacturer: Ports
-  release:
-  hardware:   port
+  release: 1998
+  hardware: port
   extensions: [game]
   platform: pc
   group: ports
@@ -2682,9 +2704,7 @@ mugen:
   extensions: [pc]
   emulators:
     mugen:
-      #lutris:    { requireAnyOf: [BR2_PACKAGE_WINE_LUTRIS] }
-      #proton:    { requireAnyOf: [BR2_PACKAGE_WINE_PROTON] }
-      ge-custom: { requireAnyOf: [BR2_PACKAGE_WINE_GE_CUSTOM] }
+      wine-tkg: { requireAnyOf: [BR2_PACKAGE_WINE_TKG] }
 
 ikemen:
   name:       IKEMEN
@@ -3643,7 +3663,7 @@ vemulator:
       vemulator:  { requireAnyOf: [BR2_PACKAGE_LIBRETRO_VEMULATOR] }
 
 openjazz:
-  name:       Jazz Jackrabbit
+  name: Jazz Jackrabbit
   manufacturer: Ports
   release: 1994
   hardware: port
@@ -3653,6 +3673,16 @@ openjazz:
   emulators:
     openjazz:
       openjazz: { requireAnyOf: [BR2_PACKAGE_OPENJAZZ] }
+  comment_en: |
+    OpenJazz requires the original Jazz Jackrabbit game files.
+    Copy all game files into this directory.
+    Then create an empty `Jazz Jackrabbit.game` file for EmulationStation to be able to launch the game.
+
+    For more info: https://wiki.batocera.org/systems:openjazz
+  comment_fr: |
+    Trouvez la documentation ici : https://wiki.batocera.org/systems:openjazz
+  comment_br: |
+    Para mais informações: https://wiki.batocera.org/systems:openjazz
 
 tyrian:
   name:       Tyrian
@@ -3831,8 +3861,6 @@ naomi2:
       flycast: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FLYCAST] }
     flycast:
       flycast: { requireAnyOf: [BR2_PACKAGE_FLYCAST]          }
-    demul:
-      demul:   { requireAnyOf: [BR2_PACKAGE_DEMUL]            }
   comment_en: |
     ---------------------------------
     ## NAOMI 2 IMPORTANT INFO ##
@@ -4789,23 +4817,49 @@ psvita:
 
     Consulte o wiki - https://wiki.batocera.org/playground:systems:psvita
 
-boom3:
-  name: Boom3
+doom3:
+  name: Doom 3
   manufacturer: Ports
   release: 2004
   hardware: port
-  extensions: [boom3]
+  extensions: [d3]
   platform: pc
   group: ports
   emulators:
+    dhewm3:
+      dhewm3: { requireAnyOf: [BR2_PACKAGE_DHEWM3] }
     libretro:
       boom3: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_BOOM3] }
   comment_en: |
-    For more info: https://wiki.batocera.org/systems:boom3
+    Add your Doom 3 (and if you have the Resurrection of Evil mod) pk4 files here like so:
+
+    └── roms/
+        └── doom3/
+            ├── base/
+            │   ├── pak000.pk4
+            │   ├── pak001.pk4
+            │   ├── pak002.pk4
+            │   ├── pak003.pk4
+            │   ├── pak004.pk4
+            │   ├── pak005.pk4
+            │   ├── pak006.pk4
+            │   ├── pak007.pk4
+            │   └── pak008.pk4
+            └── d3xp/
+                ├── pak000.pk4 
+                └── pak001.pk4
+    
+    Create a `Doom 3.d3` file in the roms/doom3 directory. 
+    If you have the Resurrection of Evil mod then Create a `Doom 3 - Resurrection of Evil.d3` file too.
+
+    The `Doom 3.d3` file should contain the path to the base game. - i.e. base/pak000.pk4
+    Similarly `Doom 3 - Resurrection of Evil.d3` should be - d3xp/pak000.pk4
+    
+    For more info: https://wiki.batocera.org/systems:doom3
   comment_fr: |
-    Trouvez la documentation ici: https://wiki.batocera.org/systems:boom3
+    Trouvez la documentation ici: https://wiki.batocera.org/systems:doom3
   comment_br: |
-    Para mais informações: https://wiki.batocera.org/systems:boom3
+    Para mais informações: https://wiki.batocera.org/systems:doom3
 
 reminiscence:
   name: REminiscence
@@ -5399,13 +5453,13 @@ commanderx16:
     If you have a game without an appropriate extension you can create a .BAS file with DOS commands.
     i.e. in the game folder create a PLANETX16.BAS file.
     Then add into the file the DOS commands to load the game, like so...
-    
+
     LOAD "PLANETX16"
     RUN
 
     If you have an .IMG file which doesn't load then create an autorun.cmd file with the DOS commands also.
     i.e. X16 Wars would contain the following...
-    
+
     LOAD "WARS.PRG"
     ...
     RUN
@@ -5415,3 +5469,55 @@ commanderx16:
     Trouvez la documentation ici: https://wiki.batocera.org/systems:commanderx16
   comment_br: |
     Para mais informações: https://wiki.batocera.org/systems:commanderx16
+
+ps4:
+  name: PlayStation 4
+  manufacturer: Sony
+  release: 2013
+  hardware: console
+  extensions: [ps4]
+  emulators:
+    shadps4:
+      shadps4: { requireAnyOf: [BR2_PACKAGE_SHADPS4] }
+  comment_en: |
+    Do not attempt to use this emulator unless you have a jailbroken PS4 console with back-up games.
+    PS4 emulation is very experiemental & required a high specified x86_64 PC.
+
+    Before you can play a game you must install the game via the associated .PKG file of your backed-up game using the F1 menu.
+    Then in the new installation directory for the installed game, create a file with a .ps4 extension so EmularionStation will see it.
+    i.e. /userdata/roms/ps4/CUSA03173/Bloodborne.ps4
+    
+    Then you can launch the game from EmulationStation accordingly.
+
+    DLC content will be stored in: /userdata/roms/ps4/DLC
+
+    Very important: To play games you typically need the system modules from your PS4 that has been jailbroken.
+    Place the decrypted system module files in: /userdata/system/configs/shadps4/user/sys_modules
+
+    For more info: https://wiki.batocera.org/systems:ps4
+  comment_fr: |
+    Trouvez la documentation ici : https://wiki.batocera.org/systems:ps4
+  comment_br: |
+    Para mais informações: https://wiki.batocera.org/systems:ps4
+
+jazz2:
+  name: Jazz Jackrabbit 2
+  manufacturer: Ports
+  release: 1998
+  hardware: port
+  extensions: [game]
+  platform: pc
+  group: ports
+  emulators:
+    jazz2-native:
+      jazz2-native: { requireAnyOf: [BR2_PACKAGE_JAZZ2_NATIVE] }
+  comment_en: |
+    Jazz2 Native requires the original Jazz Jackrabbit 2 game files.
+    Copy all game files into this directory.
+    Then create an empty `Jazz Jackrabbit 2.game` file for EmulationStation to be able to launch the game.
+
+    For more info: https://wiki.batocera.org/systems:jazz2-native
+  comment_fr: |
+    Trouvez la documentation ici : https://wiki.batocera.org/systems:jazz2-native
+  comment_br: |
+    Para mais informações: https://wiki.batocera.org/systems:jazz2-native

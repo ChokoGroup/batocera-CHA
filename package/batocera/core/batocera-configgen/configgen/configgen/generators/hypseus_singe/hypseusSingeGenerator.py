@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import filecmp
+import logging
 import os
 import shutil
 from pathlib import Path
@@ -10,13 +11,13 @@ import ffmpeg
 
 from ... import Command, controllersConfig
 from ...batoceraPaths import CONFIGS, ROMS, mkdir_if_not_exists
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 _DATA_DIR: Final = CONFIGS / 'hypseus-singe'
 _CONFIG: Final = _DATA_DIR / 'hypinput.ini'
@@ -83,6 +84,7 @@ class HypseusSingeGenerator(Generator):
             "astron": ["astron", "astronp"],
             "badlands": ["badlands", "badlandsp"],
             "bega": ["bega", "begar1"],
+            "captainpower": ["cpower1", "cpower2", "cpower3", "cpower4", "cpowergh"],
             "cliff": ["cliffhanger", "cliff", "cliffalt", "cliffalt2"],
             "cobra": ["cobra", "cobraab", "cobraconv", "cobram3"],
             "conan": ["conan", "future_boy"],
@@ -176,7 +178,7 @@ class HypseusSingeGenerator(Generator):
         if system.name == "singe":
             commandArray = ['/usr/bin/hypseus',
                             "singe", "vldp", "-retropath", "-framefile", frameFile, "-script", singeFile,
-                            "-fullscreen", "-gamepad", "-datadir", _DATA_DIR,
+                            "-fullscreen", "-gamepad", "-datadir", _DATA_DIR, "-singedir", _SINGE_ROM_DIR,
                             "-romdir", _SINGE_ROM_DIR, "-homedir", _DATA_DIR]
         else:
             commandArray = ['/usr/bin/hypseus',
@@ -321,7 +323,7 @@ class HypseusSingeGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                'SDL_GAMECONTROLLERCONFIG': controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                'SDL_GAMECONTROLLERCONFIG': generate_sdl_game_controller_config(playersControllers),
                 'SDL_JOYSTICK_HIDAPI': '0',
                 'MANYMOUSE_NO_XINPUT2': 'x' # disable xorg mouse => forces evdev mouse
             }

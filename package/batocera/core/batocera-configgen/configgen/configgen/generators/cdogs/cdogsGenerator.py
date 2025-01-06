@@ -1,18 +1,19 @@
 from __future__ import annotations
 
+import logging
 import os
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import ROMS
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 class CdogsGenerator(Generator):
 
@@ -237,5 +238,5 @@ class CdogsGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                'SDL_GAMECONTROLLERCONFIG': controllersConfig.generateSdlGameControllerConfig(playersControllers)
+                'SDL_GAMECONTROLLERCONFIG': generate_sdl_game_controller_config(playersControllers)
             })

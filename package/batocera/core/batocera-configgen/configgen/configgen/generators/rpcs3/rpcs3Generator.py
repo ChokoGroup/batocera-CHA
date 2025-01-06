@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import configparser
+import logging
 import re
 import shutil
 import subprocess
@@ -9,9 +9,10 @@ from typing import TYPE_CHECKING
 
 import ruamel.yaml as yaml
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import BIOS, CACHE, CONFIGS, mkdir_if_not_exists
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config, write_sdl_controller_db
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 from . import rpcs3Controllers
 from .rpcs3Paths import RPCS3_BIN, RPCS3_CONFIG, RPCS3_CONFIG_DIR, RPCS3_CURRENT_CONFIG
@@ -19,7 +20,7 @@ from .rpcs3Paths import RPCS3_BIN, RPCS3_CONFIG, RPCS3_CONFIG_DIR, RPCS3_CURRENT
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 class Rpcs3Generator(Generator):
 
@@ -38,9 +39,7 @@ class Rpcs3Generator(Generator):
 
         # Generates CurrentSettings.ini with values to disable prompts on first run
 
-        rpcsCurrentSettings = configparser.ConfigParser(interpolation=None)
-        # To prevent ConfigParser from converting to lower case
-        rpcsCurrentSettings.optionxform = str
+        rpcsCurrentSettings = CaseSensitiveConfigParser(interpolation=None)
         if RPCS3_CURRENT_CONFIG.exists():
             rpcsCurrentSettings.read(RPCS3_CURRENT_CONFIG)
 
@@ -346,7 +345,7 @@ class Rpcs3Generator(Generator):
 
         # write our own gamecontrollerdb.txt file before launching the game
         dbfile = RPCS3_CONFIG_DIR / "input_configs" / "gamecontrollerdb.txt"
-        controllersConfig.writeSDLGameDBAllControllers(playersControllers, dbfile)
+        write_sdl_controller_db(playersControllers, dbfile)
 
         commandArray = [RPCS3_BIN, romName]
 
@@ -364,7 +363,7 @@ class Rpcs3Generator(Generator):
                 "XDG_CONFIG_HOME":CONFIGS,
                 "XDG_CACHE_HOME":CACHE,
                 "QT_QPA_PLATFORM":"xcb",
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0"
             }
         )

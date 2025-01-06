@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import configparser
 import re
 import shutil
 from pathlib import Path
@@ -8,10 +7,13 @@ from shutil import copyfile
 from typing import TYPE_CHECKING, Final
 
 from ... import Command, controllersConfig
+from ...controller import generate_sdl_game_controller_config
 from ...batoceraPaths import CONFIGS, SAVES, ensure_parents_and_open, mkdir_if_not_exists
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 
 if TYPE_CHECKING:
+    from ...controller import ControllerMapping
     from ...Emulator import Emulator
     from ...types import GunMapping, HotkeysContext
 
@@ -104,7 +106,20 @@ class SupermodelGenerator(Generator):
         # controller config
         configPadsIni(system, Path(rom), playersControllers, guns, drivingGame, sensitivity)
 
-        return Command.Command(array=commandArray, env={"SDL_VIDEODRIVER":"x11"})
+        return Command.Command(
+            array=commandArray,
+            env={
+                "SDL_VIDEODRIVER": "x11",
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
+                "SDL_JOYSTICK_HIDAPI": "0"
+            }
+        )
+    
+    def getInGameRatio(self, config, gameResolution, rom):
+        if 'm3_wideScreen' in config and config["m3_wideScreen"] == "1":
+            return 16 / 9
+        else:
+            return 4 / 3
 
 def copy_nvram_files():
     sourceDir = SUPERMODEL_SHARE / "NVRAM"
@@ -148,7 +163,7 @@ def copy_xml():
     if not dest_path.exists() or source_path.stat().st_mtime > dest_path.stat().st_mtime:
         shutil.copy2(source_path, dest_path)
 
-def configPadsIni(system: Emulator, rom: Path, playersControllers: controllersConfig.ControllerMapping, guns: GunMapping, altControl: bool, sensitivity: str) -> None:
+def configPadsIni(system: Emulator, rom: Path, playersControllers: ControllerMapping, guns: GunMapping, altControl: bool, sensitivity: str) -> None:
     if altControl:
         templateFile = SUPERMODEL_SHARE / "Supermodel-Driving.ini.template"
         mapping = {
@@ -164,10 +179,10 @@ def configPadsIni(system: Emulator, rom: Path, playersControllers: controllersCo
             "button10": "select", # coins
             "axisX": "joystick1left",
             "axisY": "joystick1up",
-            "axisZ": "l2",
+            "axisZ": "r2",
             "axisRX": "joystick2left",
             "axisRY": "joystick2up",
-            "axisRZ": "r2",
+            "axisRZ": "l2",
             "left": "joystick1left",
             "right": "joystick1right",
             "up": "joystick1up",
@@ -209,16 +224,12 @@ def configPadsIni(system: Emulator, rom: Path, playersControllers: controllersCo
     }
 
     # template
-    templateConfig = configparser.ConfigParser(interpolation=None)
-    # To prevent ConfigParser from converting to lower case
-    templateConfig.optionxform = str
+    templateConfig = CaseSensitiveConfigParser(interpolation=None)
     with templateFile.open('r', encoding='utf_8_sig') as fp:
         templateConfig.readfp(fp)
 
     # target
-    targetConfig = configparser.ConfigParser(interpolation=None)
-    # To prevent ConfigParser from converting to lower case
-    targetConfig.optionxform = str
+    targetConfig = CaseSensitiveConfigParser(interpolation=None)
 
     for section in templateConfig.sections():
         targetConfig.add_section(section)
@@ -316,7 +327,7 @@ def configPadsIni(system: Emulator, rom: Path, playersControllers: controllersCo
     with ensure_parents_and_open(targetFile, 'w') as configfile:
         targetConfig.write(configfile)
 
-def transformValue(value, playersControllers, mapping, mapping_fallback):
+def transformValue(value, playersControllers: ControllerMapping, mapping, mapping_fallback):
     # remove comments
     cleanValue = value
     matches = re.search("^([^;]*[^ ])[ ]*;.*$", value)
@@ -336,7 +347,7 @@ def transformValue(value, playersControllers, mapping, mapping_fallback):
         # integers
         return cleanValue
 
-def transformElement(elt, playersControllers, mapping, mapping_fallback):
+def transformElement(elt, playersControllers: ControllerMapping, mapping, mapping_fallback):
     # Docs/README.txt
     # JOY1_LEFT  is the same as JOY1_XAXIS_NEG
     # JOY1_RIGHT is the same as JOY1_XAXIS_POS
@@ -398,23 +409,26 @@ def transformElement(elt, playersControllers, mapping, mapping_fallback):
         return None
     return elt
 
-def getMappingKeyIncludingFallback(playersControllers, padnum, key, mapping, mapping_fallback):
-    if padnum in playersControllers:
-        if key not in mapping or (key in mapping and mapping[key] not in playersControllers[padnum].inputs):
-            if key in mapping_fallback and mapping_fallback[key] in playersControllers[padnum].inputs:
+def getMappingKeyIncludingFallback(playersControllers: ControllerMapping, padnum: str, key, mapping, mapping_fallback):
+    pad_number = int(padnum)
+    if pad_number in playersControllers:
+        if key not in mapping or (key in mapping and mapping[key] not in playersControllers[pad_number].inputs):
+            if key in mapping_fallback and mapping_fallback[key] in playersControllers[pad_number].inputs:
                 return mapping_fallback[key]
     return mapping[key]
 
-def joy2realjoyid(playersControllers, joy):
-    if joy in playersControllers:
-        return playersControllers[joy].index
+def joy2realjoyid(playersControllers: ControllerMapping, joy: str):
+    joy_number = int(joy)
+    if joy_number in playersControllers:
+        return playersControllers[joy_number].index
     return None
 
-def hatOrAxis(playersControllers, player):
+def hatOrAxis(playersControllers: ControllerMapping, player: str):
+    player_number = int(player)
     #default to axis
     type = "axis"
-    if (player) in playersControllers:
-        pad = playersControllers[(player)]
+    if player_number in playersControllers:
+        pad = playersControllers[player_number]
         for button in pad.inputs:
             input = pad.inputs[button]
             if input.type == "hat":
@@ -423,9 +437,10 @@ def hatOrAxis(playersControllers, player):
                 type = "axis"
     return type
 
-def input2input(playersControllers, player, joynum, button, axisside = None):
-    if (player) in playersControllers:
-        pad = playersControllers[(player)]
+def input2input(playersControllers: ControllerMapping, player: str, joynum, button, axisside = None):
+    player_number = int(player)
+    if player_number in playersControllers:
+        pad = playersControllers[player_number]
         if button in pad.inputs:
             input = pad.inputs[button]
             if input.type == "button":
@@ -443,12 +458,12 @@ def input2input(playersControllers, player, joynum, button, axisside = None):
                 sidestr = ""
                 if axisside is not None:
                     if axisside == 1:
-                        if input.value == 1:
+                        if input.value == "1":
                             sidestr = "_NEG"
                         else:
                             sidestr = "_POS"
                     else:
-                        if input.value == 1:
+                        if input.value == "1":
                             sidestr = "_POS"
                         else:
                             sidestr = "_NEG"

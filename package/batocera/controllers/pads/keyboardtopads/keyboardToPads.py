@@ -4,6 +4,12 @@ import yaml
 import argparse
 import json
 import subprocess
+import sys
+
+import pyudev
+import evdev
+import re
+from pathlib import Path
 
 class KeyboardController:
 
@@ -82,7 +88,7 @@ class KeyboardController:
                     cmd.extend(["--map", "yield", "{}:0".format(mappingtypename), "{}:0".format(value)])
 
             # output device
-            cmd.extend(["--output", "name={}".format(target_device["name"])])
+            cmd.extend(["--output", "name={}".format(target_device["name"]), "device-id=ba10:ce8a"])
 
             # output filter (remove doubles)
             keyslist = {}
@@ -94,24 +100,56 @@ class KeyboardController:
                 cmd.append(mapping)
         return cmd
 
+    # the search function has more sens in keyboardToPadsLauncher, but nicer to write in python
+    def search(self):
+        udev_context = pyudev.Context()
+        for device in udev_context.list_devices(subsystem='input'):
+            if device.device_node is not None and device.device_node.startswith("/dev/input/event"):
+                dev = evdev.InputDevice(device.device_node)
+                if "ID_INPUT_KEYBOARDTOPADS" in device.properties and device.properties["ID_INPUT_KEYBOARDTOPADS"] == "1":
+                    safename = re.sub(r'[^a-zA-Z0-9]', '', dev.name) + f".v{dev.info.vendor:04x}.p{dev.info.product:04x}.yml"
+                    print(f"device {device.device_node} : \"{dev.name}\"")
+                    print(f"  config file name : {safename}")
+                    sysconfig = Path(f"/usr/share/keyboardToPads/inputs/{safename}")
+                    if sysconfig.exists():
+                        print(f"  system config found at {sysconfig}")
+                    userconfig = Path(f"/userdata/system/configs/keyboardToPads/inputs/{safename}")
+                    if userconfig.exists():
+                        print(f"  user config found at {userconfig}")
+                        try:
+                            cmd = KeyboardController().generateCommand(userconfig, device.device_node)
+                        except Exception as e:
+                            print(f"\n\nSome errors were found in the user configuration file {userconfig}:")
+                            print(e)
+                    else:
+                        print(f"  you can create a custom config at {userconfig}. Take example on files in /usr/share/keyboardToPads/inputs.")
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog="keycontroller")
-    parser.add_argument("--config", required=True)
+    parser = argparse.ArgumentParser(prog="keyboardToPads")
+    parser.add_argument("--search", action="store_true")
+    parser.add_argument("--config")
     parser.add_argument("--input")
     parser.add_argument("--run",    action="store_true")
     parser.add_argument("--rules",  action="store_true")
     args = parser.parse_args()
 
-    if args.run and args.input:
-        cmd = KeyboardController().generateCommand(args.config, args.input)
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = proc.communicate()
-        exitcode = proc.returncode
-        print(out.decode())
-        print(err.decode())
-        sys.exit(exitcode)
-    elif args.rules:
-        rules = KeyboardController().generateRules(args.config)
-        print(rules)
+    if args.search is None and args.config is None:
+        parser.error("at least one of --search and --config required")
+
+    if args.search:
+        KeyboardController().search()
     else:
-        parser.print_help()
+        if args.run and args.input:
+            cmd = KeyboardController().generateCommand(args.config, args.input)
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+            exitcode = proc.returncode
+            print(out.decode())
+            print(err.decode())
+            sys.exit(exitcode)
+        elif args.rules:
+            rules = KeyboardController().generateRules(args.config)
+            print(rules)
+        else:
+            parser.error("with --config, at least one of --run and --rules required")
+            parser.print_help()

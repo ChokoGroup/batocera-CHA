@@ -1,18 +1,19 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import BIOS, CONFIGS, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
 from ...settings.unixSettings import UnixSettings
-from ...utils.logger import get_logger
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 _CONFIGDIR  = CONFIGS / 'GSplus'
 _CONFIGFILE = _CONFIGDIR / 'config.txt'
 
@@ -111,5 +112,5 @@ class GSplusGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                'SDL_GAMECONTROLLERCONFIG': controllersConfig.generateSdlGameControllerConfig(playersControllers)
+                'SDL_GAMECONTROLLERCONFIG': generate_sdl_game_controller_config(playersControllers)
             })

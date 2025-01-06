@@ -3,8 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
@@ -31,7 +32,6 @@ class X16emuGenerator(Generator):
             "-fsroot", romdir, # file system
             "-ram", "2048", # specify 2MB of RAM by default
             "-rtc", # realtime clock
-            "-fullscreen", # run fullscreen
         ]
 
         # Check the rom extension to determine the appropriate option
@@ -48,7 +48,7 @@ class X16emuGenerator(Generator):
         autorun_cmd = romdir / "autorun.cmd"
         if autorun_cmd.exists():
             commandArray.extend(["-bas", autorun_cmd])
-        
+
         if system.isOptSet("x16emu_scale"):
             commandArray.extend(["-scale", system.config["x16emu_scale"]])
         else:
@@ -71,7 +71,7 @@ class X16emuGenerator(Generator):
             array=commandArray,
             env={
                 "XDG_DATA_HOME": CONFIGS,
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0"
             }
         )

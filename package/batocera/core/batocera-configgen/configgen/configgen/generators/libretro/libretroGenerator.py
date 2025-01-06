@@ -1,16 +1,26 @@
 from __future__ import annotations
 
 import itertools
+import logging
 import os
 import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ... import Command
-from ...batoceraPaths import BATOCERA_SHADERS, CONFIGS, HOME, OVERLAYS, ROMS, SAVES, USER_SHADERS, mkdir_if_not_exists
+from ...batoceraPaths import (
+    BATOCERA_SHADERS,
+    BIOS,
+    CONFIGS,
+    HOME,
+    OVERLAYS,
+    ROMS,
+    SAVES,
+    USER_SHADERS,
+    mkdir_if_not_exists,
+)
 from ...settings.unixSettings import UnixSettings
 from ...utils import videoMode as videoMode
-from ...utils.logger import get_logger
 from ..Generator import Generator
 from . import libretroConfig, libretroControllers, libretroRetroarchCustom
 from .libretroPaths import (
@@ -25,7 +35,7 @@ if TYPE_CHECKING:
     from ...Emulator import Emulator
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 class LibretroGenerator(Generator):
 
@@ -251,12 +261,13 @@ class LibretroGenerator(Generator):
             # set the updated core name
             retroarchCore = RETROARCH_CORES / f"{system.config['core']}_libretro.so"
             commandArray = [RETROARCH_BIN, "-L", retroarchCore, "--config", system.config['configfile']]
-        # boom3
-        elif system.name == 'boom3':
+        # doom3
+        elif system.name == 'doom3':
             with rom_path.open('r') as file:
                 first_line = file.readline().strip()
             # creating the new 'rom_path' variable by combining the directory path and the first line
-            rom_path = rom_path.with_name(first_line)
+            rom_path = rom_path.parent / first_line
+            eslog.debug(f"New rom path: {rom_path}")
             # choose core based on new rom directory
             directory_parts = rom_path.parent.parts
             if "d3xp" in directory_parts:
@@ -349,12 +360,12 @@ class LibretroGenerator(Generator):
         if system.name == 'reminiscence':
             with rom_path.open() as file:
                 first_line = file.readline().strip()
-            rom_path = rom_path.with_name(first_line)
+            rom_path = rom_path.parent / first_line
 
         if system.name == 'openlara':
             with rom_path.open() as file:
                 first_line = file.readline().strip()
-            rom_path = rom_path.with_name(first_line)
+            rom_path = rom_path.parent / first_line
 
         # Use command line instead of ROM file for MAME variants
         if system.config['core'] in [ 'mame', 'mess', 'mamevirtual', 'same_cdi' ]:
@@ -364,6 +375,19 @@ class LibretroGenerator(Generator):
             else:
                 corePath = system.config['core']
             commandArray.append(f'/var/run/cmdfiles/{rom_path.stem}.cmd')
+
+        if system.config['core'] == 'hatarib':
+            biosdir = BIOS / "hatarib"
+            if not biosdir.exists():
+                biosdir.mkdir()
+            targetlink = biosdir / "hdd"
+            #retroarch can't use hdd files outside his system directory (/userdata/bios)
+            if targetlink.exists():
+                targetlink.unlink()
+            if rom_path.suffix.lower() in ['.hd', '.gemdos']:
+                #don't pass hd drive as parameter, it need to be added in configuration
+                dontAppendROM = True
+                targetlink.symlink_to(rom_path)
 
         if dontAppendROM == False:
             commandArray.append(rom_path)

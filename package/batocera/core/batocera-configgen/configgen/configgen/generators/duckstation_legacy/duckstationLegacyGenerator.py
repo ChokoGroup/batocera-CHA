@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-import configparser
+import logging
 from os import environ
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import BIOS, CONFIGS, ensure_parents_and_open
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config, write_sdl_controller_db
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 class DuckstationLegacyGenerator(Generator):
 
@@ -36,9 +37,7 @@ class DuckstationLegacyGenerator(Generator):
         else:
             commandArray = ["duckstation-nogui", "-batch", "-fullscreen", "--", rom_path ]
 
-        settings = configparser.ConfigParser(interpolation=None)
-        # To prevent ConfigParser from converting to lower case
-        settings.optionxform = str
+        settings = CaseSensitiveConfigParser(interpolation=None)
         settings_path = CONFIGS / "duckstation" / "settings.ini"
         if settings_path.exists():
             settings.read(settings_path)
@@ -495,14 +494,14 @@ class DuckstationLegacyGenerator(Generator):
 
         # write our own gamecontrollerdb.txt file before launching the game
         dbfile = "/usr/share/duckstation/resources/gamecontrollerdb.txt"
-        controllersConfig.writeSDLGameDBAllControllers(playersControllers, dbfile)
+        write_sdl_controller_db(playersControllers, dbfile)
 
         return Command.Command(
             array=commandArray,
             env={
                 "XDG_CONFIG_HOME": CONFIGS,
                 "QT_QPA_PLATFORM": "xcb",
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0"
             }
         )

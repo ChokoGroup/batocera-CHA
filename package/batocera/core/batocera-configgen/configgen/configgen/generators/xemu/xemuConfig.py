@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-import configparser
 from typing import TYPE_CHECKING
 
 from ...batoceraPaths import ensure_parents_and_open
+from ...utils.configparser import CaseSensitiveConfigParser
 from .xemuPaths import XEMU_CONFIG
 
 if TYPE_CHECKING:
-    from ...controllersConfig import ControllerMapping
+    from ...controller import ControllerMapping
     from ...Emulator import Emulator
     from ...types import Resolution
 
 
 def writeIniFile(system: Emulator, rom: str, playersControllers: ControllerMapping, gameResolution: Resolution) -> None:
-    iniConfig = configparser.ConfigParser(interpolation=None)
-    # To prevent ConfigParser from converting to lower case
-    iniConfig.optionxform = str
+    iniConfig = CaseSensitiveConfigParser(interpolation=None)
+
     if XEMU_CONFIG.exists():
         try:
             with XEMU_CONFIG.open(encoding='utf_8_sig') as fp:
@@ -28,7 +27,7 @@ def writeIniFile(system: Emulator, rom: str, playersControllers: ControllerMappi
     with ensure_parents_and_open(XEMU_CONFIG, 'w') as configfile:
         iniConfig.write(configfile)
 
-def createXemuConfig(iniConfig: configparser.ConfigParser, system: Emulator, rom: str, playersControllers: ControllerMapping, gameResolution: Resolution) -> None:
+def createXemuConfig(iniConfig: CaseSensitiveConfigParser, system: Emulator, rom: str, playersControllers: ControllerMapping, gameResolution: Resolution) -> None:
     # Create INI sections
     if not iniConfig.has_section("general"):
         iniConfig.add_section("general")

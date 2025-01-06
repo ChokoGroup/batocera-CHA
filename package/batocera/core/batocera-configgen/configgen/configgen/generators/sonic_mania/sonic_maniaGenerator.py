@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-import configparser
 import os
 import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import ROMS
+from ...controller import generate_sdl_game_controller_config
+from ...utils.configparser import CaseSensitiveConfigParser
 from ..Generator import Generator
 
 if TYPE_CHECKING:
@@ -49,8 +50,8 @@ class SonicManiaGenerator(Generator):
             selected_language = '0'
 
         ## Create the Settings.ini file
-        config = configparser.ConfigParser()
-        config.optionxform = str
+        config = CaseSensitiveConfigParser()
+
         # Game
         config['Game'] = {
             'devMenu': 'y',
@@ -91,7 +92,7 @@ class SonicManiaGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                "SDL_GAMECONTROLLERCONFIG":controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0"
             }
         )

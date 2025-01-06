@@ -1,18 +1,19 @@
 from __future__ import annotations
 
+import logging
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import BIOS, HOME, ROMS, SCREENSHOTS, ensure_parents_and_open
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 PICO8_BIN_PATH: Final = BIOS / "pico-8" / "pico8"
 PICO8_ROOT_PATH: Final = ROMS / "pico8"
@@ -79,7 +80,7 @@ class LexaloffleGenerator(Generator):
         else:
             commandArray.extend(["-run", rom])
 
-        controllersconfig = controllersConfig.generateSdlGameControllerConfig(playersControllers)
+        controllersconfig = generate_sdl_game_controller_config(playersControllers)
         with ensure_parents_and_open(CONTROLLERS, "w") as file:
                file.write(controllersconfig)
 

@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import logging
 from typing import Final
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CONFIGS, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
 from ...settings.unixSettings import UnixSettings
-from ...utils.logger import get_logger
 from ..Generator import Generator
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 _CONFIG_DIR: Final = CONFIGS / 'applewin'
 _CONFIG_FILE: Final = _CONFIG_DIR / 'config.txt'
@@ -25,5 +26,5 @@ class AppleWinGenerator(Generator):
         return Command.Command(
             array=commandArray,
             env={
-                'SDL_GAMECONTROLLERCONFIG': controllersConfig.generateSdlGameControllerConfig(playersControllers)
+                'SDL_GAMECONTROLLERCONFIG': generate_sdl_game_controller_config(playersControllers)
             })

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import codecs
+import logging
 import os
 import subprocess
 from os import environ
@@ -8,9 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from xml.dom import minidom
 
-from ... import Command, controllersConfig
+from ... import Command
 from ...batoceraPaths import CACHE, CONFIGS, SAVES, mkdir_if_not_exists
-from ...utils.logger import get_logger
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 from . import cemuControllers
 from .cemuPaths import CEMU_BIOS, CEMU_CONFIG, CEMU_CONTROLLER_PROFILES, CEMU_ROMDIR, CEMU_SAVES
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
     from ...Emulator import Emulator
     from ...types import HotkeysContext
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 class CemuGenerator(Generator):
 
@@ -65,7 +66,7 @@ class CemuGenerator(Generator):
             array=commandArray,
             env={"XDG_CONFIG_HOME":CONFIGS, "XDG_CACHE_HOME":CACHE,
                 "XDG_DATA_HOME":SAVES,
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
                 "SDL_JOYSTICK_HIDAPI": "0"
             }
         )
@@ -275,9 +276,9 @@ class CemuGenerator(Generator):
         xml = configFile.open("w")
 
         # TODO: python 3 - workaround to encode files in utf-8
-        xml = codecs.open(str(configFile), "w", "utf-8")
-        dom_string = os.linesep.join([s for s in config.toprettyxml().splitlines() if s.strip()]) # remove ugly empty lines while minicom adds them...
-        xml.write(dom_string)
+        with codecs.open(str(configFile), "w", "utf-8") as xml:
+            dom_string = os.linesep.join([s for s in config.toprettyxml().splitlines() if s.strip()]) # remove ugly empty lines while minicom adds them...
+            xml.write(dom_string)
 
     # Show mouse for touchscreen actions
     def getMouseMode(self, config, rom):
