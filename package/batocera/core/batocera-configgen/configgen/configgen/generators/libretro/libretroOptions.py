@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import configparser
+import os
 from typing import TYPE_CHECKING
 
 from ... import controllersConfig
 from ...batoceraPaths import BIOS, ROMS, ensure_parents_and_open
+from ...utils.configparser import CaseSensitiveConfigParser
 from .libretroPaths import RETROARCH_CONFIG
 
 if TYPE_CHECKING:
@@ -2057,6 +2058,11 @@ def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path
             coreSettings.save('reicast_synchronous_rendering', '"' + system.config['reicast_synchronous_rendering'] + '"')
         else:
             coreSettings.save('reicast_synchronous_rendering', '"enabled"')
+        # DSP audio
+        if system.isOptSet('reicast_dsp'):
+            coreSettings.save('reicast_enable_dsp', '"' + system.config['reicast_dsp'] + '"')
+        else:
+            coreSettings.save('reicast_enable_dsp', '"disabled"')
         # Threaded Rendering
         coreSettings.save('reicast_threaded_rendering',  '"enabled"')
         # Enable controller force feedback
@@ -2383,7 +2389,7 @@ def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path
         if system.isOptSet('px68k_ramsize'):
             coreSettings.save('px68k_ramsize', '"' + system.config['px68k_ramsize'] + '"')
         else:
-            coreSettings.save('px68k_ramsize', '"2MB"')
+            coreSettings.save('px68k_ramsize', '"12MB"')
         # Frame Skip
         if system.isOptSet('px68k_frameskip'):
                 coreSettings.save('px68k_frameskip', '"' + system.config['px68k_frameskip'] + '"')
@@ -2450,14 +2456,14 @@ def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path
         else:
             coreSettings.save('fbneo-frameskip', '"0"')
         # Crosshair (Lightgun)
-        if system.isOptSet('fbneo-lightgun-hide-crosshair'):
-            coreSettings.save('fbneo-lightgun-hide-crosshair', '"' + system.config['fbneo-lightgun-hide-crosshair'] + '"')
+        if system.isOptSet('fbneo-lightgun-crosshair-emulation'):
+            coreSettings.save('fbneo-lightgun-crosshair-emulation', '"' + system.config['fbneo-lightgun-crosshair-emulation'] + '"')
         else:
             if controllersConfig.gunsNeedCrosses(guns):
-                status = '"enabled"'
+                status = '"always show"'
             else:
-                status = '"disabled"'
-            coreSettings.save('fbneo-lightgun-hide-crosshair', status)
+                status = '"always hide"'
+            coreSettings.save('fbneo-lightgun-crosshair-emulation', status)
         if system.isOptSet('use_guns') and system.getOptBoolean('use_guns') and len(guns) >= 1:
             coreSettings.save(f"fbneo-dipswitch-{rom.stem}-Controls", '"Light Gun"')
         else:
@@ -2783,11 +2789,20 @@ def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path
         coreSettings.save('hatarib_statusbar', '"0"')
         coreSettings.save('hatarib_fast_floppy', '"1"')
         coreSettings.save('hatarib_show_welcome', '"0"')
+        coreSettings.save('hatarib_tos', '"<etos1024k>"')
+
         # Machine Type
         if system.isOptSet('hatarib_machine'):
             coreSettings.save('hatarib_machine', '"' + system.config['hatarib_machine'] + '"')
         else:
             coreSettings.save('hatarib_machine', '"0"')
+
+        # Language/Region
+        if system.isOptSet("hatarib_language"):
+            coreSettings.save('hatarib_region', '"' + system.config['hatarib_language'] + '"')
+        else:
+            coreSettings.save('hatarib_region', '"127"')
+
         # CPU
         if system.isOptSet('hatarib_cpu'):
             coreSettings.save('hatarib_cpu', '"' + system.config['hatarib_cpu'] + '"')
@@ -2802,7 +2817,7 @@ def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path
         if system.isOptSet('hatarib_memory'):
             coreSettings.save('hatarib_memory', '"' + system.config['hatarib_memory'] + '"')
         else:
-            coreSettings.save('hatarib_memory', '"0"')
+            coreSettings.save('hatarib_memory', '"1024"')
         # Pause Screen
         if system.isOptSet('hatarib_pause'):
             coreSettings.save('hatarib_pause_osk', '"' + system.config['hatarib_pause'] + '"')
@@ -2819,15 +2834,36 @@ def generateCoreSettings(coreSettings: UnixSettings, system: Emulator, rom: Path
         else:
             coreSettings.save('hatarib_borders', '"0"')
 
+        # Harddrive image support
+        rom_extension = os.path.splitext(os.path.basename(rom))[1].lower()
+        if rom_extension == '.hd':
+            coreSettings.save('hatarib_hardimg', '"hatarib/hdd"')
+            coreSettings.save('hatarib_hardboot', '"1"')
+            coreSettings.save('hatarib_hard_readonly', '"1"')
+            if system.isOptSet("hatarib_drive") and system.config["hatarib_drive"] == "ACSI":
+                coreSettings.save('hatarib_hardtype', '"2"')
+            elif system.isOptSet("hatarib_drive") and system.config["hatarib_drive"] == "SCSI":
+                coreSettings.save('hatarib_hardtype', '"3"')
+            else:
+                coreSettings.save('hatarib_hardtype', '"4"')
+        elif rom_extension == '.gemdos':
+            coreSettings.save('hatarib_hardimg', '"hatarib/hdd"')
+            coreSettings.save('hatarib_hardboot', '"1"')
+            coreSettings.save('hatarib_hardtype', '"0"')
+            coreSettings.save('hatarib_hard_readonly', '"0"')
+        else:
+            coreSettings.save('hatarib_hardimg', '')
+            coreSettings.save('hatarib_hardtype', '"0"')
+            coreSettings.save('hatarib_hardboot', '"0"')
+            coreSettings.save('hatarib_hard_readonly', '"1"')
+
     # Custom : Allow the user to configure directly retroarchcore.cfg via batocera.conf via lines like : snes.retroarchcore.opt=val
     for user_config in system.config:
         if user_config[:14] == "retroarchcore.":
             coreSettings.save(user_config[14:], '"' + system.config[user_config] + '"')
 
 def generateHatariConf(hatariConf: Path) -> None:
-    hatariConfig = configparser.ConfigParser(interpolation=None)
-    # To prevent ConfigParser from converting to lower case
-    hatariConfig.optionxform = str
+    hatariConfig = CaseSensitiveConfigParser(interpolation=None)
     if hatariConf.exists():
         hatariConfig.read(hatariConf)
 

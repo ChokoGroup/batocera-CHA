@@ -1,17 +1,17 @@
 #
-## Batocera 40-Choko - Capcom Home Arcade - Dual Boot Edition
+## Batocera 41-Choko - Capcom Home Arcade - Dual Boot Edition
 
 This is the fork of [Batocera Linux](https://batocera.org) with a customized version for the [Capcom Home Arcade](https://capcomhomearcade.com) device.
 
 It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA-Multi-OS-Boot) repository.
 
 #
-![Batocera 40 UI](./ChokoGroup/BatoceraFavorites.png)
+![Batocera 41 UI](./ChokoGroup/BatoceraFavorites.png)
 #
 
 ## What is special about batocera 40-Choko?
 
-- It's a dual boot system image with both official OS v1.7.1 and Batocera 40. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
+- It's a dual boot system image with both official OS v1.7.1 and Batocera 41. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
 
 - We can use Emulation Station (Batocera style UI) or RetroArch (Lakka style UI).
 
@@ -28,11 +28,9 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 ![Choko Menu](./ChokoGroup/ChokoMenu.png)
 #
 
-Compared to official Official Batocera 40, this version has some new or updated packages:
+Compared to official Official Batocera 41, this version has some new or updated packages:
 
 - FBalpha2012 libretro core added.
-
-- FB Neo libretro core updated to 2024-03-22 version.
 
 
 #

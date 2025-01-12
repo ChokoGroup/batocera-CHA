@@ -340,7 +340,7 @@ libretro:
   shared: [powermode, tdp, videomode, ratio, shaderset, smooth, integerscale, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, ai_service_enabled, ai_target_lang, ai_service_url, ai_service_pause, runahead, preemptiveframes, secondinstance, video_frame_delay_auto, vrr_runloop_enable, video_threaded, rumble_gain, audio_volume, bordersmode]
   cfeatures:
     gfxbackend:
-      archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
+      archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2, sm8250]
       prompt:      GRAPHICS API
       description: Choose which graphics API library to use. Vulkan may not work for every core.
       choices:
@@ -1636,12 +1636,12 @@ libretro:
                     "2":           2
                     "3":           3
                     "4":           4
-            fbneo-lightgun-hide-crosshair:
+            fbneo-lightgun-crosshair-emulation:
                 group: LIGHT GUN
                 prompt:      SHOW LIGHT GUN CROSSHAIRS
                 choices:
-                    "Off":                                disabled
-                    "On":                                 enabled
+                    "Off":                                always hide
+                    "On":                                 always show
       systems:
             neogeo:
                 cfeatures:
@@ -1780,6 +1780,13 @@ libretro:
                     "10x (6400x4800)":   6400x4800
                     "11x (7040x5280)":   7040x5280
                     "12x (7680x5760)":   7680x5760
+            reicast_dsp:
+                group: ADVANCED OPTIONS
+                prompt:      DIGITAL SOUND PROCESSOR
+                description: Enable the Dreamcast DSP for more accurate audio. Only recommended for fast systems.
+                choices:
+                    "Disabled (Default)": disabled
+                    "Enabled"           : enabled
             reicast_lightgun1_crosshair:
                 group: LIGHT GUN
                 prompt:      PLAYER 1 CROSSHAIR COLOR
@@ -1925,6 +1932,13 @@ libretro:
                     "Keyboard":  3
                     "Mouse":     2
                     "Light Gun": 4
+            flycast_offscreen_reload:
+                group:       LIGHT GUN
+                prompt:      OFF-SCREEN RELOAD BUTTON
+                description: Set gun button 2 to reload.
+                choices:
+                    "Off":     0
+                    "On":      1
       systems:
             atomiswave:
                 cfeatures:
@@ -2373,8 +2387,6 @@ libretro:
               prompt: ATARI ST MEMORY SIZE
               description: Choose your desired Atari ST memory size.
               choices:
-                  "256 KB": "256"
-                  "512 KB": "512"
                   "1 MB":   "1024"
                   "2 MB":   "2048"
                   "2.5 MB": "2560"
@@ -2416,6 +2428,36 @@ libretro:
                   "Snow":                 "5"
                   "Darken":               "1"
                   "No Indicator":         "0"
+          hatarib_language:
+              prompt: LANGUAGE
+              description: Emutos language && region setting.
+              choices:
+                  "English (us)":         "0"
+                  "German (de)":          "1"
+                  "French (fr)":          "2"
+                  "British English (uk)": "3"
+                  "Spanish (es)":         "4"
+                  "Italian (it)":         "5"
+                  "Swedish (se)":         "6"
+                  "Swiss French (ch)":    "7"
+                  "Swiss German (ch)":    "8"
+                  "Turkish (tr)":         "9"
+                  "Finnish (fi)":         "10"
+                  "Norwegian (no)":       "11"
+                  "Danish (dk)":          "12"
+                  "Arabic (ar)":          "13"
+                  "Netherlands (nl)":     "14"
+                  "Czech (cz)":           "15"
+                  "Hungarian (hg)":       "16"
+                  "Poland (pl)":          "17"
+                  "Russian (ru)":         "18"
+                  "Greek (gk)":           "19"
+          hatarib_drive:
+              prompt: ATARI HARD DRIVE TYPE
+              description: Choose your Atari hard drive type for the .hd extension file.
+              choices:
+                  "IDE (Default)": IDE
+                  "ACSI":          ACSI
     imame4all:
       features: [netplay]
       shared: [rewind, autosave]
@@ -3725,9 +3767,6 @@ libretro:
                       choices:
                           "On":  1
                           "Off": 0
-
-    mame0139:
-      shared: [use_guns]
 
     mame078plus:
       features: [netplay]
@@ -6706,6 +6745,9 @@ libretro:
                 choices:
                     "Off":                      disabled
                     "On":                       enabled
+    vircon32:
+      features: [netplay, padtokeyboard]
+      shared: [rewind, autosave]
     virtualjaguar:
       features: [padtokeyboard, cheevos]
       shared: [autosave]
@@ -6874,8 +6916,14 @@ amiberry:
                 "OFF":                         false
 
 cannonball:
-  shared: [powermode, tdp, videomode, ratio, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  shared: [powermode, tdp, videomode]
   cfeatures:
+        ratio:
+            prompt: ASPECT RATIO
+            description: Change the output resolution ratio.
+            choices:
+                "4:3":  0
+                "16:9": 1
         highResolution:
             prompt:      HIGH RESOLUTION MODE
             description: Improves both sprite scaling and road rendering. Does not affect the car sprite.
@@ -7095,7 +7143,7 @@ hypseus-singe:
   shared: [powermode, tdp, videomode, use_guns]
   cfeatures:
         hypseus_api:
-            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
+            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2, sm8250]
             prompt: GRAPHICS API
             description: Choose which graphics API library to use. Vulkan may not work on all hardware.
             choices:
@@ -7185,7 +7233,14 @@ hypseus-singe:
 
 devilutionx:
   features: [padtokeyboard]
-  shared: [powermode, tdp, videomode, ratio, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  cfeatures:
+        devilutionx_stretch:
+            prompt: STRETCH TO FILL
+            description: Fills the screen.
+            choices:
+                "Disabled (Default)": "false"
+                "Enabled":            "true"
 
 dolphin:
   cores:
@@ -7208,7 +7263,7 @@ dolphin:
                     description: Fix screen tearing. CPU heavy.
                     preset: switchauto
                 gfxbackend:
-                    archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
+                    archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2, sm8250]
                     submenu: RENDERING
                     prompt:  GRAPHICS API
                     description: Choose which graphics API library to use.
@@ -7756,7 +7811,7 @@ duckstation:
                 "Enabled":            "true"
         duckstation_gfxbackend:
             submenu: DISPLAY
-            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
+            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2, sm8250]
             prompt: GRAPHICS API
             description: Choose which graphics API library to use.
             choices:
@@ -8051,7 +8106,7 @@ flycast:
       prompt:      ANISOTROPIC FILTERING
       description: Improves clarity of distant textures when mip-mapping is enabled.
       choices:
-        "Disbaled (Default)": 1
+        "Disabled (Default)": 1
         "2x"                : 2
         "4x"                : 4
         "8x"                : 8
@@ -8100,13 +8155,6 @@ flycast:
             "Green"     :   -1073479933
             "White"     :   -1056964609
             "Disabled"  :   0
-    flycast_offscreen_reload:
-      group:       LIGHT GUN
-      prompt:      OFF-SCREEN RELOAD BUTTON
-      description: Set gun button 2 to reload.
-      choices:
-        "Off":     0
-        "On":      1
 
   systems:
     dreamcast:
@@ -8178,7 +8226,7 @@ flycast:
           prompt:      DIGITAL SOUND PROCESSOR
           description: Enable the Dreamcast DSP for more accurate audio. Only recommended for fast systems.
           choices:
-            "Disbaled (Default)": "no"
+            "Disabled (Default)": "no"
             "Enabled"           : "yes"
 
 fpinball:
@@ -8203,16 +8251,27 @@ hatari:
         model:
             prompt:      MODEL
             choices:
-                "520 ST AUTO":     520st_auto
-                "520 ST TOS 1.00": 520st_100
-                "520 ST TOS 1.02": 520st_102
-                "520 ST TOS 1.04": 520st_104
-                "1040 STE AUTO":   1040ste_auto
-                "1040 STE 1.06":   1040ste_106
-                "1040 STE 1.62":   1040ste_162
-                "Mega STE AUTO":   megaste_auto
-                "Mega STE 2.05":   megaste_205
-                "Mega STE 2.06":   megaste_206
+                "520 ST AUTO":        520st_auto
+                "520 ST TOS 1.00":    520st_100
+                "520 ST TOS 1.02":    520st_102
+                "520 ST TOS 1.04":    520st_104
+                "520 ST EMUTOS 256k": 520st_etos256
+                "1040 STE AUTO":      1040ste_auto
+                "1040 STE 1.06":      1040ste_106
+                "1040 STE 1.62":      1040ste_162
+                "1040 STE ETOS 256k": 1040ste_etos256
+                "Mega STE AUTO":      megaste_auto
+                "Mega STE 2.05":      megaste_205
+                "Mega STE 2.06":      megaste_206
+                "Mega STE ETOS 256k": megaste_etos256
+                "TT AUTO":            tt_auto
+                "TT 3.06":            tt_306
+                "TT ETOS 512k":       tt_etos512
+                "Falcon AUTO":        falcon_auto
+                "Falcon 4.0":         falcon_400
+                "Falcon 4.02":        falcon_402
+                "Falcon 4.04":        falcon_404
+                "Falcon ETOS 512k":   falcon_etos512
         language:
             prompt:      LANGUAGE
             description: TOS languages.
@@ -8238,7 +8297,7 @@ hatari:
             description: Choose your Atari hard drive type for the .hd extension file.
             choices:
                 "IDE (Default)": IDE
-                "ASCI":          ASCI
+                "ACSI":          ACSI
 
 melonds:
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -8247,63 +8306,70 @@ melonds:
             prompt: GRAPHICS API
             description: Choose which graphics API library to use.
             choices:
-                "Software": 0
-                "OpenGL":   1
+                "Software":                0
+                "OpenGL (Classic)":        1
+                "OpenGL (Compute shader)": 2
+        melonds_vsync:
+            prompt: VSYNC
+            description: Fix screen tearing. CPU heavy.
+            choices:
+                "Off": False
+                "On":  True
         melonds_framerate:
             group: ADVANCED OPTIONS
             prompt: LIMIT FRAME RATE
             choices:
-                "No Limit":          0
-                "As game specifies": 1
+                "No Limit":          False
+                "As game specifies": True
         melonds_resolution:
             prompt: RENDERING RESOLUTION
             description: Enhancement. Increase the rendering resolution. Makes 3D objects clearer.
             choices:
-                "1x (256x192)":           1
-                "2x (512x384)":           2
-                "3x (768x576)":           3
-                "4x (1024x768)":          4
-                "5x (1280x960)":          5
-                "6x (1536x1152)":         6
-                "7x (1792x1344)":         7
-                "8x (2048x1536)":         8
-                "9x (2304x1728)":         9
-                "10x (2560x1920)":        10
-                "11x (2816x2112)":        11
-                "12x (3072x2304)":        12
-                "13x (3328x2496)":        13
-                "14x (3584x2688)":        14
-                "15x (3840x2880)":        15
-                "16x (4096x3072)":        16
+                "1x (256x192)":    1
+                "2x (512x384)":    2
+                "3x (768x576)":    3
+                "4x (1024x768)":   4
+                "5x (1280x960)":   5
+                "6x (1536x1152)":  6
+                "7x (1792x1344)":  7
+                "8x (2048x1536)":  8
+                "9x (2304x1728)":  9
+                "10x (2560x1920)": 10
+                "11x (2816x2112)": 11
+                "12x (3072x2304)": 12
+                "13x (3328x2496)": 13
+                "14x (3584x2688)": 14
+                "15x (3840x2880)": 15
+                "16x (4096x3072)": 16
         melonds_polygons:
             group: ADVANCED OPTIONS
             prompt: ENABLE POLYGON SPLITTING
             description: Enhancement. Enables improved polygon splitting.
             choices:
-                "Off": 0
-                "On":  1
+                "Off": False
+                "On":  True
         melonds_rotation:
             prompt: SCREEN ROTATION
             description: Rotates the screens, to simulate holding the DS sideways.
             choices:
-                "0 degrees":           0
-                "90 degrees":          1
-                "180 degrees":         2
-                "270 degrees":         3
+                "0 degrees":   0
+                "90 degrees":  1
+                "180 degrees": 2
+                "270 degrees": 3
         melonds_screenswap:
             prompt: SCREEN SWAP
             description: Swap the position of the dual displays.
             choices:
-                "Off":           0
-                "On":            1
+                "Off": False
+                "On":  True
         melonds_screensize:
             prompt: SCREEN SIZE
             description: Sets the window size to an integer size.
             choices:
-                "1x":           0
-                "2x":           1
-                "3x":           2
-                "4x":           3
+                "1x": 0
+                "2x": 1
+                "3x": 2
+                "4x": 3
         melonds_layout:
             prompt: SCREEN LAYOUT
             description: Adjusts the positions of the screens.
@@ -8325,18 +8391,18 @@ melonds:
         melonds_scaling:
             prompt: INTEGER SCALING
             choices:
-                "Off":             0
-                "On":              1
+                "Off": False
+                "On":  True
         melonds_cheats:
             prompt: ENABLE CHEATS
             choices:
-                "Off (Default)":   0
-                "On":              1
+                "Off (Default)": False
+                "On":            True
         melonds_osd:
             prompt: SHOW ON-SCREEN DISPLAY MESSAGES
             choices:
-                "Off":          0
-                "On":           1
+                "Off": False
+                "On":  True
         melonds_console:
             prompt: CONSOLE TYPE
             choices:
@@ -8655,7 +8721,7 @@ mupen64plus:
                 "20%": 0.2
                 "25%": 0.25
 openbor:
-  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  shared: [powermode, tdp, videomode]
   cfeatures:
         openbor_ratio:
             prompt: SCREEN RATIO
@@ -8950,10 +9016,10 @@ pcsx2:
                 "On":      1
 
 ppsspp:
-  shared: [powermode, tdp, videomode, ratio, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, rewind]
+  shared: [powermode, tdp, videomode, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo, rewind]
   cfeatures:
         gfxbackend:
-            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
+            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2, sm8250]
             prompt: GRAPHICS API
             description: Choose which graphics API library to use.
             choices:
@@ -9703,7 +9769,7 @@ supermodel:
         pedalSwap:
             group: ADVANCED OPTIONS
             prompt:      MODERN PEDAL CONTROLS
-            description: Use L2/R2 for Accel/Brake and L1/R1 or R-stick Up/Down for Shift Up/Down.
+            description: Use L2/R2 for Brake/Accel and L1/R1 or R-stick Up/Down for Shift Up/Down.
             choices:
                 "Off":      0
                 "On":       1
@@ -9766,7 +9832,7 @@ cgenius:
                 "640x480": "480"
         cgenius_cursor:
             prompt: CURSOR
-            description: Enabled or disbale the mouse cursor. Useful for CG's menus.
+            description: Enabled or disable the mouse cursor. Useful for CG's menus.
             choices:
                 "Disabled (Default)": "false"
                 "Enabled":            "true"
@@ -9822,7 +9888,7 @@ mame:
                 "Off (Default)": 0
                 "On":            1
         bgfxbackend:
-            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2]
+            archs_include: [x86, x86_64, bcm2711, bcm2712, a3gen2, sm8250]
             prompt:      BGFX GRAPHICS API
             description: Depends on video mode being set to BGFX.
             choices:
@@ -11172,7 +11238,7 @@ solarus:
 
 mugen:
   features: [padtokeyboard]
-  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  shared: [powermode, tdp, videomode]
   cfeatures:
         esync:
             group: ADVANCED OPTIONS
@@ -11195,13 +11261,7 @@ mugen:
             choices:
                 "Off": 0
                 "On":  1
-        virtual_desktop:
-            group: ADVANCED OPTIONS
-            prompt:      VIRTUAL DESKTOP
-            description: Define the resolution and a new dedicated window.
-            choices:
-                "Off": 0
-                "On":  1
+
 ikemen:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -11458,6 +11518,7 @@ soniccd:
 
 model2emu:
   features: [padtokeyboard]
+  shared: [powermode, tdp, videomode]
   cfeatures:
         model2_renderRes:
             prompt: RENDERING RESOLUTION
@@ -11555,12 +11616,18 @@ model2emu:
             choices:
                 "Off (Default)": 0
                 "On":            1
-        model2_forceFeedback:
-            prompt:      RUMBLE
-            description: Only some games feature rumble. Not compatible with all controllers.
+        model2_xinput:
+            prompt: X-INPUT
+            description: Enable X-Input mode for Xbox type controllers.
             choices:
-                "Off":      0
-                "On":       1
+                "Off": 0
+                "On":  1
+        model2_forceFeedback:
+            prompt: RUMBLE
+            description: Only some games support rumble. Requires X-Input mode and may not be compatible with all controllers.
+            choices:
+                "Off": 0
+                "On":  1
 gsplus:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -11937,6 +12004,27 @@ tyrian:
 openjazz:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  cfeatures:
+    jazz_resolution:
+      prompt: RENDERING RESOLUTION
+      description: Enhancement. Increase the rendering resolution. Makes 3D objects clearer.
+      choices:
+        "320 x 200":   320x200
+        "640 x 480":   640x480
+        "800 x 600":   800x600
+        "1024 x 768":  1024x768
+        "1280 x 720":  1280x720
+        "1280 x 800":  1280x800
+        "1280 x 1024": 1280x1024
+        "1366 x 768":  1366x768
+        "1440 x 900":  1440x900
+        "1600 x 900":  1600x900
+        "1680 x 1050": 1680x1050
+        "1920 x 1080": 1920x1080
+        "1920 x 1200": 1920x1200
+        "2560 x 1440": 2560x1440
+        "2560 x 1600": 2560x1600
+        "3840 x 2160": 3840x2160
 
 etekwar:
   features: [padtokeyboard]
@@ -11967,23 +12055,6 @@ openmsx:
                 "Floppy Disk Image": "disk"
                 "Hard Disk Image":   "hda"
 
-demul:
-  shared: [powermode, tdp, videomode, use_wheels, wheel_rotation, wheel_deadzone, wheel_midzone]
-  cfeatures:
-        demulRatio:
-            prompt:      GAME ASPECT RATIO
-            choices:
-                "Stretch":       0
-                "4:3 (Default)": 1
-                "16:9":          2
-        demulVSync:
-            group: ADVANCED OPTIONS
-            prompt:      VSYNC
-            description: Fix screen tearing.
-            choices:
-                "Off": 0
-                "On":  1
-
 sh:
   features: [padtokeyboard]
   shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
@@ -12002,22 +12073,133 @@ xenia:
             prompt: VSYNC
             description: Fix screen tearing.
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
-        xeniaLicense:
+                "Disabled": False
+                "Enabled":  True
+        xenia_license:
             prompt: XBOX LIVE ARCADE
             description: This option enables the ability to play Xbox Live Arcade games. May cause compatibility issues with non-XBLA games.
             choices:
                 "No licenses enabled":                      0
                 "XBLA license enabled (Default)":           1
                 "All possible licenses (Not recommended)": -1
-        xeniaHeadless:
+        xenia_headless:
             prompt: UI PROMPTS
             description: Choose to display UI prompts or accept defaults.
             choices:
-                "Enabled UI prompts (Default)": 0
-                "Disable UI prompts":           1
-        xeniaLanguage:
+                "Enabled (Default)": False
+                "Disabled":          True
+        xenia_country:
+            prompt: CONSOLE COUNTRY
+            description: Change the consoles country from the default of the United States.
+            choices:
+                "United Arab Emirates": 1
+                "Albania": 2
+                "Armenia": 3
+                "Argentina": 4
+                "Austria": 5
+                "Australia": 6
+                "Azerbaijan": 7
+                "Belgium": 8
+                "Bulgaria": 9
+                "Bahrain": 10
+                "Brunei": 11
+                "Bolivia": 12
+                "Brazil": 13
+                "Belarus": 14
+                "Belize": 15
+                "Canada": 16
+                "Switzerland": 18
+                "Chile": 19
+                "China": 20
+                "Colombia": 21
+                "Costa Rica": 22
+                "Czech Republic": 23
+                "Germany": 24
+                "Denmark": 25
+                "Dominican Republic": 26
+                "Algeria": 27
+                "Ecuador": 28
+                "Estonia": 29
+                "Egypt": 30
+                "Spain": 31
+                "Finland": 32
+                "Faroe Islands": 33
+                "France": 34
+                "United Kingdom": 35
+                "Georgia": 36
+                "Greece": 37
+                "Guatemala": 38
+                "Hong Kong": 39
+                "Honduras": 40
+                "Croatia": 41
+                "Hungary": 42
+                "Indonesia": 43
+                "Ireland": 44
+                "Israel": 45
+                "India": 46
+                "Iraq": 47
+                "Iran": 48
+                "Iceland": 49
+                "Italy": 50
+                "Jamaica": 51
+                "Jordan": 52
+                "Japan": 53
+                "Kenya": 54
+                "Kyrgyzstan": 55
+                "South Korea": 56
+                "Kuwait": 57
+                "Kazakhstan": 58
+                "Lebanon": 59
+                "Liechtenstein": 60
+                "Lithuania": 61
+                "Luxembourg": 62
+                "Latvia": 63
+                "Libya": 64
+                "Morocco": 65
+                "Monaco": 66
+                "North Macedonia": 67
+                "Mongolia": 68
+                "Macau": 69
+                "Maldives": 70
+                "Mexico": 71
+                "Malaysia": 72
+                "Nicaragua": 73
+                "Netherlands": 74
+                "Norway": 75
+                "New Zealand": 76
+                "Oman": 77
+                "Panama": 78
+                "Peru": 79
+                "Philippines": 80
+                "Pakistan": 81
+                "Poland": 82
+                "Puerto Rico": 83
+                "Portugal": 84
+                "Paraguay": 85
+                "Qatar": 86
+                "Romania": 87
+                "Russia": 88
+                "Saudi Arabia": 89
+                "Sweden": 90
+                "Singapore": 91
+                "Slovenia": 92
+                "Slovakia": 93
+                "El Salvador": 95
+                "Syria": 96
+                "Thailand": 97
+                "Tunisia": 98
+                "Turkey": 99
+                "Trinidad and Tobago": 100
+                "Taiwan": 101
+                "Ukraine": 102
+                "United States": 103
+                "Uruguay": 104
+                "Uzbekistan": 105
+                "Venezuela": 106
+                "Vietnam": 107
+                "Yemen": 108
+                "South Africa": 109
+        xenia_language:
             prompt: LANGUAGE
             description: Change the game's language.
             choices:
@@ -12041,8 +12223,8 @@ xenia:
             prompt: CLEAR MEMORY PAGE STATE
             description: Refresh state of memory pages to enable gpu written data. (Use for 'Team Ninja' Games to fix missing character models).
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
         xenia_target_path:
             group: ADVANCED OPTIONS
             prompt: RENDER TARGET PATH
@@ -12069,8 +12251,8 @@ xenia:
             prompt: READBACK RESOLVE
             description: D3D12, read render-to-texture results on the CPU. Needed in some games, but causes mid-frame synchronization, so it has a huge performance impact.
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
         xenia_limit_hard:
             group: ADVANCED OPTIONS
             prompt: HARD TEXTURE CACHE MEMORY LIMIT
@@ -12118,21 +12300,21 @@ xenia:
             prompt: MOUNT CACHE
             description: Enable cache mount. Can improve performance and compatibility in some games.
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
 
 xenia-canary:
   features: []
   shared: [powermode, tdp, videomode]
   cfeatures:
-        xeniaLicense:
+        xenia_license:
             prompt: XBOX LIVE ARCADE
             description: This option enables the ability to play Xbox Live Arcade games. May cause compatibility issues with non-XBLA games.
             choices:
                 "No licenses enabled":                     0
                 "XBLA license enabled (Default)":          1
                 "All possible licenses (Not recommended)": -1
-        xeniaResolution:
+        xenia_resolution:
             prompt: INTERNAL DISPLAY RESOLUTION
             description: Allow game that support different resolutions to be rendered in specific resolution.
             choices:
@@ -12163,24 +12345,141 @@ xenia-canary:
             prompt: VSYNC
             description: Fix screen tearing. With Some games you need to turn VSync on in the games options.
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
         xenia_vsync_fps:
             prompt: VSYNC FPS
             description: Manually set VSYNC frames per second. Ideally this should match your monitor refresh rate.
             choices:
-                "50fps":            50
-                "60fps (Default)":  60
-                "120fps":           120
-                "144fps":           144
-                "165fps":           165
-        xeniaHeadless:
+                "50fps":  50
+                "60fps":  60
+                "120fps": 120
+                "144fps": 144
+                "165fps": 165
+        xenia_headless:
             prompt: UI PROMPTS
             description: Choose to display UI prompts or accept defaults.
             choices:
-                "Enabled UI prompts (Default)": 0
-                "Disable UI prompts":           1
-        xeniaLanguage:
+                "Enabled (Default)": False
+                "Disabled":          True
+        xenia_achievement:
+            prompt: SHOW ACHIEVEMENT MESSAGES
+            description: Choose to display achievement messages in the UI.
+            choices:
+                "Disabled": False
+                "Enabled":  True
+        xenia_country:
+            prompt: CONSOLE COUNTRY
+            description: Change the consoles country from the default of the United States.
+            choices:
+                "United Arab Emirates": 1
+                "Albania": 2
+                "Armenia": 3
+                "Argentina": 4
+                "Austria": 5
+                "Australia": 6
+                "Azerbaijan": 7
+                "Belgium": 8
+                "Bulgaria": 9
+                "Bahrain": 10
+                "Brunei": 11
+                "Bolivia": 12
+                "Brazil": 13
+                "Belarus": 14
+                "Belize": 15
+                "Canada": 16
+                "Switzerland": 18
+                "Chile": 19
+                "China": 20
+                "Colombia": 21
+                "Costa Rica": 22
+                "Czech Republic": 23
+                "Germany": 24
+                "Denmark": 25
+                "Dominican Republic": 26
+                "Algeria": 27
+                "Ecuador": 28
+                "Estonia": 29
+                "Egypt": 30
+                "Spain": 31
+                "Finland": 32
+                "Faroe Islands": 33
+                "France": 34
+                "United Kingdom": 35
+                "Georgia": 36
+                "Greece": 37
+                "Guatemala": 38
+                "Hong Kong": 39
+                "Honduras": 40
+                "Croatia": 41
+                "Hungary": 42
+                "Indonesia": 43
+                "Ireland": 44
+                "Israel": 45
+                "India": 46
+                "Iraq": 47
+                "Iran": 48
+                "Iceland": 49
+                "Italy": 50
+                "Jamaica": 51
+                "Jordan": 52
+                "Japan": 53
+                "Kenya": 54
+                "Kyrgyzstan": 55
+                "South Korea": 56
+                "Kuwait": 57
+                "Kazakhstan": 58
+                "Lebanon": 59
+                "Liechtenstein": 60
+                "Lithuania": 61
+                "Luxembourg": 62
+                "Latvia": 63
+                "Libya": 64
+                "Morocco": 65
+                "Monaco": 66
+                "North Macedonia": 67
+                "Mongolia": 68
+                "Macau": 69
+                "Maldives": 70
+                "Mexico": 71
+                "Malaysia": 72
+                "Nicaragua": 73
+                "Netherlands": 74
+                "Norway": 75
+                "New Zealand": 76
+                "Oman": 77
+                "Panama": 78
+                "Peru": 79
+                "Philippines": 80
+                "Pakistan": 81
+                "Poland": 82
+                "Puerto Rico": 83
+                "Portugal": 84
+                "Paraguay": 85
+                "Qatar": 86
+                "Romania": 87
+                "Russia": 88
+                "Saudi Arabia": 89
+                "Sweden": 90
+                "Singapore": 91
+                "Slovenia": 92
+                "Slovakia": 93
+                "El Salvador": 95
+                "Syria": 96
+                "Thailand": 97
+                "Tunisia": 98
+                "Turkey": 99
+                "Trinidad and Tobago": 100
+                "Taiwan": 101
+                "Ukraine": 102
+                "United States": 103
+                "Uruguay": 104
+                "Uzbekistan": 105
+                "Venezuela": 106
+                "Vietnam": 107
+                "Yemen": 108
+                "South Africa": 109
+        xenia_language:
             prompt: LANGUAGE
             description: Change the game's language.
             choices:
@@ -12199,19 +12498,19 @@ xenia-canary:
                 "Turkish":           14
                 "Norwegian":         15
                 "Dutch":             16
-        xeniaPatches:
+        xenia_patches:
             prompt: GAME PATCHES
             description: Enable or disable Xenia patches. These patches can fix graphics problems in some games.
             choices:
-                "Disabled (Default)": false
-                "Enabled": true
+                "Disabled (Default)": False
+                "Enabled":            True
         xenia_page_state:
             group: ADVANCED OPTIONS
             prompt: CLEAR MEMORY PAGE STATE
             description: Refresh state of memory pages to enable gpu written data. (Use for 'Team Ninja' Games to fix missing character models).
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
         xenia_target_path:
             group: ADVANCED OPTIONS
             prompt: RENDER TARGET PATH
@@ -12238,8 +12537,8 @@ xenia-canary:
             prompt: READBACK RESOLVE
             description: D3D12, read render-to-texture results on the CPU. Needed in some games, but causes mid-frame synchronization, so it has a huge performance impact.
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
         xenia_limit_hard:
             group: ADVANCED OPTIONS
             prompt: HARD TEXTURE CACHE MEMORY LIMIT
@@ -12287,8 +12586,8 @@ xenia-canary:
             prompt: MOUNT CACHE
             description: Enable cache mount. Can improve performance and compatibility in some games.
             choices:
-                "Disabled": "false"
-                "Enabled":  "true"
+                "Disabled": False
+                "Enabled":  True
 
 eka2l1:
   features: []
@@ -12448,6 +12747,66 @@ bigpemu:
       choices:
         "4:3 (Default)": 2
         "16:9":          8
+    bigpemu_screenfilter:
+      prompt: SCREEN FILTER
+      description: Basic Filtering type for the jaguar display when rendering to the native display.
+      choices:
+        "Point (Default)": 0
+        "Bilinear":        1
+    bigpemu_avp:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: ALIEN VS PREDATOR
+      description: Supports uncapped frame rates, analog controllers, and mouse look functionality.
+      preset: switchauto
+    bigpemu_avp_mp:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: ALIEN VS PREDATOR MULTIPLAYER
+      description: Switches the game to multiplayer mode.
+      preset: switchauto
+    bigpemu_brett_hull_hockey:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: BRETT HULL HOCKEY
+      description: Fixes flickering.
+      preset: switchauto
+    bigpemu_checkered_flag:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: CHECKERED FLAG
+      description: Features native resolution rendering, analog controller and mouse support, frame rate unlocking up to 60Hz, an improved camera with a disable tilt option, custom sky/background functionality, and various other tweaks and options.
+      preset: switchauto
+    bigpemu_cybermorph:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: CYBERMORPH
+      description: Renders polygons and textures at the native resolution.
+      preset: switchauto
+    bigpemu_iron_soldier:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: IRON SOLDIER
+      description: Offers support for analog controllers and mouse look functionality for improved control.
+      preset: switchauto
+    bigpemu_mc3d_vr:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: MISSILE COMMAND 3D VR
+      description: Includes VR head tracking and stereoscopic rendering for both VR and 3D TVs, along with mouse support (Mouse Look), and introduces a new Head Tracker input device type with options to convert analog inputs to tracker angles for enhanced analog controller support.
+      preset: switchauto
+    bigpemu_t2k_rotary:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: TEMPEST 2000
+      description: Provides analog controller and mouse support while patching existing rotary controller bugs found in hardware.
+      preset: switchauto
+    bigpemu_wolf3d:
+      group: ADVANCED OPTIONS
+      submenu: SCRIPT MODULES
+      prompt: WOLFENSTEIN 3D
+      description: Offers analog controller and mouse support (Mouse Look), along with options for always-strafe and always-run functionalities.
+      preset: switchauto
 
 pyxel:
   features: [padtokeyboard]
@@ -13143,3 +13502,40 @@ x16emu:
         "Nearest pixel sampling": "nearest"
         "Linear filtering":       "linear"
         "Anisotropic filtering":  "best"
+
+shadps4:
+  features: [padtokeyboard]
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+
+dhewm3:
+  features: [padtokeyboard]
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]
+  cfeatures:
+    dhewm3_brightness:
+      prompt: BRIGHTNESS
+      description: Change the game's brightness.
+      choices:
+        "100% (Default)": 1
+        "120%":           1.20
+        "140%":           1.40
+        "160%":           1.60
+        "180%":           1.80
+        "200% (Maximum)": 2
+    dhewm3_language:
+      prompt: LANGUAGE
+      description: Change the game's language. Game files require the supported language strings in the .pk4 files.
+      choices:
+        "English":  "english"
+        "Spanish":  "spanish"
+        "Italian":  "italian"
+        "German":   "german"
+        "French":   "french"
+        "Russian":  "russian"
+        "Polish":   "polish"
+        "Korean":   "korean"
+        "Japanese": "japanese"
+        "Chinese":  "chinese"
+
+jazz2-native:
+  features: [padtokeyboard]
+  shared: [powermode, tdp, videomode, bezel, bezel_stretch, hud, hud_corner, bezel.tattoo, bezel.tattoo_corner, bezel.tattoo_file, bezel.resize_tattoo]

@@ -19,7 +19,8 @@ for DIR in cheats \
            system/.cache \
            system/.config/lirc \
            system/bluetooth \
-           system/configs \
+           system/configs/retroarch/config/remaps \
+           system/configs/retroarch/inputs \
            system/pacman \
            system/pacman/db \
            system/pacman/pkg \
@@ -98,7 +99,6 @@ for FILE in music bios extractions kodi library saves screenshots recordings spl
             system/configs/ppsspp \
             system/configs/shadersets \
             system/configs/umtool \
-            system/configs/xarcade2jstick \
             system/configs/theforceengine \
             system/batocera.conf \
             system/pacman/hooks/batocera-install.hook \

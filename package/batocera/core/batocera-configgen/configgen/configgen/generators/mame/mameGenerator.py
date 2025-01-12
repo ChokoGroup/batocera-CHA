@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import logging
 import os
 import shutil
 import subprocess
@@ -24,7 +25,6 @@ from ...batoceraPaths import (
     mkdir_if_not_exists,
 )
 from ...utils import bezels as bezelsUtil, videoMode as videoMode
-from ...utils.logger import get_logger
 from ..Generator import Generator
 from . import mameControllers
 from .mamePaths import MAME_BIOS, MAME_CHEATS, MAME_CONFIG, MAME_DEFAULT_DATA, MAME_ROMS, MAME_SAVES
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from ...Emulator import Emulator
     from ...types import HotkeysContext, Resolution
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
 
 class MameGenerator(Generator):
@@ -205,7 +205,7 @@ class MameGenerator(Generator):
         elif system.isOptSet("video") and system.config["video"] == "accel":
             commandArray += ["-video", "accel" ]
         else:
-            commandArray += [ "-video", "opengl" ]
+            commandArray += [ "-video", "auto" ]
 
         # CRT / SwitchRes support
         if system.isOptSet("switchres") and system.getOptBoolean("switchres"):
@@ -615,6 +615,9 @@ class MameGenerator(Generator):
         if bezelSet is None and gunsBordersSize is None:
             return
 
+        if (float (gameResolution["width"]) / float (gameResolution["height"]) < 1.6) and gunsBordersSize is None:
+            return
+
         # let's generate the zip file
         tmpZipDir.mkdir(parents=True)
 
@@ -731,7 +734,7 @@ class MameGenerator(Generator):
             tatwidth = int(240/1920 * img_width) # 240 = half of the difference between 4:3 and 16:9 on 1920px (0.5*1920/16*4)
             pcent = float(tatwidth / tw)
             tatheight = int(float(th) * pcent)
-            tattoo = tattoo.resize((tatwidth,tatheight), Image.ANTIALIAS)
+            tattoo = tattoo.resize((tatwidth,tatheight), Image.Resampling.LANCZOS)
             alpha = back.split()[-1]
             alphatat = tattoo.split()[-1]
             if system.isOptSet('bezel.tattoo_corner'):

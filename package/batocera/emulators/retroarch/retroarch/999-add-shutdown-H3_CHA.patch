@@ -78,21 +78,6 @@
     DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_RESTART_KEY),
  #else
     DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_QUIT_KEY),
---- a/retroarch.c 2024-03-18 11:26:19.653893100 +0000
-+++ b/retroarch.c 2024-03-23 17:31:01.089300000 +0000
-@@ -4354,10 +4354,10 @@
-             command_event(CMD_EVENT_MENU_SAVE_CURRENT_CONFIG, NULL);
-          }
- #ifdef HAVE_LAKKA
--         system("(sleep 1 && shutdown -P now) & disown");
-+         system("(sleep 1 && shutdown -hP now) & disown");
- #else
-          command_event(CMD_EVENT_QUIT, NULL);
--         system("shutdown -P now");
-+         system("shutdown -hP now");
- #endif /* HAVE_LAKKA */
- #endif
-          break;
 --- a/Makefile.common	2024-03-22 16:06:39.530415900 +0000
 +++ b/Makefile.common	2024-03-23 21:24:39.853810000 +0000
 @@ -790,6 +790,10 @@
@@ -106,3 +91,23 @@
  ifeq ($(HAVE_WIFI), 1)
     OBJ += network/wifi_driver.o
     OBJ += tasks/task_wifi.o
+--- a/retroarch.c	2025-01-09 06:36:13.815081370 +0000
++++ b/retroarch.c	2025-01-11 13:35:11.063492488 +0000
+@@ -4366,7 +4366,7 @@
+             command_event(CMD_EVENT_MENU_SAVE_CURRENT_CONFIG, NULL);
+          }
+          runloop_msg_queue_push(msg_hash_to_str(MSG_VALUE_SHUTTING_DOWN), 1, 180, true, NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+          system("nohup /usr/bin/lakka-shutdown.sh 2>&1 >/dev/null & exit");
+ #else
+          command_event(CMD_EVENT_QUIT, NULL);
+@@ -4381,7 +4381,7 @@
+             command_event(CMD_EVENT_MENU_SAVE_CURRENT_CONFIG, NULL);
+          }
+          runloop_msg_queue_push(msg_hash_to_str(MSG_VALUE_REBOOTING), 1, 180, true, NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+-#ifdef HAVE_LAKKA
++#if defined(HAVE_LAKKA) || defined(H3_CHA)
+          system("nohup /usr/bin/lakka-reboot.sh 2>&1 >/dev/null & exit");
+ #else
+          command_event(CMD_EVENT_QUIT, NULL);

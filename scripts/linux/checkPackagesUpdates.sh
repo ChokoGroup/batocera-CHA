@@ -147,7 +147,6 @@ PACKAGES_EMULATORS="amiberry
                     cemu
                     citra
                     hypseus-singe
-                    demul
                     dolphin-emu
                     dolphin-triforce
                     dosbox
@@ -183,6 +182,7 @@ PACKAGES_EMULATORS="amiberry
                     ruffle
                     ryujinx
                     scummvm
+                    shadps4
                     simcoupe
                     snes9x
                     solarus-engine
@@ -207,6 +207,7 @@ PACKAGES_PORTS="abuse
                 cgenius
                 corsixth
                 devilutionx
+                dhewm3
                 dxx-rebirth
                 ecwolf
                 eduke32
@@ -219,6 +220,7 @@ PACKAGES_PORTS="abuse
                 hurrican
                 ioquake3
                 iortcw
+                jazz2-native
                 openjazz
                 raze
                 sdlpop
@@ -241,16 +243,9 @@ PACKAGES_WINE="dxvk
                faudio
                mf
                rtkit
-               vkd3d
                vkd3d-proton
-               wine-ge-custom
-               wine-ge-custom-wow64_32
-               wine-lutris
-               wine-lutris-wow64_32
-               wine-mono-lutris
-               wine-mono-proton
-               wine-proton
-               wine-proton-wow64_32"
+               wine-tkg
+               wine-tkg-wow64_32"
 
 PACKAGES_CONTROLLERS="aelightgun
                       aimtrak-guns
@@ -569,16 +564,6 @@ create_pkg_functions_BitBucket() {
 create_pkg_functions_RichWhiteHouse() {
   eval "${1}_GETNET() {
     wget -qO - 'https://www.richwhitehouse.com/jaguar/index.php?content=download' | grep -m1 'BigPEmu_Linux64_v[0-9]*\.tar\.gz' | sed -e 's#.*BigPEmu_Linux64_\(v[0-9]*\)\.tar\.gz.*#\1#'
-  }"
-  eval "${1}_GETCUR() {
-    X1=\$(pkg_GETCURVERSION ${1})
-    echo \"\${X1}\"
-  }"
-}
-
-create_pkg_functions_demul() {
-  eval "${1}_GETNET() {
-    wget -qO - 'http://demul.emulation64.com/downloads/' | grep -m1 '.7z' | sed -e s#'.*files/\(.*\)\.7z.*$'#'\1'#
   }"
   eval "${1}_GETCUR() {
     X1=\$(pkg_GETCURVERSION ${1})
@@ -1011,9 +996,6 @@ source_site_eval() {
             ;;
             *"richwhitehouse.com"* )
               create_pkg_functions_RichWhiteHouse "${pkg}"
-            ;;
-            *"demul."* )
-              create_pkg_functions_demul "${pkg}"
             ;;
             *"redream."* )
               create_pkg_functions_redream "${pkg}"

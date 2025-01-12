@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 import json
+import logging
 from typing import TYPE_CHECKING
 
-from ... import Command, controllersConfig
-from ...batoceraPaths import HOME, mkdir_if_not_exists
+from ... import Command
+from ...batoceraPaths import CONFIGS, mkdir_if_not_exists
+from ...controller import generate_sdl_game_controller_config
 from ...utils import videoMode
-from ...utils.logger import get_logger
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
 
-eslog = get_logger(__name__)
+eslog = logging.getLogger(__name__)
 
-bigPemuConfig = HOME / ".bigpemu_userdata" / "BigPEmuConfig.bigpcfg"
+bigPemuConfig = CONFIGS / "bigpemu" / "BigPEmuConfig.bigpcfg"
 
 # BigPEmu controller sequence, P1 only requires keyboard inputs
 # default standard bindings
@@ -60,9 +61,9 @@ P1_BINDINGS_SEQUENCE = {
     "Menu": {"buttons": ["start", "r2"], "keyboard": "41"},
     "Fast Forward": {"buttons": ["x", "r2"], "keyboard": "59"},
     "Rewind": {"blank": None},
-    "Save State": {"blank": None},
-    "Load State": {"blank": None},
-    "Screenshot": {"blank": None},
+    "Save State": {"keyboard": "66"},
+    "Load State": {"keyboard": "62"},
+    "Screenshot": {"keyboard": "63"},
     "Overlay": {"buttons": ["l3", "r2"]},
     "Chat": {"keyboard": "23"},
     "Blank1": {"blank": None},
@@ -332,17 +333,17 @@ class BigPEmuGenerator(Generator):
                                 input = pad.inputs[x]
                                 # workaround values for SDL2
                                 if input.type == "button":
-                                    input.value = 0
+                                    input.value = "0"
                                 if input.type == "hat":
-                                    input.id = 134
+                                    input.id = "134"
                                 if input.name == "joystick1left":
-                                    input.id = 128
+                                    input.id = "128"
                                 if input.name == "joystick1up":
-                                    input.id = 129
+                                    input.id = "129"
                                 if input.name == "joystick2left":
-                                    input.id = 131
+                                    input.id = "131"
                                 if input.name == "joystick2up":
-                                    input.id = 132
+                                    input.id = "132"
 
                                 # Generate the bindings if input name matches the button in sequence
                                 if input.name == binding_info.get("button") or input.name in binding_info.get("buttons", []):
@@ -355,11 +356,11 @@ class BigPEmuGenerator(Generator):
                                                 button_input = pad.inputs[y]
                                                 # workaround values here too
                                                 if button_input.type == "button":
-                                                    button_input.value = 0
+                                                    button_input.value = "0"
                                                 if button_input.name == "l2":
-                                                    button_input.id = 130
+                                                    button_input.id = "130"
                                                 if button_input.name == "r2":
-                                                    button_input.id = 133
+                                                    button_input.id = "133"
                                                 if button_input.name == button_name:
                                                     button_bindings.extend([button_input.id, button_input.value])
                                         if len(button_bindings) == len(button_combos) * 2:
@@ -395,6 +396,37 @@ class BigPEmuGenerator(Generator):
             # Onto the next controller as necessary
             nplayer += 1
 
+        # Scripts config
+        if "ScriptsEnabled" not in config["BigPEmuConfig"]:
+            config["BigPEmuConfig"]["ScriptsEnabled"] = []
+
+        # User selections for ScriptsEnabled options (individual scripts)
+        scripts = [
+            ("avp", "bigpemu_avp"),
+            ("avp_mp", "bigpemu_avp_mp"),
+            ("brett_hull_hockey", "bigpemu_brett_hull_hockey"),
+            ("checkered_flag", "bigpemu_checkered_flag"),
+            ("cybermorph", "bigpemu_cybermorph"),
+            ("iron_soldier", "bigpemu_iron_soldier"),
+            ("mc3d_vr", "bigpemu_mc3d_vr"),
+            ("t2k_rotary", "bigpemu_t2k_rotary"),
+            ("wolf3d", "bigpemu_wolf3d")
+        ]
+
+        config["BigPEmuConfig"]["ScriptsEnabled"] += [
+            script_name for script_name, script_option in scripts
+            if system.isOptSet(script_option) and system.config[script_option] == "1"
+        ]
+
+        # Remove duplicates just in case (as a precaution)
+        config["BigPEmuConfig"]["ScriptsEnabled"] = list(set(config["BigPEmuConfig"]["ScriptsEnabled"]))
+
+        # Screen filter
+        if system.isOptSet("bigpemu_screenfilter"):
+            config["BigPEmuConfig"]["Video"]["ScreenFilter"] = system.config["bigpemu_screenfilter"]
+        else:
+            config["BigPEmuConfig"]["Video"]["ScreenFilter"] = 0
+
         # Close off input
         config["BigPEmuConfig"]["Input"]["InputVer"] = 2
         config["BigPEmuConfig"]["Input"]["InputPluginVer"] = 666
@@ -403,10 +435,10 @@ class BigPEmuGenerator(Generator):
             json.dump(config, file, indent=4)
 
         # Run the emulator
-        commandArray = ["/usr/bigpemu/bigpemu", rom]
+        commandArray = ["/usr/bigpemu/bigpemu", rom, "-cfgpathabs", str(bigPemuConfig)]
 
         environment = {
-            "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers),
+            "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers),
             "SDL_JOYSTICK_HIDAPI": "0"
         }
 

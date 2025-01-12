@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from ... import controllersConfig
-from ...batoceraPaths import CONFIGS, ROMS
+from ...batoceraPaths import ROMS
 from ...Command import Command
+from ...controller import generate_sdl_game_controller_config
 from ..Generator import Generator
 
 if TYPE_CHECKING:
     from ...types import HotkeysContext
 
 
-_IORTCW_CONFIG: Final = CONFIGS / "iortcw"
+_IORTCW_CONFIG: Final = ROMS / "iortcw"
 _IORTCW_CONFIG_FILE: Final = _IORTCW_CONFIG / "main" / "wolfconfig.cfg"
 
 
@@ -129,7 +129,7 @@ class IORTCWGenerator(Generator):
             array=commandArray,
             env={
                 "XDG_DATA_HOME": ROMS,
-                "SDL_GAMECONTROLLERCONFIG": controllersConfig.generateSdlGameControllerConfig(playersControllers)
+                "SDL_GAMECONTROLLERCONFIG": generate_sdl_game_controller_config(playersControllers)
             }
         )
 
