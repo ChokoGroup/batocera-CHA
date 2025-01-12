@@ -9,7 +9,7 @@ It is the successor of our [CHA Multi OS Boot](https://github.com/ChokoGroup/CHA
 ![Batocera 41 UI](./ChokoGroup/BatoceraFavorites.png)
 #
 
-## What is special about batocera 40-Choko?
+## What is special about batocera 41-Choko?
 
 - It's a dual boot system image with both official OS v1.7.1 and Batocera 41. The img file can be written either in [eMMC](https://github.com/lilo-san/cha-documentation#installing-software) or [SD card](https://github.com/lilo-san/cha-documentation#hardware-modifications), using [BalenaEtcher](https://etcher.balena.io), or similar program.
 
