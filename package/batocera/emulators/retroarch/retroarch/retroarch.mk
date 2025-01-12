@@ -189,6 +189,9 @@ define RETROARCH_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)/usr/share/audio_filters
 	cp $(@D)/libretro-common/audio/dsp_filters/*.so $(TARGET_DIR)/usr/share/audio_filters
 	cp $(@D)/libretro-common/audio/dsp_filters/*.dsp $(TARGET_DIR)/usr/share/audio_filters
+
+    $(INSTALL) -D -m 0755 $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/emulators/retroarch/retroarch/lakka-reboot.sh $(TARGET_DIR)/usr/bin/lakka-reboot.sh
+    $(INSTALL) -D -m 0755 $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/emulators/retroarch/retroarch/lakka-shutdown.sh $(TARGET_DIR)/usr/bin/lakka-shutdown.sh
 endef
 
 define RETROARCH_INSTALL_STAGING_CMDS
